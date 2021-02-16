@@ -108,7 +108,7 @@ $(function () {
   /*** DEFINED TABLE VARIABLE ***/
   var gridTable = document.getElementById('myGrid');
 
-  var assetPath = '../../../app-assets/';
+  var assetPath = '../../../assets/';
   if ($('body').attr('data-framework') === 'laravel') {
     assetPath = $('body').attr('data-asset-path');
   }

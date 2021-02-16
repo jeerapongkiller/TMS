@@ -16,25 +16,34 @@
 
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/charts/apexcharts.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/extensions/toastr.min.css">
-    <!-- END: Vendor CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/pickadate/pickadate.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
+    <!-- BEGIN: Data Table CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css">
+    <!-- BEGIN: Fontawesome icon CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/dist/fontawesome/css/all.css">
 
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-extended.css">
     <link rel="stylesheet" type="text/css" href="assets/css/colors.css">
     <link rel="stylesheet" type="text/css" href="assets/css/components.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/themes/dark-layout.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/themes/bordered-layout.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/themes/semi-dark-layout.css">
 
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/core/menu/menu-types/vertical-menu.css">
     <link rel="stylesheet" type="text/css" href="assets/css/pages/dashboard-ecommerce.css">
     <link rel="stylesheet" type="text/css" href="assets/css/plugins/charts/chart-apex.css">
     <link rel="stylesheet" type="text/css" href="assets/css/plugins/extensions/ext-component-toastr.css">
-    <!-- END: Page CSS-->
-
+    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-flat-pickr.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-pickadate.css">
     <!-- BEGIN: Custom CSS-->
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- <link rel="stylesheet" type="text/css" href="assets/css/style.css"> -->
     <!-- END: Custom CSS-->
 
 </head>
@@ -58,205 +67,9 @@
 
     <!-- ============================================================== -->
     <!-- BEGIN: Content-->
-    <?php // include "sections/" . $_GET["mode"] . ".php"; ?>
-    <div class="app-content content">
-        <div class="content-overlay"></div>
-        <div class="header-navbar-shadow"></div>
-        <div class="content-wrapper">
-            <div class="content-header row">
-            </div>
-            <div class="content-body">
-                <!-- Dashboard Ecommerce Starts -->
-                <section id="dashboard-ecommerce">
-                    <div class="row match-height">
-                        <!-- Medal Card -->
-                        <div class="col-xl-4 col-md-6 col-12">
-                            <div class="card card-congratulation-medal">
-                                <div class="card-body">
-                                    <h5>Congratulations 🎉 John!</h5>
-                                    <p class="card-text font-small-3">You have won gold medal</p>
-                                    <h3 class="mb-75 mt-2 pt-50">
-                                        <a href="javascript:void(0);">$48.9k</a>
-                                    </h3>
-                                    <button type="button" class="btn btn-primary">View Sales</button>
-                                    <img src="assets/images/illustration/badge.svg" class="congratulation-medal" alt="Medal Pic" />
-                                </div>
-                            </div>
-                        </div>
-                        <!--/ Medal Card -->
-
-                        <!-- Statistics Card -->
-                        <div class="col-xl-8 col-md-6 col-12">
-                            <div class="card card-statistics">
-                                <div class="card-header">
-                                    <h4 class="card-title">Statistics</h4>
-                                    <div class="d-flex align-items-center">
-                                        <p class="card-text font-small-2 mr-25 mb-0">Updated 1 month ago</p>
-                                    </div>
-                                </div>
-                                <div class="card-body statistics-body">
-                                    <div class="row">
-                                        <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-                                            <div class="media">
-                                                <div class="avatar bg-light-primary mr-2">
-                                                    <div class="avatar-content">
-                                                        <i data-feather="trending-up" class="avatar-icon"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="media-body my-auto">
-                                                    <h4 class="font-weight-bolder mb-0">230k</h4>
-                                                    <p class="card-text font-small-3 mb-0">Sales</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-                                            <div class="media">
-                                                <div class="avatar bg-light-info mr-2">
-                                                    <div class="avatar-content">
-                                                        <i data-feather="user" class="avatar-icon"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="media-body my-auto">
-                                                    <h4 class="font-weight-bolder mb-0">8.549k</h4>
-                                                    <p class="card-text font-small-3 mb-0">Customers</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-sm-0">
-                                            <div class="media">
-                                                <div class="avatar bg-light-danger mr-2">
-                                                    <div class="avatar-content">
-                                                        <i data-feather="box" class="avatar-icon"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="media-body my-auto">
-                                                    <h4 class="font-weight-bolder mb-0">1.423k</h4>
-                                                    <p class="card-text font-small-3 mb-0">Products</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-3 col-sm-6 col-12">
-                                            <div class="media">
-                                                <div class="avatar bg-light-success mr-2">
-                                                    <div class="avatar-content">
-                                                        <i data-feather="dollar-sign" class="avatar-icon"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="media-body my-auto">
-                                                    <h4 class="font-weight-bolder mb-0">$9745</h4>
-                                                    <p class="card-text font-small-3 mb-0">Revenue</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/ Statistics Card -->
-                    </div>
-
-                    <div class="row match-height">
-                        <div class="col-lg-4 col-12">
-                            <div class="row match-height">
-                                <!-- Bar Chart - Orders -->
-                                <div class="col-lg-6 col-md-3 col-6">
-                                    <div class="card">
-                                        <div class="card-body pb-50">
-                                            <h6>Orders</h6>
-                                            <h2 class="font-weight-bolder mb-1">2,76k</h2>
-                                            <div id="statistics-order-chart"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/ Bar Chart - Orders -->
-
-                                <!-- Line Chart - Profit -->
-                                <div class="col-lg-6 col-md-3 col-6">
-                                    <div class="card card-tiny-line-stats">
-                                        <div class="card-body pb-50">
-                                            <h6>Profit</h6>
-                                            <h2 class="font-weight-bolder mb-1">6,24k</h2>
-                                            <div id="statistics-profit-chart"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/ Line Chart - Profit -->
-
-                                <!-- Earnings Card -->
-                                <div class="col-lg-12 col-md-6 col-12">
-                                    <div class="card earnings-card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <h4 class="card-title mb-1">Earnings</h4>
-                                                    <div class="font-small-2">This Month</div>
-                                                    <h5 class="mb-1">$4055.56</h5>
-                                                    <p class="card-text text-muted font-small-2">
-                                                        <span class="font-weight-bolder">68.2%</span><span> more earnings than last month.</span>
-                                                    </p>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div id="earnings-chart"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--/ Earnings Card -->
-                            </div>
-                        </div>
-
-                        <!-- Revenue Report Card -->
-                        <div class="col-lg-8 col-12">
-                            <div class="card card-revenue-budget">
-                                <div class="row mx-0">
-                                    <div class="col-md-8 col-12 revenue-report-wrapper">
-                                        <div class="d-sm-flex justify-content-between align-items-center mb-3">
-                                            <h4 class="card-title mb-50 mb-sm-0">Revenue Report</h4>
-                                            <div class="d-flex align-items-center">
-                                                <div class="d-flex align-items-center mr-2">
-                                                    <span class="bullet bullet-primary font-small-3 mr-50 cursor-pointer"></span>
-                                                    <span>Earning</span>
-                                                </div>
-                                                <div class="d-flex align-items-center ml-75">
-                                                    <span class="bullet bullet-warning font-small-3 mr-50 cursor-pointer"></span>
-                                                    <span>Expense</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="revenue-report-chart"></div>
-                                    </div>
-                                    <div class="col-md-4 col-12 budget-wrapper">
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle budget-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                2020
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="javascript:void(0);">2020</a>
-                                                <a class="dropdown-item" href="javascript:void(0);">2019</a>
-                                                <a class="dropdown-item" href="javascript:void(0);">2018</a>
-                                            </div>
-                                        </div>
-                                        <h2 class="mb-25">$25,852</h2>
-                                        <div class="d-flex justify-content-center">
-                                            <span class="font-weight-bolder mr-25">Budget:</span>
-                                            <span>56,800</span>
-                                        </div>
-                                        <div id="budget-chart"></div>
-                                        <button type="button" class="btn btn-primary">Increase Budget</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/ Revenue Report Card -->
-                    </div>
-
-                </section>
-                <!-- Dashboard Ecommerce ends -->
-
-            </div>
-        </div>
-    </div>
+    <?php // include "sections/" . $_GET["mode"] . ".php";
+    include "sections/booking/list.php";
+    ?>
     <!-- END: Content-->
     <!-- ============================================================== -->
 
@@ -272,10 +85,32 @@
 
     <!-- BEGIN: Vendor JS -->
     <script src="assets/vendors/js/vendors.min.js"></script>
-    <!-- BEGIN Vendor JS -->
+    <!-- END Vendor JS -->
+
+    <!-- BEGIN Data Table JS -->
+    <script src="assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+    <script src="assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+    <script src="assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+    <!-- <script src="assets/vendors/js/tables/datatable/responsive.bootstrap4.js"></script> -->
+    <script src="assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
+    <!-- <script src="assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/jszip.min.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/pdfmake.min.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/vfs_fonts.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/buttons.html5.min.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/buttons.print.min.js"></script> -->
+    <!-- <script src="assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script> -->
+    <!-- END Data Table JS -->
+
+    <!-- BEGIN Pickers JS -->
+    <script src="assets/vendors/js/pickers/pickadate/picker.js"></script>
+    <script src="assets/vendors/js/pickers/pickadate/picker.date.js"></script>
+    <script src="assets/vendors/js/pickers/pickadate/picker.time.js"></script>
+    <script src="assets/vendors/js/pickers/pickadate/legacy.js"></script>
+    <script src="assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
+    <!-- END Pickers JS -->
 
     <!-- BEGIN: Page Vendor JS -->
-    <script src="assets/vendors/js/charts/apexcharts.min.js"></script>
     <script src="assets/vendors/js/extensions/toastr.min.js"></script>
     <!-- END: Page Vendor JS -->
 
@@ -284,9 +119,36 @@
     <script src="assets/js/core/app.js"></script>
     <!-- END: Menu Theme JS -->
 
-    <!-- BEGIN: Page JS-->
-    <script src="assets/js/scripts/pages/dashboard-ecommerce.js"></script>
-    <!-- END: Page JS-->
+    <!-- BEGIN: Page Vendor JS-->
+    <script src="assets/js/scripts/forms/pickers/form-pickers.js"></script>
+    <!-- END: Page Vendor JS-->
+
+    <script>
+        /** DataTables Basic **/
+        $(function() {
+            'use strict';
+            $('#datatables-basic').DataTable({
+                "searching": false,
+                order: [
+                    [1, 'asc']
+                ], //desc , asc
+                dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                displayLength: 7,
+                lengthMenu: [7, 10, 25, 50, 75, 100],
+                columnDefs: [{
+                    targets: [0, 6],
+                    orderable: false
+                }],
+                language: {
+                    paginate: {
+                        // remove previous & next text from pagination
+                        previous: '&nbsp;',
+                        next: '&nbsp;'
+                    }
+                }
+            });
+        });
+    </script>
 
     <script>
         $(window).on('load', function() {

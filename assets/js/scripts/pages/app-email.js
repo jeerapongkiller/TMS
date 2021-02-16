@@ -43,7 +43,7 @@ $(function () {
     editorEl = $('#message-editor .editor'),
     overlay = $('.body-content-overlay');
 
-  var assetPath = '../../../app-assets/';
+  var assetPath = '../../../assets/';
 
   if ($('body').attr('data-framework') === 'laravel') {
     assetPath = $('body').attr('data-asset-path');

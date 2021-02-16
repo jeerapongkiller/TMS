@@ -37,7 +37,7 @@ $(function () {
     noResults = $('.no-results'),
     checkboxId = 100;
 
-  var assetPath = '../../../app-assets/';
+  var assetPath = '../../../assets/';
   if ($('body').attr('data-framework') === 'laravel') {
     assetPath = $('body').attr('data-asset-path');
   }

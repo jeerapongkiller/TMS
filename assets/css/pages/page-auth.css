@@ -35,7 +35,7 @@
   position : absolute;
   top : -54px;
   left : -46px;
-  background-image : url('../../../app-assets/images/login_top.png');
+  background-image : url('../../../assets/images/login_top.png');
 }
 
 @media (max-width: 575.98px) {
@@ -51,7 +51,7 @@
   position : absolute;
   bottom : -55px;
   right : -75px;
-  background-image : url('../../../app-assets/images/login_bottom.png');
+  background-image : url('../../../assets/images/login_bottom.png');
   z-index : -1;
 }
 
