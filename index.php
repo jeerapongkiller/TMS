@@ -17,14 +17,17 @@
     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/extensions/toastr.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/pickadate/pickadate.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
     <!-- BEGIN: Data Table CSS-->
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/responsive.bootstrap4.min.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/tables/datatable/buttons.bootstrap4.min.css">
     <!-- BEGIN: Fontawesome icon CSS-->
     <link rel="stylesheet" type="text/css" href="assets/dist/fontawesome/css/all.css">
+    <!-- BEGIN: Pickers Date CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/pickadate/pickadate.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
+    <!-- BEGIN: Sweetalert2 CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/extensions/sweetalert2.min.css">
 
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
@@ -37,11 +40,11 @@
 
     <!-- BEGIN: Page CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-flat-pickr.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-pickadate.css">
     <link rel="stylesheet" type="text/css" href="assets/css/pages/dashboard-ecommerce.css">
     <link rel="stylesheet" type="text/css" href="assets/css/plugins/charts/chart-apex.css">
     <link rel="stylesheet" type="text/css" href="assets/css/plugins/extensions/ext-component-toastr.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-flat-pickr.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/plugins/forms/pickers/form-pickadate.css">
     <!-- BEGIN: Custom CSS-->
     <!-- <link rel="stylesheet" type="text/css" href="assets/css/style.css"> -->
     <!-- END: Custom CSS-->
@@ -91,28 +94,18 @@
     <script src="assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
     <script src="assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
     <script src="assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
-    <!-- <script src="assets/vendors/js/tables/datatable/responsive.bootstrap4.js"></script> -->
     <script src="assets/vendors/js/tables/datatable/datatables.checkboxes.min.js"></script>
-    <!-- <script src="assets/vendors/js/tables/datatable/datatables.buttons.min.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/jszip.min.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/pdfmake.min.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/vfs_fonts.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/buttons.html5.min.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/buttons.print.min.js"></script> -->
-    <!-- <script src="assets/vendors/js/tables/datatable/dataTables.rowGroup.min.js"></script> -->
     <!-- END Data Table JS -->
 
     <!-- BEGIN Pickers JS -->
     <script src="assets/vendors/js/pickers/pickadate/picker.js"></script>
-    <script src="assets/vendors/js/pickers/pickadate/picker.date.js"></script>
-    <script src="assets/vendors/js/pickers/pickadate/picker.time.js"></script>
-    <script src="assets/vendors/js/pickers/pickadate/legacy.js"></script>
     <script src="assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
     <!-- END Pickers JS -->
 
-    <!-- BEGIN: Page Vendor JS -->
-    <script src="assets/vendors/js/extensions/toastr.min.js"></script>
-    <!-- END: Page Vendor JS -->
+    <!-- BEGIN Sweetalert2 JS -->
+    <script src="assets/vendors/js/extensions/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/js/extensions/polyfill.min.js"></script>
+    <!-- END Sweetalert2 JS -->
 
     <!-- BEGIN: Menu Theme JS -->
     <script src="assets/js/core/app-menu.js"></script>
@@ -120,9 +113,10 @@
     <!-- END: Menu Theme JS -->
 
     <!-- BEGIN: Page Vendor JS-->
-    <script src="assets/js/scripts/forms/pickers/form-pickers.js"></script>
+    <script src="assets/vendors/js/extensions/toastr.min.js"></script>
     <!-- END: Page Vendor JS-->
 
+    <!-- Script Data Table -->
     <script>
         /** DataTables Basic **/
         $(function() {
@@ -148,6 +142,80 @@
                 }
             });
         });
+    </script>
+
+    <!-- Script Flatpickr -->
+    <script>
+        /** Flatpickr **/
+        $(function() {
+            'use strict';
+            /** Booking Search **/
+            $('#date-to').flatpickr({
+                // enableTime: true,
+                // dateFormat: "Y-m-d H:i",
+                dateFormat: 'Y-m-d',
+                minDate: $('#date-from').val()
+            });
+            $('#date-from').flatpickr({
+                dateFormat: 'Y-m-d'
+            });
+            $('#date-from').on('change', function() {
+                $('#date-to').flatpickr({
+                    minDate: this.value
+                });
+                document.getElementById('date-to').value = $('#date-from').val();
+            });
+            /** Booking Search **/
+            $('#date-range').flatpickr({
+                // enableTime: true,
+                // dateFormat: "Y-m-d H:i",
+                // dateFormat: 'Y-m-d',
+                // minDate: $('#date-from').val()
+                mode: 'range'
+            });
+
+        });
+    </script>
+
+    <!-- Script Sweetalert2 -->
+    <script>
+        function reset() {
+            Swal.fire({
+                title: 'Good job!',
+                text: 'You clicked the button!',
+                icon: 'success',
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+        }
+
+        function submit() {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                customClass: {
+                    confirmButton: 'btn btn-primary',
+                    cancelButton: 'btn btn-outline-danger ml-1'
+                },
+                buttonsStyling: false
+            }).then(function(result) {
+                if (result.value) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'Your file has been deleted.',
+                        customClass: {
+                            confirmButton: 'btn btn-success'
+                        }
+                    });
+                }
+            });
+        }
     </script>
 
     <script>

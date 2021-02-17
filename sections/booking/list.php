@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <!-- Basic Inputs start -->
+        <!-- Section search start -->
         <section id="basic-input">
             <div class="row">
                 <div class="col-md-12">
@@ -36,57 +36,125 @@
                             <h4 class="card-title">Search</h4>
                         </div>
                         <div class="card-body">
-                            <form action="#" class="needs-validation" novalidate>
+                            <form action="./?mode=booking/save" enctype="multipart/form-data" method="POST" id="frmsearch" name="frmsearch" class="needs-validation" novalidate>
                                 <div class="form-row">
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="Name">Name</label>
-                                            <input type="text" class="form-control" id="Name" placeholder="Enter Name" required />
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your name.</div>
                                         </div>
                                     </div> <!-- div -->
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="Email">Email</label>
-                                            <input type="text" class="form-control" id="Email" placeholder="Enter email" required />
+                                            <label for="email">Email</label>
+                                            <input type="text" class="form-control" id="email" name="email" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your email.</div>
                                         </div>
                                     </div> <!-- div -->
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="Date">Date</label>
-                                            <input type="text" id="" class="form-control pickadate" placeholder="18 June, 2020" />
+                                            <label for="date-from">Date (From)</label>
+                                            <input type="text" class="form-control" id="date-from" name="date-from" value="" placeholder="" readonly />
+                                            <div class="invalid-feedback">Please enter your date from.</div>
                                         </div>
                                     </div> <!-- div -->
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="basicInput">Salary</label>
-                                            <input type="text" class="form-control" id="Salary" placeholder="Enter salary" required />
+                                            <label for="date-to">Date (To)</label>
+                                            <input type="text" class="form-control" id="date-to" name="date-to" value="" placeholder="" readonly />
+                                            <div class="invalid-feedback">Please enter your date to.</div>
                                         </div>
                                     </div> <!-- div -->
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="basicInput">Status</label>
-                                            <select class="form-control" id="Status" required >
+                                            <label for="date-range">Date (Range)</label>
+                                            <input type="text" class="form-control" id="date-range" name="date-range" value="" placeholder="" />
+                                            <div class="invalid-feedback">Please enter your date range.</div>
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="salary">Salary</label>
+                                            <input type="text" class="form-control" id="salary" name="salary" placeholder="" required />
+                                            <div class="invalid-feedback">Please enter your salary.</div>
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label for="status">Status</label>
+                                            <select class="form-control" id="status" name="status" required>
                                                 <option>IT</option>
                                                 <option>Blade Runner</option>
                                                 <option>Thor Ragnarok</option>
                                             </select>
+                                            <div class="invalid-feedback">Please select your status.</div>
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <a href="javascript:;" class="btn btn-primary mr-1 waves-effect waves-float waves-light" onclick="submit()">Submit</a>
+                                            <a href="javascript:;" class="btn btn-outline-primary waves-effect" onclick="reset()">Reset</a>
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="check1" name="check" class="custom-control-input" value="checked" required />
+                                                <label class="custom-control-label" for="check1">Radio Checked</label>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" id="check2" name="check" class="custom-control-input" value="unchecked" required />
+                                                <label class="custom-control-label" for="check2">Radio Unchecked</label>
+                                            </div>
+                                            <div class="invalid-feedback">Please select your check.</div>
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="checkbox" name="checkbox" value="1" required />
+                                                <label class="custom-control-label" for="checkbox">Checked</label>
+                                                <div class="invalid-feedback">Please select your check box.</div>
+                                            </div>
                                         </div>
                                     </div> <!-- div -->
                                 </div>
                                 <div class="form-row">
-                                    <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light">Submit</button>
-                                    <button type="reset" class="btn btn-outline-primary waves-effect">Reset</button>
+                                    <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light" >Submit</button>
+                                    <button type="reset" class="btn btn-outline-primary waves-effect" >Reset</button>
                                 </div>
                             </form>
+                            <script>
+                                // Example starter JavaScript for disabling form submissions if there are invalid fields
+                                (function() {
+                                    'use strict';
+                                    window.addEventListener('load', function() {
+                                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                                        var forms = document.getElementsByClassName('needs-validation');
+                                        // Loop over them and prevent submission
+                                        var validation = Array.prototype.filter.call(forms, function(form) {
+                                            form.addEventListener('submit', function(event) {
+                                                if (form.checkValidity() === false) {
+                                                    // form.classList.add('invalid');
+                                                    event.preventDefault();
+                                                    event.stopPropagation();
+                                                }
+                                                form.classList.add('was-validated');
+                                            }, false);
+                                        });
+                                    }, false);
+                                })();
+                            </script>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- Basic Inputs end -->
+        <!-- Section search end -->
 
+        <!-- Booking table start -->
         <div class="content-body">
-            <!-- Basic table -->
             <section id="basic-datatable">
                 <div class="row">
                     <div class="col-12">
@@ -346,7 +414,62 @@
                     </div>
                 </div>
             </section>
-            <!--/ Basic table -->
+            <!-- Booking table end -->
+
+            <!-- Flatpickr Starts -->
+            <!-- <section id="flatpickr">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Flatpickr</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="fp-default">Default</label>
+                                <input type="text" id="fp-default" class="form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="fp-time">Time picker</label>
+                                <input type="text" id="fp-time" class="form-control flatpickr-time text-left" placeholder="HH:MM" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="fp-date-time">Date & TIme</label>
+                                <input type="text" id="fp-date-time" class="form-control flatpickr-date-time" placeholder="YYYY-MM-DD HH:MM" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="fp-multiple">Multiple Dates</label>
+                                <input type="text" id="fp-multiple" class="form-control flatpickr-multiple" placeholder="YYYY-MM-DD" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label for="fp-range">Range</label>
+                                <input type="text" id="fp-range" class="form-control flatpickr-range" placeholder="YYYY-MM-DD to YYYY-MM-DD" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="fp-human-friendly">Human Friendly</label>
+                                <input type="text" id="fp-human-friendly" class="form-control flatpickr-human-friendly" placeholder="October 14, 2020" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Disabled Range</label>
+                                <input type="text" class="form-control flatpickr-disabled-range" placeholder="YYYY-MM-DD" />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Inline</label>
+                                <input type="text" class="form-control flatpickr-inline" placeholder="YYYY-MM-DD" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section> -->
+            <!-- Flatpickr Ends-->
 
         </div>
     </div>
