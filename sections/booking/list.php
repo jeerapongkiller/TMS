@@ -416,61 +416,6 @@
             </section>
             <!-- Booking table end -->
 
-            <!-- Flatpickr Starts -->
-            <!-- <section id="flatpickr">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Flatpickr</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="fp-default">Default</label>
-                                <input type="text" id="fp-default" class="form-control flatpickr-basic" placeholder="YYYY-MM-DD" />
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="fp-time">Time picker</label>
-                                <input type="text" id="fp-time" class="form-control flatpickr-time text-left" placeholder="HH:MM" />
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="fp-date-time">Date & TIme</label>
-                                <input type="text" id="fp-date-time" class="form-control flatpickr-date-time" placeholder="YYYY-MM-DD HH:MM" />
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="fp-multiple">Multiple Dates</label>
-                                <input type="text" id="fp-multiple" class="form-control flatpickr-multiple" placeholder="YYYY-MM-DD" />
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="fp-range">Range</label>
-                                <input type="text" id="fp-range" class="form-control flatpickr-range" placeholder="YYYY-MM-DD to YYYY-MM-DD" />
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="fp-human-friendly">Human Friendly</label>
-                                <input type="text" id="fp-human-friendly" class="form-control flatpickr-human-friendly" placeholder="October 14, 2020" />
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label>Disabled Range</label>
-                                <input type="text" class="form-control flatpickr-disabled-range" placeholder="YYYY-MM-DD" />
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Inline</label>
-                                <input type="text" class="form-control flatpickr-inline" placeholder="YYYY-MM-DD" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section> -->
-            <!-- Flatpickr Ends-->
-
         </div>
     </div>
 </div>
