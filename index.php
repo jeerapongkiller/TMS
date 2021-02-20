@@ -256,8 +256,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 var changePhoto = $('#photo'),
                     viewPhoro = $('.user-photo'),
                     removePhoto = $('#remove_photo_user'),
-                    noImage = $('#no_image'),
-                    delPhoto = $('#del_photo');
+                    noImage = $('#no_image');
                 $(changePhoto).on('change', function(e) {
                     if (this.files[0].size > 2000000) {
                         Swal.fire({
@@ -279,7 +278,8 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     }
                 })
                 $(removePhoto).on('click', function() {
-                    delPhoto.value = '1';
+                    document.getElementById('del_photo').value = '1';
+                    document.getElementById('photo').value = '';
                     viewPhoro.attr('src', 'inc/photo/no-image.jpg');
                 })
             });

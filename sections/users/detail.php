@@ -29,7 +29,7 @@ $lastname = !empty($row["lastname"]) ? $row["lastname"] : '';
 $usernamesame = !empty($row["id"]) ? 'true' : 'false';
 # photo
 $photo = !empty($row["photo"]) ? $row["photo"] : '';
-$pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jpg' ;
+$pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.jpg';
 ?>
 <div class="app-content content ">
     <div class="content-overlay"></div>
@@ -70,7 +70,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jp
                                 <h4 class="card-title">Search</h4>
                             </div> -->
                             <div class="card-body">
-                                <form action="./?mode=users/save" method="POST" id="frmsearch" name="frmsearch" class="needs-validation" enctype="multipart/form-data" novalidate>
+                                <form action="javascript:;" method="POST" id="frmsearch" name="frmsearch" class="needs-validation" enctype="multipart/form-data" novalidate>
                                     <!-- Hidden input -->
                                     <input type="hidden" id="id" name="id" value="<?php echo $id; ?>">
                                     <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
@@ -83,7 +83,8 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jp
                                             <div class="col-12 d-flex mt-1 px-0">
                                                 <label class="btn btn-primary mr-75 mb-0" for="photo">
                                                     <span class="d-none d-sm-block">Change</span>
-                                                    <input class="form-control" type="file" id="photo" name="photo" value="<?php echo $photo; ?>" hidden accept="image/png, image/jpeg, image/jpg" />
+                                                    <input class="form-control" type="file" id="photo" name="photo" value="<?php echo $photo; ?>" hidden value="" accept="image/png, image/jpeg, image/jpg" />
+                                                    <input type="hidden" name="tmp_photo" id="tmp_photo" value="<?php echo $photo; ?>">
                                                     <input type="hidden" name="del_photo" id="del_photo" value="">
                                                     <span class="d-block d-sm-none">
                                                         <i class="mr-0" data-feather="edit"></i>
@@ -162,6 +163,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jp
                                         </div>
                                     </div>
                                 </form>
+                                <div id="div-users"></div>
                                 <script>
                                     // Check Username
                                     function checkUsername() {
@@ -203,7 +205,6 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jp
                                             error: function() {}
                                         });
                                     }
-
                                     // Check Password
                                     function checkPassword() {
                                         var password = document.getElementById('password');
@@ -237,12 +238,83 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/'.$photo : 'inc/photo/no-image.jp
                                                         }
                                                         event.preventDefault();
                                                         event.stopPropagation();
+                                                    } else {
+                                                        submitFormUser();
                                                     }
                                                     form.classList.add('was-validated');
                                                 }, false);
                                             });
                                         }, false);
                                     })();
+
+                                    // submit form user to ajex
+                                    // function submitFormUser() {
+                                    //     var id = document.getElementById('id');
+                                    //     var offline = document.getElementById('offline');
+                                    //     var username = document.getElementById('username');
+                                    //     var password = document.getElementById('password');
+                                    //     var firstname = document.getElementById('firstname');
+                                    //     var lastname = document.getElementById('lastname');
+                                    //     var photo = document.getElementById('photo');
+                                    //     var file = $('#photo').files[0];
+                                    //     var form = new FormData();
+                                    //     form.append('media', file);
+                                    //     form.append('text', $('#text').val());
+                                    //     jQuery.ajax({
+                                    //         url: "sections/users/save.php",
+                                    //         data: {
+                                    //             id: id.value,
+                                    //             offline: offline.value,
+                                    //             username: username.value,
+                                    //             password: password.value,
+                                    //             firstname: firstname.value,
+                                    //             lastname: lastname.value,
+                                    //             photo: form
+                                    //         },
+                                    //         type: "POST",
+                                    //         success: function(response) {
+                                    //             $("#div-users").html(response);
+                                    //         },
+                                    //         error: function() {}
+                                    //     });
+                                    // }
+
+                                    function submitFormUser() {
+                                        var id = $('#id').val();
+                                        var offline = $('#offline').val();
+                                        var username = $('#username').val();
+                                        var password = $('#password').val();
+                                        var firstname = $('#firstname').val();
+                                        var lastname = $('#lastname').val();
+                                        var tmp_photo = $('#tmp_photo').val();
+                                        var del_photo = $('#del_photo').val();
+
+                                        var fd = new FormData();
+                                        var photo = $('#photo')[0].files[0];
+                                        fd.append('id',id);
+                                        fd.append('offline',offline);
+                                        fd.append('username',username);
+                                        fd.append('password',password);
+                                        fd.append('firstname',firstname);
+                                        fd.append('lastname',lastname);
+                                        fd.append('tmp_photo',tmp_photo);
+                                        fd.append('del_photo',del_photo);
+                                        fd.append('photo', photo);
+
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "sections/users/save.php",
+                                            dataType: 'text', // what to expect back from the PHP script, if anything
+                                            cache: false,
+                                            contentType: false,
+                                            processData: false,
+                                            data: fd,
+                                            success: function(response) {
+                                                $("#div-users").html(response);
+                                            },
+                                            error: function() {}
+                                        });
+                                    }
                                 </script>
                             </div>
                         </div>
