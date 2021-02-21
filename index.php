@@ -14,7 +14,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
         <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
         <meta name="author" content="PIXINVENT">
-        <title>Dashboard - Shambhala Travel</title>
+        <title>Shambhala Travel</title>
         <link rel="apple-touch-icon" href="assets/images/ico/favicon.png">
         <link rel="shortcut icon" type="image/x-icon" href="assets/images/ico/favicon.png">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
@@ -134,7 +134,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     displayLength: 7,
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
-                        targets: [0, 6],
+                        targets: [6],
                         orderable: false
                     }],
                     language: {
@@ -153,13 +153,38 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 $('#datatables-users').DataTable({
                     "searching": false,
                     order: [
-                        [1, 'asc']
+                        [2, 'asc']
                     ], //desc , asc
                     dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     displayLength: 7,
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
-                        targets: [0, 6],
+                        targets: [3],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+            });
+
+            /** DataTables Company **/
+            $(function() {
+                'use strict';
+                $('#datatables-company').DataTable({
+                    "searching": false,
+                    order: [
+                        [2, 'asc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [3, 4, 5],
                         orderable: false
                     }],
                     language: {
@@ -254,8 +279,8 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 // Check limit file
                 // Change user profile picture
                 var changePhoto = $('#photo'),
-                    viewPhoro = $('.user-photo'),
-                    removePhoto = $('#remove_photo_user'),
+                    viewPhoro = $('.photo'),
+                    removePhoto = $('#remove_photo'),
                     noImage = $('#no_image');
                 $(changePhoto).on('change', function(e) {
                     if (this.files[0].size > 2000000) {

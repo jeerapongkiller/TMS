@@ -1,19 +1,23 @@
 <?php
 require("../../inc/connection.php");
 
-if (!empty($_POST['username']) && !empty($_POST['password'])) {
-    #----- General Information -----#
-    $id = !empty($_POST["id"]) ? $_POST["id"] : '';
-    $offline = !empty($_POST["offline"]) ? $_POST["offline"] : '2';
-    $username = !empty($_POST["username"]) ? $_POST["username"] : '';
-    $password = !empty($_POST["password"]) ? $_POST["password"] : '';
-    $firstname = !empty($_POST["firstname"]) ? $_POST["firstname"] : '';
-    $lastname = !empty($_POST["lastname"]) ? $_POST["lastname"] : '';
-    #----- General Information -----#
+#----- General Information -----#
+$id = !empty($_POST["id"]) ? $_POST["id"] : '';
+$page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
+$offline = !empty($_POST["offline"]) ? $_POST["offline"] : '2';
+$username = !empty($_POST["username"]) ? $_POST["username"] : '';
+$password = !empty($_POST["password"]) ? $_POST["password"] : '';
+$firstname = !empty($_POST["firstname"]) ? $_POST["firstname"] : '';
+$lastname = !empty($_POST["lastname"]) ? $_POST["lastname"] : '';
+$usernamesame = !empty($_POST["usernamesame"]) ? $_POST["usernamesame"] : 'false';
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+#----- General Information -----#
 
-    $return_url = !empty($id) ? '&id=' . $id : '';
-    $message_alert = "error";
+$return = 'false';
+// $return_url = !empty($id) ? '&id=' . $id : '';
+// $message_alert = "error";
 
+if (!empty($_POST['username']) && $usernamesame != 'false') {
     if (empty($id)) {
         # ---- Insert to database ---- #
         $query = "INSERT INTO users (permission, username, password, firstname, lastname, photo, offline, trash_deleted, date_create, date_edit)";
@@ -23,12 +27,13 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
     }
     if (!empty($id)) {
         # ---- Upload Photo ---- #
-        $uploaddir = "inc/photo/users/";
+        $uploaddir = "../../inc/photo/users/";
         $photo_time = time();
         $photo = !empty($_FILES['photo']['tmp_name']) ? $_FILES['photo']['tmp_name'] : '';
         $photo_name = !empty($_FILES['photo']['name']) ? $_FILES['photo']['name'] : '';
         $tmp_photo = !empty($_POST['tmp_photo']) ? $_POST['tmp_photo'] : '';
         $del_photo = !empty($_POST['del_photo']) ? $_POST['del_photo'] : '';
+        $paramiter = '1';
 
         if (!empty($del_photo)) {
             unlink($uploaddir . $tmp_photo);
@@ -51,9 +56,11 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
         $bind_types .= "s";
         array_push($params, $username);
 
-        $query .= " password = ?,";
-        $bind_types .= "s";
-        array_push($params, $password);
+        if(!empty($password)) {
+            $query .= " password = ?,";
+            $bind_types .= "s";
+            array_push($params, $hashed_password);
+        }
 
         $query .= " firstname = ?,";
         $bind_types .= "s";
@@ -63,14 +70,11 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
         $bind_types .= "s";
         array_push($params, $lastname);
 
-        if(!empty($photo)) {
-            $photo_field = "photo";
-            $query .= " " . $photo_field . " = ?,";
-            $bind_types .= "s";
-            array_push($params, $photo);
-        }
+        $query .= "photo = ?,";
+        $bind_types .= "s";
+        array_push($params, $photo);
 
-        $query .= ($page_title == "เพิ่มข้อมูล") ? ' date_create = now(),' : '';
+        $query .= ($page_title == "Add New User") ? ' date_create = now(),' : '';
 
         $query .= " date_edit = now()";
         $query .= " WHERE id = '$id'";
@@ -82,5 +86,14 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
         $result = mysqli_stmt_get_result($procedural_statement);
 
         mysqli_close($mysqli_p);
+
+        $return = ($page_title == "Add New User") ?  "&id=" . $id : 'true';
+        // $message_alert = "success";
+        // echo $return_url."&message=" . $message_alert;
+        echo $return;
     }
+} else {
+    echo $return;
+    // echo $return_url."&message=" . $message_alert;
 }
+

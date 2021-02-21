@@ -77,7 +77,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                     <input type="hidden" id="usernamesame" name="usernamesame" value="<?php echo $usernamesame; ?>">
                                     <!-- Users photo -->
                                     <div class="media mb-2">
-                                        <img src="<?php echo $pathphoto; ?>" alt="users" class="user-photo users-avatar-shadow rounded mr-2 my-25 cursor-pointer" height="90" width="90" />
+                                        <img src="<?php echo $pathphoto; ?>" alt="users" class="photo users-avatar-shadow rounded mr-2 my-25 cursor-pointer" height="90" width="90" />
                                         <div class="media-body mt-50">
                                             <h4> <?php echo $page_title; ?> </h4>
                                             <div class="col-12 d-flex mt-1 px-0">
@@ -90,7 +90,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                                         <i class="mr-0" data-feather="edit"></i>
                                                     </span>
                                                 </label>
-                                                <button class="btn btn-outline-secondary d-none d-sm-block" id="remove_photo_user" type="button">Remove</button>
+                                                <button class="btn btn-outline-secondary d-none d-sm-block" id="remove_photo" type="button">Remove</button>
                                                 <button class="btn btn-outline-secondary d-block d-sm-none">
                                                     <i class="mr-0" data-feather="trash-2"></i>
                                                 </button>
@@ -134,7 +134,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather="lock"></i></span>
                                                     </div>
-                                                    <input type="text" class="form-control" id="password" name="password" placeholder="" onkeyup="checkPassword();" required />
+                                                    <input type="text" class="form-control" id="password" name="password" placeholder="" onkeyup="checkPassword();" <?php echo !empty($password) ? '' : 'required'; ?> />
                                                     <div class="invalid-feedback">Please enter a password.</div>
                                                 </div>
                                             </div>
@@ -163,7 +163,9 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                         </div>
                                     </div>
                                 </form>
+
                                 <div id="div-users"></div>
+
                                 <script>
                                     // Check Username
                                     function checkUsername() {
@@ -247,42 +249,18 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                         }, false);
                                     })();
 
-                                    // submit form user to ajex
-                                    // function submitFormUser() {
-                                    //     var id = document.getElementById('id');
-                                    //     var offline = document.getElementById('offline');
-                                    //     var username = document.getElementById('username');
-                                    //     var password = document.getElementById('password');
-                                    //     var firstname = document.getElementById('firstname');
-                                    //     var lastname = document.getElementById('lastname');
-                                    //     var photo = document.getElementById('photo');
-                                    //     var file = $('#photo').files[0];
-                                    //     var form = new FormData();
-                                    //     form.append('media', file);
-                                    //     form.append('text', $('#text').val());
-                                    //     jQuery.ajax({
-                                    //         url: "sections/users/save.php",
-                                    //         data: {
-                                    //             id: id.value,
-                                    //             offline: offline.value,
-                                    //             username: username.value,
-                                    //             password: password.value,
-                                    //             firstname: firstname.value,
-                                    //             lastname: lastname.value,
-                                    //             photo: form
-                                    //         },
-                                    //         type: "POST",
-                                    //         success: function(response) {
-                                    //             $("#div-users").html(response);
-                                    //         },
-                                    //         error: function() {}
-                                    //     });
-                                    // }
-
+                                    // Submit form users
                                     function submitFormUser() {
                                         var id = $('#id').val();
-                                        var offline = $('#offline').val();
+                                        var page_title = $('#page_title').val();
+                                        var check_offline = document.getElementById('offline');
+                                        if (check_offline.checked) {
+                                            var offline = $('#offline').val();
+                                        } else {
+                                            var offline = '';
+                                        }
                                         var username = $('#username').val();
+                                        var usernamesame = $('#usernamesame').val();
                                         var password = $('#password').val();
                                         var firstname = $('#firstname').val();
                                         var lastname = $('#lastname').val();
@@ -291,14 +269,16 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
 
                                         var fd = new FormData();
                                         var photo = $('#photo')[0].files[0];
-                                        fd.append('id',id);
-                                        fd.append('offline',offline);
-                                        fd.append('username',username);
-                                        fd.append('password',password);
-                                        fd.append('firstname',firstname);
-                                        fd.append('lastname',lastname);
-                                        fd.append('tmp_photo',tmp_photo);
-                                        fd.append('del_photo',del_photo);
+                                        fd.append('id', id);
+                                        fd.append('page_title', page_title);
+                                        fd.append('offline', offline);
+                                        fd.append('username', username);
+                                        fd.append('usernamesame', usernamesame);
+                                        fd.append('password', password);
+                                        fd.append('firstname', firstname);
+                                        fd.append('lastname', lastname);
+                                        fd.append('tmp_photo', tmp_photo);
+                                        fd.append('del_photo', del_photo);
                                         fd.append('photo', photo);
 
                                         $.ajax({
@@ -310,9 +290,32 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                             processData: false,
                                             data: fd,
                                             success: function(response) {
-                                                $("#div-users").html(response);
+                                                // $("#div-users").html(response);
+                                                if (response == 'false') {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error. Please try again!',
+                                                        showConfirmButton: false,
+                                                        timer: 3000
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Complete!',
+                                                        showConfirmButton: false,
+                                                        timer: 3600
+                                                    }).then((result) => {
+                                                        if (response == 'true') {
+                                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                                        } else {
+                                                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>" + response;
+                                                        }
+                                                    })
+                                                }
                                             },
-                                            error: function() {}
+                                            error: function() {
+                                                Swal.fire('Error!', 'Error. Please try again', 'error')
+                                            }
                                         });
                                     }
                                 </script>

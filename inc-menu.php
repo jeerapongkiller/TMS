@@ -18,10 +18,13 @@
                     <a class="d-flex align-items-center" href="./?mode=booking/list"><i data-feather='book-open'></i><span class="menu-title text-truncate" data-i18n="Booking">Booking</span></a>
                 </li>
 
-                <li class=" navigation-header"><span data-i18n="user">User</span><i data-feather="more-horizontal"></i>
+                <li class="navigation-header"><span data-i18n="user">User & company</span><i data-feather="more-horizontal"></i>
                 </li>
                 <li class="nav-item <?php echo (strstr($_GET["mode"], "users/")) ? 'active' : ''; ?> ">
                     <a class="d-flex align-items-center" href="./?mode=users/list"><i data-feather='user'></i><span class="menu-title text-truncate" data-i18n="Users">User</span></a>
+                </li>
+                <li class="nav-item <?php echo (strstr($_GET["mode"], "company/")) ? 'active' : ''; ?> ">
+                    <a class="d-flex align-items-center" href="./?mode=company/list"><i data-feather='home'></i><span class="menu-title text-truncate" data-i18n="Users">Company</span></a>
                 </li>
 
                 <li class=" navigation-header"><span data-i18n="Apps &amp; Pages">Apps &amp; Pages</span><i data-feather="more-horizontal"></i>

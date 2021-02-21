@@ -27,6 +27,8 @@ if (!empty($_POST['lg_username']) && !empty($_POST['lg_password']) && !empty($_P
             $_SESSION["admin"]["lastname"] = $row["lastname"];
             $_SESSION["admin"]["name"] = $row["firstname"] . " " . $row["lastname"];
             $_SESSION["admin"]["permission"] = $row["permission"];
+            $_SESSION["admin"]["permission_name"] = get_value('permission', 'id', 'name', $row["permission"], $mysqli_p);
+            $_SESSION["admin"]["photo"] = $row["photo"];
             $_SESSION["admin"]["timestamp"] = time();
 
             mysqli_stmt_execute($procedural_statement);

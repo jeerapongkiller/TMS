@@ -6,7 +6,7 @@
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <h2 class="content-header-title float-left mb-0">User</h2>
+                        <h2 class="content-header-title float-left mb-0">Company</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
                                 <!-- <li class="breadcrumb-item"><a href="index.html">Home</a>
@@ -24,7 +24,7 @@
                 <div class="form-group breadcrumb-right">
                     <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
                         <div class="dt-buttons btn-group flex-wrap">
-                            <a href="./?mode=users/detail" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add User</span></a>
+                            <a href="./?mode=company/detail" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Company</span></a>
                         </div>
                     </div>
                 </div>
@@ -87,9 +87,9 @@
                                     </div> <!-- div -->
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-12 col-md-12 col-12">
                                         <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
-                                        <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.location.href='./?mode=users/list'"><i class="fas fa-redo-alt"></i>&nbsp;&nbsp;Reset</button>
+                                        <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.location.href='./?mode=company/list'"><i class="fas fa-redo-alt"></i>&nbsp;&nbsp;Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -106,12 +106,14 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <table class="table" id="datatables-users">
+                            <table class="table" id="datatables-company">
                                 <thead>
                                     <tr>
                                         <th>Status</th>
-                                        <th>Username</th>
                                         <th>Name</th>
+                                        <th>Contact name</th>
+                                        <th>Contact phone</th>
+                                        <th>Contact email</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -121,7 +123,7 @@
                                     $bind_types = "";
                                     $params = array();
 
-                                    $query = "SELECT * FROM users WHERE id != 1";
+                                    $query = "SELECT * FROM company WHERE id > '0' ";
                                     if (!empty($search_firstname_val)) {
                                         # search firstname
                                         $param = "%{$search_firstname_val}%";
@@ -166,23 +168,25 @@
                                     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                                         $status_class = $row["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
                                         $status_txt = $row["offline"] == 1 ? 'Offline' : 'Online';
-                                        $name = $row["firstname"] . ' ' . $row["lastname"];
-                                        $pathphoto = !empty($row["photo"]) ? 'inc/photo/users/' . $row["photo"] : 'inc/photo/no-image.jpg';
+                                        $pathphoto = !empty($row["photo"]) ? 'inc/photo/company/' . $row["photo"] : 'inc/photo/no-image.jpg';
                                     ?>
                                         <tr>
                                             <td> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </td>
-                                            <td> <?php echo $row["username"]; ?> </td>
                                             <td>
                                                 <div class="d-flex justify-content-left align-items-center">
                                                     <div class="avatar pull-up my-0 mr-1">
                                                         <img src="<?php echo $pathphoto; ?>" alt="Avatar" height="30" width="30" />
                                                     </div>
-                                                    <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> <?php echo $name; ?> </span>
+                                                    <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> <?php echo $row["name"]; ?> </span>
+                                                        <small class="emp_post text-truncate text-muted"> <b> invoice : </b> <?php echo $row["name_invoice"]; ?> </small>
                                                     </div>
                                                 </div>
                                             </td>
+                                            <td> <?php echo $row["contact_person"]; ?> </td>
+                                            <td> <?php echo $row["contact_phone"]; ?> </td>
+                                            <td> <?php echo $row["contact_email"]; ?> </td>
                                             <td>
-                                                <a href="./?mode=users/detail&id=<?php echo $row["id"]; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
+                                                <a href="./?mode=company/detail&id=<?php echo $row["id"]; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
                                                 <?php if ($row["trash_deleted"] == 1) { ?>
                                                     <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
                                                         <a href="javascript:;" class="item-undo" onclick="restoreList(<?php echo $row['id']; ?>)"> <i class="fas fa-undo"></i> </a>
@@ -207,7 +211,7 @@
 </div>
 
 <script>
-    // Delete users
+    // Delete company
     function deleteList(id) {
         Swal.fire({
             icon: 'warning',
@@ -221,7 +225,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/users/deletelist.php",
+                    url: "sections/company/deletelist.php",
                     data: {
                         id: id
                     },
@@ -244,7 +248,7 @@
         return true;
     }
 
-    // Restore users
+    // Restore company
     function restoreList(id) {
         Swal.fire({
             icon: 'warning',
@@ -258,7 +262,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/users/restorelist.php",
+                    url: "sections/company/restorelist.php",
                     data: {
                         id: id
                     },

@@ -68,7 +68,7 @@ function img_upload($photo, $photo_name, $tmp_photo, $uploaddir, $photo_time, $p
 		$ext = explode(".", $photo_name);
 		$ext_n = count($ext) - 1;
 		$ext_filetype = strtolower($ext[$ext_n]);
-		$final_filename = $ext[0] . "_" . $photo_time . $paramiter . "." . $ext_filetype;
+		$final_filename = $photo_time . $paramiter . "." . $ext_filetype;
 		$newfile = $uploaddir . $final_filename;
 		if (move_uploaded_file($photo, $newfile)) {
 			$photo = $final_filename;
