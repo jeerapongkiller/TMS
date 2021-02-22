@@ -1,5 +1,5 @@
 <?php
-require("../../inc/connection.php");
+require("../../../inc/connection.php");
 
 #----- General Information -----#
 $id = !empty($_POST["id"]) ? $_POST["id"] : '';
@@ -29,7 +29,7 @@ if (!empty($_POST['name'])) {
     }
     if (!empty($id)) {
         # ---- Upload Photo ---- #
-        $uploaddir = "../../inc/photo/company/";
+        $uploaddir = "../../../inc/photo/company/";
         $photo_time = time();
         $photo = !empty($_FILES['photo']['tmp_name']) ? $_FILES['photo']['tmp_name'] : '';
         $photo_name = !empty($_FILES['photo']['name']) ? $_FILES['photo']['name'] : '';
@@ -102,7 +102,7 @@ if (!empty($_POST['name'])) {
         $bind_types .= "s";
         array_push($params, $photo);
 
-        $query .= ($page_title == "Add New User") ? ' date_create = now(),' : '';
+        $query .= ($page_title == "Add New Company") ? ' date_create = now(),' : '';
 
         $query .= " date_edit = now()";
         $query .= " WHERE id = '$id'";
@@ -115,7 +115,7 @@ if (!empty($_POST['name'])) {
 
         mysqli_close($mysqli_p);
 
-        $return = ($page_title == "Add New User") ?  "&id=" . $id : 'true';
+        $return = ($page_title == "Add New Company") ?  "&id=" . $id : 'true';
         echo $return;
     }
 } else {

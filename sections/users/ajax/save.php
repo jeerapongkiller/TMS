@@ -1,5 +1,5 @@
 <?php
-require("../../inc/connection.php");
+require("../../../inc/connection.php");
 
 #----- General Information -----#
 $id = !empty($_POST["id"]) ? $_POST["id"] : '';
@@ -9,6 +9,8 @@ $username = !empty($_POST["username"]) ? $_POST["username"] : '';
 $password = !empty($_POST["password"]) ? $_POST["password"] : '';
 $firstname = !empty($_POST["firstname"]) ? $_POST["firstname"] : '';
 $lastname = !empty($_POST["lastname"]) ? $_POST["lastname"] : '';
+$company = !empty($_POST["company"]) ? $_POST["company"] : '';
+$permission = !empty($_POST["permission"]) ? $_POST["permission"] : '';
 $usernamesame = !empty($_POST["usernamesame"]) ? $_POST["usernamesame"] : 'false';
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 #----- General Information -----#
@@ -20,14 +22,14 @@ $return = 'false';
 if (!empty($_POST['username']) && $usernamesame != 'false') {
     if (empty($id)) {
         # ---- Insert to database ---- #
-        $query = "INSERT INTO users (permission, username, password, firstname, lastname, photo, offline, trash_deleted, date_create, date_edit)";
-        $query .= "VALUES ('2', '', '', '', '', '', '2', '2', now(), now())";
+        $query = "INSERT INTO users (permission, company, username, password, firstname, lastname, photo, offline, trash_deleted, date_create, date_edit)";
+        $query .= "VALUES ('0', '0', '', '', '', '', '', '2', '2', now(), now())";
         $result = mysqli_query($mysqli_p, $query);
         $id = mysqli_insert_id($mysqli_p);
     }
     if (!empty($id)) {
         # ---- Upload Photo ---- #
-        $uploaddir = "../../inc/photo/users/";
+        $uploaddir = "../../../inc/photo/users/";
         $photo_time = time();
         $photo = !empty($_FILES['photo']['tmp_name']) ? $_FILES['photo']['tmp_name'] : '';
         $photo_name = !empty($_FILES['photo']['name']) ? $_FILES['photo']['name'] : '';
@@ -51,6 +53,14 @@ if (!empty($_POST['username']) && $usernamesame != 'false') {
         $query .= " offline = ?,";
         $bind_types .= "i";
         array_push($params, $offline);
+
+        $query .= " company = ?,";
+        $bind_types .= "i";
+        array_push($params, $company);
+
+        $query .= " permission = ?,";
+        $bind_types .= "i";
+        array_push($params, $permission);
 
         $query .= " username = ?,";
         $bind_types .= "s";

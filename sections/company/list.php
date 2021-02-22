@@ -100,7 +100,7 @@
         </section>
         <!-- Section search end -->
 
-        <!-- Booking table start -->
+        <!-- Company table start -->
         <div class="content-body">
             <section id="basic-datatable">
                 <div class="row">
@@ -225,7 +225,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/company/deletelist.php",
+                    url: "sections/company/ajax/deletelist.php",
                     data: {
                         id: id
                     },
@@ -262,7 +262,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/company/restorelist.php",
+                    url: "sections/company/ajax/restorelist.php",
                     data: {
                         id: id
                     },

@@ -26,6 +26,8 @@ $username = !empty($row["username"]) ? $row["username"] : '';
 $password = !empty($row["password"]) ? $row["password"] : '';
 $firstname = !empty($row["firstname"]) ? $row["firstname"] : '';
 $lastname = !empty($row["lastname"]) ? $row["lastname"] : '';
+$company = !empty($row["company"]) ? $row["company"] : '';
+$permission = !empty($row["permission"]) ? $row["permission"] : '';
 $usernamesame = !empty($row["id"]) ? 'true' : 'false';
 # photo
 $photo = !empty($row["photo"]) ? $row["photo"] : '';
@@ -108,7 +110,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                                 <div class="custom-control custom-checkbox">
                                                     <input type="checkbox" class="custom-control-input" id="offline" name="offline" <?php if ($offline != 2 || !isset($offline)) {
                                                                                                                                         echo "checked";
-                                                                                                                                    } ?> value="1" />
+                                                                                                                                    } ?> value="1" <?php echo $row["trash_deleted"] == '1' ? 'disabled' : ''; ?> />
                                                     <label class="custom-control-label" for="offline"> Offline </label>
                                                 </div>
                                             </div>
@@ -153,6 +155,56 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                                 <div class="invalid-feedback">Please enter a lastname.</div>
                                             </div>
                                         </div> <!-- div -->
+                                        <div class="col-xl-3 col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="company"> Company </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i data-feather="home"></i></span>
+                                                    </div>
+                                                    <select class="form-control" id="company" name="company" required>
+                                                        <?php
+                                                        $query_company = "SELECT * FROM company WHERE id > '0' AND offline = '2' ";
+                                                        $query_company .= " ORDER BY name ASC";
+                                                        $result_company = mysqli_query($mysqli_p, $query_company);
+                                                        while ($row_company = mysqli_fetch_array($result_company, MYSQLI_ASSOC)) {
+                                                        ?>
+                                                            <option value="<?php echo $row_company["id"]; ?>" <?php if ($company == $row_company["id"]) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>>
+                                                                <?php echo $row_company["name"]; ?></option>
+                                                        <?php
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div> <!-- div -->
+                                        <div class="col-xl-3 col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label for="permission"> Permission </label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i data-feather="pocket"></i></span>
+                                                    </div>
+                                                    <select class="form-control" id="permission" name="permission" required>
+                                                        <?php
+                                                        $query_permission = "SELECT * FROM permission WHERE id != '1' AND offline = '2' ";
+                                                        $query_permission .= " ORDER BY name ASC";
+                                                        $result_permission = mysqli_query($mysqli_p, $query_permission);
+                                                        while ($row_permission = mysqli_fetch_array($result_permission, MYSQLI_ASSOC)) {
+                                                        ?>
+                                                            <option value="<?php echo $row_permission["id"]; ?>" <?php if ($permission == $row_permission["id"]) {
+                                                                                                                echo "selected";
+                                                                                                            } ?>>
+                                                                <?php echo $row_permission["name"]; ?></option>
+                                                        <?php
+                                                        }
+                                                        ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div> <!-- div -->
                                     </div>
 
                                     <hr>
@@ -174,7 +226,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                         var usernamesame = document.getElementById('usernamesame');
 
                                         jQuery.ajax({
-                                            url: "inc/ajax/backend/users/usernamesame.php",
+                                            url: "sections/users/ajax/usernamesame.php",
                                             data: {
                                                 username: $("#username").val(),
                                                 id: $("#id").val()
@@ -207,6 +259,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                             error: function() {}
                                         });
                                     }
+                                    
                                     // Check Password
                                     function checkPassword() {
                                         var password = document.getElementById('password');
@@ -264,6 +317,8 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                         var password = $('#password').val();
                                         var firstname = $('#firstname').val();
                                         var lastname = $('#lastname').val();
+                                        var company = $('#company').val();
+                                        var permission = $('#permission').val();
                                         var tmp_photo = $('#tmp_photo').val();
                                         var del_photo = $('#del_photo').val();
 
@@ -277,13 +332,15 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                         fd.append('password', password);
                                         fd.append('firstname', firstname);
                                         fd.append('lastname', lastname);
+                                        fd.append('company', company);
+                                        fd.append('permission', permission);
                                         fd.append('tmp_photo', tmp_photo);
                                         fd.append('del_photo', del_photo);
                                         fd.append('photo', photo);
 
                                         $.ajax({
                                             type: "POST",
-                                            url: "sections/users/save.php",
+                                            url: "sections/users/ajax/save.php",
                                             dataType: 'text', // what to expect back from the PHP script, if anything
                                             cache: false,
                                             contentType: false,

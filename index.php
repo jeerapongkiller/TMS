@@ -33,6 +33,8 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
         <!-- BEGIN: Sweetalert2 CSS-->
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/extensions/sweetalert2.min.css">
+        <!-- BEGIN: Select CSS-->
+        <link rel="stylesheet" type="text/css" href="assets/vendors/css/forms/select/select2.min.css">
 
         <!-- BEGIN: Theme CSS-->
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
@@ -111,6 +113,10 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <script src="assets/vendors/js/extensions/polyfill.min.js"></script>
         <!-- END Sweetalert2 JS -->
 
+        <!-- BEGIN Select JS -->
+        <script src="assets/vendors/js/forms/select/select2.full.min.js"></script>
+        <!-- END Select JS -->
+
         <!-- BEGIN: Menu Theme JS -->
         <script src="assets/js/core/app-menu.js"></script>
         <script src="assets/js/core/app.js"></script>
@@ -153,13 +159,13 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 $('#datatables-users').DataTable({
                     "searching": false,
                     order: [
-                        [2, 'asc']
+                        [3, 'asc']
                     ], //desc , asc
                     dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     displayLength: 7,
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
-                        targets: [3],
+                        targets: [4],
                         orderable: false
                     }],
                     language: {
@@ -178,13 +184,38 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 $('#datatables-company').DataTable({
                     "searching": false,
                     order: [
-                        [2, 'asc']
+                        [1, 'asc']
                     ], //desc , asc
                     dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     displayLength: 7,
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
                         targets: [3, 4, 5],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+            });
+
+            /** DataTables Permission **/
+            $(function() {
+                'use strict';
+                $('#datatables-permission').DataTable({
+                    "searching": false,
+                    order: [
+                        [1, 'asc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [2],
                         orderable: false
                     }],
                     language: {
@@ -308,6 +339,26 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     viewPhoro.attr('src', 'inc/photo/no-image.jpg');
                 })
             });
+        </script>
+
+        <!-- Script Select2 -->
+        <script>
+            (function(window, document, $) {
+                'use strict';
+                var select = $('.select2');
+                select.each(function() {
+                    var $this = $(this);
+                    $this.wrap('<div class="position-relative"></div>');
+                    $this.select2({
+                        // the following code is used to disable x-scrollbar when click in select input and
+                        // take 100% width in responsive also
+                        dropdownAutoWidth: true,
+                        width: '100%',
+                        dropdownParent: $this.parent()
+                    });
+                });
+
+            })(window, document, jQuery);
         </script>
 
         <script>

@@ -6,7 +6,7 @@
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <h2 class="content-header-title float-left mb-0">User</h2>
+                        <h2 class="content-header-title float-left mb-0">Permission</h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
                                 <!-- <li class="breadcrumb-item"><a href="index.html">Home</a>
@@ -24,7 +24,7 @@
                 <div class="form-group breadcrumb-right">
                     <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
                         <div class="dt-buttons btn-group flex-wrap">
-                            <a href="./?mode=users/detail" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add User</span></a>
+                            <a href="./?mode=permission/detail" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Permission</span></a>
                         </div>
                     </div>
                 </div>
@@ -33,11 +33,8 @@
 
         <?php
         # check value from search
-        $search_firstname_val = !empty($_POST["search_firstname"]) ? $_POST["search_firstname"] : '';
-        $search_lastname_val = !empty($_POST["search_lastname"]) ? $_POST["search_lastname"] : '';
-        $search_username_val = !empty($_POST["search_username"]) ? $_POST["search_username"] : '';
+        $search_name_val = !empty($_POST["search_name"]) ? $_POST["search_name"] : '';
         $search_status_val = !empty($_POST["search_status"]) ? $_POST["search_status"] : '';
-        $search_company_val = !empty($_POST["search_company"]) ? $_POST["search_company"] : '';
         ?>
 
         <!-- Section search start -->
@@ -53,20 +50,8 @@
                                 <div class="form-row">
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="search_firstname">First name</label>
-                                            <input type="text" class="form-control" id="search_firstname" name="search_firstname" placeholder="" value="<?php echo $search_firstname_val; ?>" />
-                                        </div>
-                                    </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="search_lastname">Last name</label>
-                                            <input type="text" class="form-control" id="search_lastname" name="search_lastname" placeholder="" value="<?php echo $search_lastname_val; ?>" />
-                                        </div>
-                                    </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="search_username">Username</label>
-                                            <input type="text" class="form-control" id="search_username" name="search_username" placeholder="" value="<?php echo $search_username_val; ?>" />
+                                            <label for="search_name">Name</label>
+                                            <input type="text" class="form-control" id="search_name" name="search_name" placeholder="" value="<?php echo $search_name_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
                                     <div class="col-xl-3 col-md-6 col-12">
@@ -86,32 +71,11 @@
                                             </select>
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
-                                        <div class="form-group">
-                                            <label for="search_company">Company</label>
-                                            <select class="form-control" id="search_company" name="search_company">
-                                                <option value="">Select....</option>
-                                                <?php
-                                                $query_company = "SELECT * FROM company WHERE id > '0'";
-                                                $query_company .= " ORDER BY name ASC";
-                                                $result_company = mysqli_query($mysqli_p, $query_company);
-                                                while ($row_company = mysqli_fetch_array($result_company, MYSQLI_ASSOC)) {
-                                                ?>
-                                                    <option value="<?php echo $row_company["id"]; ?>" <?php if ($search_company_val == $row_company["id"]) {
-                                                                                                            echo "selected";
-                                                                                                        } ?>>
-                                                        <?php echo $row_company["name"]; ?></option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div> <!-- div -->
                                 </div>
                                 <div class="form-row">
                                     <div class="col-xl-3 col-md-6 col-12">
                                         <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
-                                        <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.location.href='./?mode=users/list'"><i class="fas fa-redo-alt"></i>&nbsp;&nbsp;Reset</button>
+                                        <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.location.href='./?mode=permission/list'"><i class="fas fa-redo-alt"></i>&nbsp;&nbsp;Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -122,18 +86,16 @@
         </section>
         <!-- Section search end -->
 
-        <!-- Users table start -->
+        <!-- permission table start -->
         <div class="content-body">
             <section id="basic-datatable">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <table class="table" id="datatables-users">
+                            <table class="table" id="datatables-permission">
                                 <thead>
                                     <tr>
                                         <th>Status</th>
-                                        <th>Company</th>
-                                        <th>Username</th>
                                         <th>Name</th>
                                         <th>Action</th>
                                     </tr>
@@ -144,43 +106,19 @@
                                     $bind_types = "";
                                     $params = array();
 
-                                    $query = "SELECT users.*, company.id as comID, company.name as comName
-                                            FROM users
-                                            LEFT JOIN company
-                                            ON users.company = company.id 
-                                            WHERE users.id != 1";
-                                    if (!empty($search_firstname_val)) {
+                                    $query = "SELECT * FROM permission WHERE id NOT IN (1,2) ";
+                                    if (!empty($search_name_val)) {
                                         # search firstname
-                                        $param = "%{$search_firstname_val}%";
-                                        $query .= " AND users.firstname LIKE ?";
-                                        $bind_types .= "s";
-                                        array_push($params, $param);
-                                    }
-                                    if (!empty($search_lastname_val)) {
-                                        # search lastname
-                                        $param = "%{$search_lastname_val}%";
-                                        $query .= " AND users.lastname LIKE ?";
-                                        $bind_types .= "s";
-                                        array_push($params, $param);
-                                    }
-                                    if (!empty($search_username_val)) {
-                                        # search username
-                                        $param = "%{$search_username_val}%";
-                                        $query .= " AND users.username LIKE ?";
+                                        $param = "%{$search_name_val}%";
+                                        $query .= " AND name LIKE ?";
                                         $bind_types .= "s";
                                         array_push($params, $param);
                                     }
                                     if (!empty($search_status_val)) {
                                         # search status
-                                        $query .= " AND users.offline = ?";
+                                        $query .= " AND offline = ?";
                                         $bind_types .= "i";
                                         array_push($params, $search_status_val);
-                                    }
-                                    if (!empty($search_company_val)) {
-                                        # search status
-                                        $query .= " AND users.company = ?";
-                                        $bind_types .= "i";
-                                        array_push($params, $search_company_val);
                                     }
                                     $procedural_statement = mysqli_prepare($mysqli_p, $query);
 
@@ -199,24 +137,12 @@
                                     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                                         $status_class = $row["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
                                         $status_txt = $row["offline"] == 1 ? 'Offline' : 'Online';
-                                        $name = $row["firstname"] . ' ' . $row["lastname"];
-                                        $pathphoto = !empty($row["photo"]) ? 'inc/photo/users/' . $row["photo"] : 'inc/photo/no-image.jpg';
                                     ?>
                                         <tr>
                                             <td> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </td>
-                                            <td> <?php echo $row["comName"]; ?> </td>
-                                            <td> <?php echo $row["username"]; ?> </td>
+                                            <td> <?php echo $row["name"]; ?> </td>
                                             <td>
-                                                <div class="d-flex justify-content-left align-items-center">
-                                                    <div class="avatar pull-up my-0 mr-1">
-                                                        <img src="<?php echo $pathphoto; ?>" alt="Avatar" height="30" width="30" />
-                                                    </div>
-                                                    <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> <?php echo $name; ?> </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <a href="./?mode=users/detail&id=<?php echo $row["id"]; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
+                                                <a href="./?mode=permission/detail&id=<?php echo $row["id"]; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
                                                 <?php if ($row["trash_deleted"] == 1) { ?>
                                                     <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
                                                         <a href="javascript:;" class="item-undo" onclick="restoreList(<?php echo $row['id']; ?>)"> <i class="fas fa-undo"></i> </a>
@@ -241,7 +167,7 @@
 </div>
 
 <script>
-    // Delete users
+    // Delete permission
     function deleteList(id) {
         Swal.fire({
             icon: 'warning',
@@ -255,7 +181,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/users/ajax/deletelist.php",
+                    url: "sections/permission/ajax/deletelist.php",
                     data: {
                         id: id
                     },
@@ -278,7 +204,7 @@
         return true;
     }
 
-    // Restore users
+    // Restore permission
     function restoreList(id) {
         Swal.fire({
             icon: 'warning',
@@ -292,7 +218,7 @@
         }).then((result) => {
             if (result.value) {
                 jQuery.ajax({
-                    url: "sections/users/ajax/restorelist.php",
+                    url: "sections/permission/ajax/restorelist.php",
                     data: {
                         id: id
                     },
