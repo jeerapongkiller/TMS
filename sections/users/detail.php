@@ -110,7 +110,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/users/' . $photo : 'inc/photo/no-image.
                                                 <div class="custom-control custom-checkbox">
                                                     <input type="checkbox" class="custom-control-input" id="offline" name="offline" <?php if ($offline != 2 || !isset($offline)) {
                                                                                                                                         echo "checked";
-                                                                                                                                    } ?> value="1" <?php echo $row["trash_deleted"] == '1' ? 'disabled' : ''; ?> />
+                                                                                                                                    } ?> value="1" <?php echo !empty($row["trash_deleted"]) && ($row["trash_deleted"] == '1') ? 'disabled' : ''; ?> />
                                                     <label class="custom-control-label" for="offline"> Offline </label>
                                                 </div>
                                             </div>

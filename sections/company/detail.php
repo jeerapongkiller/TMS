@@ -62,6 +62,66 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             </div>
         </div>
 
+        <!-- Plan Card starts-->
+        <div class="row">
+            <div class="col-xl-2 col-lg-3 col-md-6">
+                <div class="card plan-card border-info">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4> <i class="fas fa-map font-size-20"></i> Tours </h4> 
+                        <h4> 0 </h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-info text-center btn-block" onclick="productView('1')"> Products </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6">
+                <div class="card plan-card border-success">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4> <i class="fas fa-life-ring font-size-20"></i> Acticity </h4>
+                        <h4> 0 </h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success text-center btn-block" onclick="productView('2')"> Products </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6">
+                <div class="card plan-card border-warning">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4> <i class="fas fa-car font-size-20"></i> Transfer </h4>
+                        <h4> 0 </h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-warning text-center btn-block" onclick="productView('3')"> Products </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6">
+                <div class="card plan-card border-secondary">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4> <i class="fas fa-hotel font-size-20"></i> Hotel </h4>
+                        <h4> 0 </h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-secondary text-center btn-block" onclick="productView('4')"> Products </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6">
+                <div class="card plan-card border-danger">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4> <i class="fas fa-ticket-alt font-size-20"></i> Ticket </h4>
+                        <h4> 0 </h4>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-danger text-center btn-block" onclick="productView('5')"> Products </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Plan CardEnds -->
+
         <!-- Form company start -->
         <div class="content-body">
             <section id="basic-input">
