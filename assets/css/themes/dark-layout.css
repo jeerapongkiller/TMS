@@ -920,14 +920,20 @@ body.dark-layout {
   color : #D0D2D6;
 }
 
-.dark-layout .table thead.thead-dark th, .dark-layout .table tfoot.thead-dark th {
+.dark-layout .table thead.thead-dark th, .dark-layout .table tfoot.thead-dark th,
+.dark-layout .table thead.thead-info th, .dark-layout .table tfoot.thead-info th,
+.dark-layout .table thead.thead-success th, .dark-layout .table tfoot.thead-success th,
+.dark-layout .table thead.thead-warning th, .dark-layout .table tfoot.thead-warning th,
+.dark-layout .table thead.thead-danger th, .dark-layout .table tfoot.thead-danger th,
+.dark-layout .table thead.thead-secondary th, .dark-layout .table tfoot.thead-secondary th,
+.dark-layout .table thead.thead-primary th, .dark-layout .table tfoot.thead-primary th {
   background-color : #FFFFFF;
   color : #4B4B4B !important;
 }
 
-.dark-layout .table:not(.table-dark):not(.table-light) thead:not(.thead-dark) th, .dark-layout .table:not(.table-dark):not(.table-light) tfoot:not(.thead-dark) th {
+/* .dark-layout .table:not(.table-dark):not(.table-light) thead:not(.thead-dark) th, .dark-layout .table:not(.table-dark):not(.table-light) tfoot:not(.thead-dark) th {
   background-color : #343D55;
-}
+} */
 
 .dark-layout .table.table-dark {
   background-color : #FFFFFF;

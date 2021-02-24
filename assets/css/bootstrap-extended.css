@@ -196,9 +196,9 @@ pre code {
   padding-left : 0.75rem;
 }
 
-.table:not(.table-dark):not(.table-light) thead:not(.thead-dark) th, .table:not(.table-dark):not(.table-light) tfoot:not(.thead-dark) th {
+/* .table:not(.table-dark):not(.table-light) thead:not(.thead-dark) th, .table:not(.table-dark):not(.table-light) tfoot:not(.thead-dark) th {
   background-color : #F3F2F7;
-}
+} */
 
 .table-hover tbody tr {
   cursor : pointer;

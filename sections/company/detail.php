@@ -67,7 +67,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             <div class="col-xl-2 col-lg-3 col-md-6">
                 <div class="card plan-card border-info">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-map font-size-20"></i> Tours </h4> 
+                        <h4> <i class="fas fa-map font-size-20"></i> Tours </h4>
                         <h4> 0 </h4>
                     </div>
                     <div class="card-body">
@@ -121,6 +121,48 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             </div>
         </div>
         <!-- /Plan CardEnds -->
+
+        <!-- Div Products starts-->
+        <div id="div-products">
+
+        </div>
+        <!-- /Plan Products Ends -->
+
+        <!-- Basic Modals start -->
+        <div class="modal fade nodal-lg" id="addperiods" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle"> Add Periods <span id="periods_name"></span> </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="col-xl-6 col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="periods-from">Periods Date (From)</label>
+                                    <input type="date" class="form-control" id="periods-from" name="periods-from" value="" placeholder="" />
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="periods-to">Periods Date (To)</label>
+                                    <input type="date" class="form-control" id="periods-to" name="periods-to" value="" placeholder="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="model-products" id="model-products" value="" />
+                        <input type="hidden" name="model-type" id="model-type" value="" />
+                        <button type="button" id="submit-periods" data-dismiss="modal" onclick="addPeriods()"> Submit </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Basic Modals end -->
 
         <!-- Form company start -->
         <div class="content-body">
@@ -662,6 +704,155 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             },
             error: function() {
                 Swal.fire('Error!', 'Error. Please try again', 'error')
+            }
+        });
+    }
+
+    // List Products
+    function productView(type) {
+        jQuery.ajax({
+            url: "sections/company/ajax/list-products.php",
+            data: {
+                company: $('#id').val(),
+                type: type
+            },
+            type: "POST",
+            success: function(response) {
+                $("#div-products").html(response);
+            },
+            error: function() {
+                Swal.fire('Error this information failed!', 'Please try again', 'error')
+            }
+        });
+    }
+
+    // Add Products
+    function addProducts(type) {
+        switch (type) {
+            case 1:
+                var T_name = 'Add Tour'
+                var color = 'info'
+                break;
+            case 2:
+                var T_name = 'Add Activity'
+                var color = 'success'
+                break;
+            case 3:
+                var T_name = 'Add Transfer'
+                var color = 'warning'
+                break;
+            case 4:
+                var T_name = 'Add Hotel'
+                var color = 'secondary'
+                break;
+            case 5:
+                var T_name = 'Add Ticket'
+                var color = 'danger'
+                break;
+        }
+        Swal.fire({
+            title: T_name,
+            input: 'text',
+            customClass: {
+                confirmButton: 'btn btn-' + color,
+                cancelButton: 'btn btn-outline-danger ml-1',
+                input: 'form-control'
+            },
+            buttonsStyling: false,
+            selectAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Close',
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/company/ajax/add-products.php",
+                    data: {
+                        company: $('#id').val(),
+                        type: type,
+                        name: result.value
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Successfuly!",
+                            icon: "success"
+                        }).then(function() {
+                            // $("#div-agent").html(response);
+                            // location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
+                    }
+                });
+            }
+        })
+    }
+
+    // Fun Color
+    function colorType(type) {
+        switch (type) {
+            case 1:
+                var color = 'info'
+                return 'info';
+                break;
+            case 2:
+                var color = 'success'
+                return 'success';
+                break;
+            case 3:
+                var color = 'warning'
+                return 'warning';
+                break;
+            case 4:
+                var color = 'secondary'
+                return 'secondary';
+                break;
+            case 5:
+                var color = 'danger'
+                return 'danger';
+                break;
+        }
+    }
+
+    // From Periods
+    function fromPeriods(products, type) {
+        var button = document.getElementById('submit-periods');
+        var model_products = document.getElementById('model-products');
+        var model_type = document.getElementById('model-type');
+        button.className = 'btn btn-' + colorType(type);
+        model_products.value = products;
+        model_type.value = type;
+    }
+
+    function addPeriods() {
+        var model_products = document.getElementById('model-products');
+        var model_type = document.getElementById('model-type');
+        var periods_from = document.getElementById('periods-from');
+        var periods_to = document.getElementById('periods-to');
+        jQuery.ajax({
+            url: "sections/company/ajax/add-periods.php",
+            data: {
+                products: model_products.value,
+                type: model_type.value,
+                periods_from: periods_from.value,
+                periods_to: periods_to.value
+            },
+            type: "POST",
+            success: function(response) {
+                // Swal.fire({
+                //     title: "Successfuly!",
+                //     icon: "success"
+                // }).then(function() {
+                //     // $("#div-agent").html(response);
+                //     // location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                // });
+            },
+            error: function() {
+                Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
             }
         });
     }

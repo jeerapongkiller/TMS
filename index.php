@@ -234,6 +234,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
             /** Flatpickr **/
             $(function() {
                 'use strict';
+
                 /** Booking Search **/
                 $('#date-to').flatpickr({
                     // enableTime: true,
@@ -250,6 +251,24 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     });
                     document.getElementById('date-to').value = $('#date-from').val();
                 });
+
+                /** Periods date products **/
+                $('#periods-to').flatpickr({
+                    // enableTime: true,
+                    // dateFormat: "Y-m-d H:i",
+                    dateFormat: 'Y-m-d',
+                    minDate: $('#periods-from').val()
+                });
+                $('#periods-from').flatpickr({
+                    dateFormat: 'Y-m-d'
+                });
+                $('#periods-from').on('change', function() {
+                    $('#periods-to').flatpickr({
+                        minDate: this.value
+                    });
+                    document.getElementById('periods-to').value = $('#periods-from').val();
+                });
+
                 /** Booking Search **/
                 $('#date-range').flatpickr({
                     // enableTime: true,
@@ -258,7 +277,6 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     // minDate: $('#date-from').val()
                     mode: 'range'
                 });
-
             });
         </script>
 
