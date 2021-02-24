@@ -106,8 +106,7 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                             </div>
                             <div class="content-header-right text-md-right col-md-3 col-12">
                                 <h5 class="card-title">
-                                    <a href="./?mode=company/detail-periods" class="btn btn-outline-<?php echo $color; ?>"><span><i class="fas fa-plus"></i>&nbsp; Add Periods </span></a>
-                                    <!-- <button type="button" class="btn btn-outline-<?php echo $color; ?>" data-toggle="modal" data-target="#addperiods" onclick="fromPeriods(<?php echo $row['id']; ?>, <?php echo $type; ?>)"> <i class="fas fa-plus"></i>&nbsp; Add Periods </button> -->
+                                    <a href="./?mode=company/detail-periods&company=<?php echo $_POST['company']; ?>&products=<?php echo $row['id']; ?>" class="btn btn-outline-<?php echo $color; ?>"><span><i class="fas fa-plus"></i>&nbsp; Add Periods </span></a>
                                 </h5>
                             </div>
                         </div>

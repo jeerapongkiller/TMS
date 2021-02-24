@@ -253,20 +253,20 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 });
 
                 /** Periods date products **/
-                $('#periods-to').flatpickr({
+                $('#periods_to').flatpickr({
                     // enableTime: true,
                     // dateFormat: "Y-m-d H:i",
                     dateFormat: 'Y-m-d',
-                    minDate: $('#periods-from').val()
+                    minDate: $('#periods_from').val()
                 });
-                $('#periods-from').flatpickr({
+                $('#periods_from').flatpickr({
                     dateFormat: 'Y-m-d'
                 });
-                $('#periods-from').on('change', function() {
-                    $('#periods-to').flatpickr({
+                $('#periods_from').on('change', function() {
+                    $('#periods_to').flatpickr({
                         minDate: this.value
                     });
-                    document.getElementById('periods-to').value = $('#periods-from').val();
+                    document.getElementById('periods_to').value = $('#periods_from').val();
                 });
 
                 /** Booking Search **/
