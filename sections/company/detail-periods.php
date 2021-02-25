@@ -21,8 +21,8 @@ if (!empty($_GET["id"])) {
 # check value
 $id = !empty($row["id"]) ? $row["id"] : '0';
 $offline = !empty($row["offline"]) ? $row["offline"] : '2';
-$company = !empty($row["company"]) ? $row["company"] : '';
-$products = !empty($row["products"]) ? $row["products"] : '';
+$company = !empty($_GET["company"]) ? $_GET["company"] : '';
+$products = !empty($_GET["products"]) ? $_GET["products"] : '';
 $periods_from = !empty($row["periods_from"]) ? $row["periods_from"] : '';
 $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
 ?>
@@ -65,7 +65,8 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
                                     <!-- Hidden input -->
                                     <input type="hidden" id="id" name="id" value="<?php echo $id; ?>">
                                     <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
-                                    <input type="hidden" id="usernamesame" name="usernamesame" value="<?php echo $usernamesame; ?>">
+                                    <input type="hidden" id="company" name="company" value="<?php echo $company; ?>">
+                                    <input type="hidden" id="products" name="products" value="<?php echo $products; ?>">
 
                                     <!-- company edit -->
                                     <div class="form-row">
@@ -225,78 +226,80 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
                                     }
 
                                     // Submit form company
-                                    // function submitFormPeriods() {
-                                    //     var id = $('#id').val();
-                                    //     var page_title = $('#page_title').val();
-                                    //     var check_offline = document.getElementById('offline');
-                                    //     if (check_offline.checked) {
-                                    //         var offline = $('#offline').val();
-                                    //     } else {
-                                    //         var offline = '';
-                                    //     }
-                                    //     var username = $('#username').val();
-                                    //     var usernamesame = $('#usernamesame').val();
-                                    //     var password = $('#password').val();
-                                    //     var firstname = $('#firstname').val();
-                                    //     var lastname = $('#lastname').val();
-                                    //     var company = $('#company').val();
-                                    //     var permission = $('#permission').val();
-                                    //     var tmp_photo = $('#tmp_photo').val();
-                                    //     var del_photo = $('#del_photo').val();
+                                    function submitFormPeriods() {
+                                        var id = $('#id').val();
+                                        var page_title = $('#page_title').val();
+                                        var check_offline = document.getElementById('offline');
+                                        if (check_offline.checked) {
+                                            var offline = $('#offline').val();
+                                        } else {
+                                            var offline = '';
+                                        }
+                                        var company = $('#company').val();
+                                        var products = $('#products').val();
+                                        var periods_from = $('#periods_from').val();
+                                        var periods_to = $('#periods_to').val();
+                                        var adult_cost = $('#adult_cost').val();
+                                        var adult_sale = $('#adult_sale').val();
+                                        var children_cost = $('#children_cost').val();
+                                        var children_sale = $('#children_sale').val();
+                                        var infant_cost = $('#infant_cost').val();
+                                        var infant_sale = $('#infant_sale').val();
+                                        var group_cost = $('#group_cost').val();
+                                        var group_sale = $('#group_sale').val();
+                                        var pax = $('#pax').val();
 
-                                    //     var fd = new FormData();
-                                    //     var photo = $('#photo')[0].files[0];
-                                    //     fd.append('id', id);
-                                    //     fd.append('page_title', page_title);
-                                    //     fd.append('offline', offline);
-                                    //     fd.append('username', username);
-                                    //     fd.append('usernamesame', usernamesame);
-                                    //     fd.append('password', password);
-                                    //     fd.append('firstname', firstname);
-                                    //     fd.append('lastname', lastname);
-                                    //     fd.append('company', company);
-                                    //     fd.append('permission', permission);
-                                    //     fd.append('tmp_photo', tmp_photo);
-                                    //     fd.append('del_photo', del_photo);
-                                    //     fd.append('photo', photo);
+                                        var fd = new FormData();
+                                        fd.append('id', id);
+                                        fd.append('page_title', page_title);
+                                        fd.append('offline', offline);
+                                        fd.append('company', company);
+                                        fd.append('products', products);
+                                        fd.append('periods_from', periods_from);
+                                        fd.append('periods_to', periods_to);
+                                        fd.append('adult_cost', adult_cost);
+                                        fd.append('adult_sale', adult_sale);
+                                        fd.append('children_cost', children_cost);
+                                        fd.append('children_sale', children_sale);
+                                        fd.append('infant_cost', infant_cost);
+                                        fd.append('infant_sale', infant_sale);
+                                        fd.append('group_cost', group_cost);
+                                        fd.append('group_sale', group_sale);
+                                        fd.append('pax', pax);
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "sections/company/ajax/add-periodsAndcost.php",
+                                            dataType: 'text', // what to expect back from the PHP script, if anything
+                                            cache: false,
+                                            contentType: false,
+                                            processData: false,
+                                            data: fd,
+                                            success: function(response) {
+                                                // $("#div-company").html(response);
+                                                if (response == 'false') {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error. Please try again!',
+                                                        showConfirmButton: false,
+                                                        timer: 3000
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Complete!',
+                                                        showConfirmButton: false,
+                                                        timer: 3600
+                                                    }).then((result) => {
+                                                        location.href = "./?mode=company/detail&id=" + company;
+                                                    })
+                                                }
+                                            },
+                                            error: function() {
+                                                Swal.fire('Error!', 'Error. Please try again', 'error')
+                                            }
+                                        });
+                                    }
 
-                                    //     $.ajax({
-                                    //         type: "POST",
-                                    //         url: "sections/company/ajax/save.php",
-                                    //         dataType: 'text', // what to expect back from the PHP script, if anything
-                                    //         cache: false,
-                                    //         contentType: false,
-                                    //         processData: false,
-                                    //         data: fd,
-                                    //         success: function(response) {
-                                    //             // $("#div-company").html(response);
-                                    //             if (response == 'false') {
-                                    //                 Swal.fire({
-                                    //                     icon: 'error',
-                                    //                     title: 'Error. Please try again!',
-                                    //                     showConfirmButton: false,
-                                    //                     timer: 3000
-                                    //                 });
-                                    //             } else {
-                                    //                 Swal.fire({
-                                    //                     icon: 'success',
-                                    //                     title: 'Complete!',
-                                    //                     showConfirmButton: false,
-                                    //                     timer: 3600
-                                    //                 }).then((result) => {
-                                    //                     if (response == 'true') {
-                                    //                         location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                                    //                     } else {
-                                    //                         location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>" + response;
-                                    //                     }
-                                    //                 })
-                                    //             }
-                                    //         },
-                                    //         error: function() {
-                                    //             Swal.fire('Error!', 'Error. Please try again', 'error')
-                                    //         }
-                                    //     });
-                                    // }
                                 </script>
                             </div>
                         </div>

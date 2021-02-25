@@ -123,9 +123,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
         <!-- /Plan CardEnds -->
 
         <!-- Div Products starts-->
-        <div id="div-products">
-
-        </div>
+        <div id="div-products"> </div>
         <!-- /Plan Products Ends -->
 
         <!-- Basic Modals start -->
@@ -828,6 +826,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
         model_type.value = type;
     }
 
+    // Add Periods
     function addPeriods() {
         var model_products = document.getElementById('model-products');
         var model_type = document.getElementById('model-type');
@@ -855,5 +854,219 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
                 Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
             }
         });
+    }
+
+    // Add Rates
+    function addRates(id, type) {
+        var type_rates = document.getElementById('type_rates' + id);
+        var rate_adult = document.getElementById('rate_adult' + id);
+        var rate_children = document.getElementById('rate_children' + id);
+        var rate_infant = document.getElementById('rate_infant' + id);
+        var rate_group = document.getElementById('rate_group' + id);
+        var pax = document.getElementById('pax_rates' + id);
+        swal.fire({
+            title: 'Edit Rates',
+            width: 600,
+            html: '<div class="form-row">' +
+                '<input type="hidden" class="form-control" id="type_rates' + id + '" name="type_rates" value="' + type_rates.value + '" placeholder="" />' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_adult"> <b> Adult </b> </label>' +
+                '<input type="text" class="form-control" id="rates_adult' + id + '" name="rates_adult" value="' + rate_adult.value + '" placeholder="" oninput="priceformat(`rates_adult' + id + '`);" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_children"> <b> Children </b> </label>' +
+                '<input type="text" class="form-control" id="rates_children' + id + '" name="rates_children" value="' + rate_children.value + '" placeholder="" oninput="priceformat(`rates_children' + id + '`);" />' +
+                '</div>' +
+                '</div> ' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_infant"> <b> Infant </b> </label>' +
+                '<input type="text" class="form-control" id="rates_infant' + id + '" name="rates_infant" value="' + rate_infant.value + '" placeholder="" oninput="priceformat(`rates_infant' + id + '`);" />' +
+                '</div>' +
+                '</div> ' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_group"> <b> Group </b> </label>' +
+                '<input type="text" class="form-control" id="rates_group' + id + '" name="rates_group" value="' + rate_group.value + '" placeholder="" oninput="priceformat(`rates_group' + id + '`);" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-xl-12 col-md-12 col-12">' +
+                '<div class="form-group">' +
+                '<label for="pax"> <b> Pax </b> </label>' +
+                '<input type="text" class="form-control" id="pax' + id + '" name="pax" value="' + pax.value + '" placeholder="" oninput="priceformat(`pax' + id + '`);" />' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+            confirmButtonText: 'Confirm',
+            // showConfirmButton: false,
+            // showCancelButton: false,
+            showCloseButton: true,
+            preConfirm: function() {
+                return new Promise((resolve, reject) => {
+                    // get your inputs using their placeholder or maybe add IDs to them
+                    resolve({
+                        id: id,
+                        type_rates: $('#type_rates' + id).val(),
+                        rates_adult: $('#rates_adult' + id).val(),
+                        rates_children: $('#rates_children' + id).val(),
+                        rates_infant: $('#rates_infant' + id).val(),
+                        rates_group: $('#rates_group' + id).val(),
+                        pax: $('#pax' + id).val()
+                    });
+                    // maybe also reject() on some condition
+                });
+            }
+        }).then((result) => {
+            // console.log(result.value['id']);
+            jQuery.ajax({
+                url: "sections/company/ajax/add-rates.php",
+                data: {
+                    id: result.value['id'],
+                    type_rates: result.value['type_rates'],
+                    rates_adult: result.value['rates_adult'],
+                    rates_children: result.value['rates_children'],
+                    rates_infant: result.value['rates_infant'],
+                    rates_group: result.value['rates_group'],
+                    pax: result.value['pax']
+                },
+                type: "POST",
+                success: function(response) {
+                    Swal.fire({
+                        title: "Successfuly!",
+                        icon: "success"
+                    }).then(function() {
+                        productView(type)
+                        // $("#div-agent").html(response);
+                    });
+                },
+                error: function() {
+                    Swal.fire('Error!', 'Error. Please try again', 'error')
+                }
+            });
+        });
+    }
+
+    // Add Rates Agent
+    function addRatesAgent(periods) {
+        swal.fire({
+            title: 'Add Rates (Agent)',
+            width: 600,
+            html: '<div class="form-row">' +
+                '<input type="hidden" class="form-control" id="type_rates_agent" name="type_rates_agent" value="3" placeholder="" />' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_adult"> <b> Adult </b> </label>' +
+                '<input type="text" class="form-control" id="rates_adult_agent" name="rates_adult" value="" placeholder="" oninput="priceformat(`rates_adult_agent`);" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_children"> <b> Children </b> </label>' +
+                '<input type="text" class="form-control" id="rates_children_agent" name="rates_children" value="" placeholder="" oninput="priceformat(`rates_children_agent`);" />' +
+                '</div>' +
+                '</div> ' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_infant"> <b> Infant </b> </label>' +
+                '<input type="text" class="form-control" id="rates_infant_agent" name="rates_infant" value="" placeholder="" oninput="priceformat(`rates_infant_agent`);" />' +
+                '</div>' +
+                '</div> ' +
+                '<div class="col-xl-6 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_group"> <b> Group </b> </label>' +
+                '<input type="text" class="form-control" id="rates_group_agent" name="rates_group" value="" placeholder="" oninput="priceformat(`rates_group_agent`);" />' +
+                '</div>' +
+                '</div>' +
+                '<div class="col-xl-12 col-md-12 col-12">' +
+                '<div class="form-group">' +
+                '<label for="pax"> <b> Pax </b> </label>' +
+                '<input type="text" class="form-control" id="pax_agent" name="pax" value="" placeholder="" oninput="priceformat(`pax_agent`);" />' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-row">' +
+                <?php
+                $query_agent = "SELECT agent.*, company.id as comID, company.name as comName 
+                                FROM agent 
+                                LEFT JOIN company
+                                ON agent.agent = company.id
+                                WHERE agent.supplier = '$id' AND agent.offline = '2' ";
+                $result_agent = mysqli_query($mysqli_p, $query_agent);
+                while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
+                ?> '<div class="col-xl-2 col-md-4 col-6">' +
+                    '<div class="form-group">' +
+                    '<div class="custom-control custom-checkbox">' +
+                    '<input type="checkbox" class="custom-control-input" id="agent<?php echo $row_agent['id']; ?>" name="agent[]" value="1" required />' +
+                    '<label class="custom-control-label" for="agent<?php echo $row_agent['id']; ?>"> <?php echo $row_agent['comName']; ?> </label>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                <?php } ?> '</div>',
+            confirmButtonText: 'Confirm',
+            showCloseButton: true,
+            preConfirm: function() {
+                return new Promise((resolve, reject) => {
+                    resolve({
+                        // id: id,
+                        // type_rates: $('#type_rates' + id).val(),
+                        // rates_adult: $('#rates_adult' + id).val(),
+                        // rates_children: $('#rates_children' + id).val(),
+                        // rates_infant: $('#rates_infant' + id).val(),
+                        // rates_group: $('#rates_group' + id).val(),
+                        // pax: $('#pax' + id).val()
+                    });
+                });
+            }
+        }).then((result) => {
+            // console.log(result.value['id']);
+            // jQuery.ajax({
+            //     url: "sections/company/ajax/add-rates.php",
+            //     data: {
+            //         id: result.value['id'],
+            //         type_rates: result.value['type_rates'],
+            //         rates_adult: result.value['rates_adult'],
+            //         rates_children: result.value['rates_children'],
+            //         rates_infant: result.value['rates_infant'],
+            //         rates_group: result.value['rates_group'],
+            //         pax: result.value['pax']
+            //     },
+            //     type: "POST",
+            //     success: function(response) {
+            //         Swal.fire({
+            //             title: "Successfuly!",
+            //             icon: "success"
+            //         }).then(function() {
+            //             productView(type)
+            //             // $("#div-agent").html(response);
+            //         });
+            //     },
+            //     error: function() {
+            //         Swal.fire('Error!', 'Error. Please try again', 'error')
+            //     }
+            // });
+        });
+    }
+
+    // Fun Price Format
+    function priceformat(inputfield) {
+        var i = 0,
+            num = 0;
+        var j = document.getElementById(inputfield).value;
+        while (i < j.length) {
+            if (j[i] != ',') {
+                num += j[i];
+            }
+            i++;
+        }
+        var d = new Number(parseInt(num));
+        var n = d.toLocaleString();
+        if (n == 0) {
+            document.getElementById(inputfield).value = '';
+        } else {
+            document.getElementById(inputfield).value = n;
+        }
     }
 </script>

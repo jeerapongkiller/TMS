@@ -119,6 +119,15 @@
                                             </div>
                                         </div>
                                     </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="checkbox" name="checkbox" value="1" required />
+                                                <label class="custom-control-label" for="checkbox">Checked</label>
+                                                <div class="invalid-feedback">Please select your check box.</div>
+                                            </div>
+                                        </div>
+                                    </div> <!-- div -->
                                 </div>
                                 <div class="form-row">
                                     <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light" >Submit</button>
