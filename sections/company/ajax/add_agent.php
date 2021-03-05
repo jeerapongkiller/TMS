@@ -12,7 +12,7 @@ $return = 'false'; // Return URL
 if (!empty($_POST['supplier']) && !empty($_POST['agent'])) {
     if (empty($id)) {
         # ---- Insert to database ---- #
-        $query = "INSERT INTO agent (supplier, agent, offline, trash_deleted, date_create, date_edit)";
+        $query = "INSERT INTO combine_agent (supplier, agent, offline, trash_deleted, date_create, date_edit)";
         $query .= "VALUES ('0', '0', '2', '2', now(), now())";
         $result = mysqli_query($mysqli_p, $query);
         $id = mysqli_insert_id($mysqli_p);
@@ -23,7 +23,7 @@ if (!empty($_POST['supplier']) && !empty($_POST['agent'])) {
         $bind_types = "";
         $params = array();
 
-        $query = "UPDATE agent SET";
+        $query = "UPDATE combine_agent SET";
 
         $query .= " offline = ?,";
         $bind_types .= "i";

@@ -125,11 +125,11 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                                         WHERE PR.id > '0'";
                         if (!empty($row['id'])) {
                             # supplier
-                            $query_rates .= " AND products = ?";
+                            $query_rates .= " AND PP.products = ?";
                             $bind_types .= "i";
                             array_push($params, $row['id']);
                         }
-                        $query_rates .= " ORDER BY date_create DESC";
+                        $query_rates .= " ORDER BY PP.id DESC , PR.date_create DESC ";
                         $procedural_statement_rates = mysqli_prepare($mysqli_p, $query_rates);
 
                         // Check error query
@@ -168,7 +168,8 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                                             <div id="collapse<?php echo $row_rates['ppID']; ?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                                 <div class="card-body">
                                                     <h5 class="card-title">
-                                                        <a href="javascript:;" class="btn btn-outline-<?php echo $color; ?>" onclick="addRatesAgent(<?php echo $row_rates['ppID']; ?>)"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a>
+                                                        <!-- <a href="javascript:;" class="btn btn-outline-<?php echo $color; ?>" onclick="addRatesAgent(<?php echo $row_rates['ppID']; ?>, <?php echo $type; ?>)"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a> -->
+                                                        <a href="./?mode=company/detail-rates&company=<?php echo $_POST['company']; ?>&periods=<?php echo $row_rates['ppID']; ?>" class="btn btn-outline-<?php echo $color; ?>"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a>
                                                     </h5>
                                                     <div class="table-responsive" id="div-products">
                                                         <table class="table">
@@ -188,32 +189,21 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                                                             <?php } ?>
                                                             <tr>
                                                                 <td> <span class="badge badge-pill <?php echo $status_class_rates; ?>"> <?php echo $status_txt_rates; ?> </span> </td>
-                                                                <td> 
-                                                                    <?php echo $type_rates; ?>
-                                                                    <input type="hidden" name="type_rates<?php echo $row_rates['id']; ?>" id="type_rates<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates["type_rates"]; ?>" />
-                                                                </td>
-                                                                <td> 
-                                                                    <?php echo number_format($row_rates["rate_adult"]); ?>
-                                                                    <input type="hidden" name="rate_adult<?php echo $row_rates['id']; ?>" id="rate_adult<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates['rate_adult']; ?>" />
-                                                                </td>
-                                                                <td> 
-                                                                    <?php echo number_format($row_rates["rate_children"]); ?>
-                                                                    <input type="hidden" name="rate_children<?php echo $row_rates['id']; ?>" id="rate_children<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates['rate_children']; ?>" />
-                                                                </td>
                                                                 <td>
-                                                                    <?php echo number_format($row_rates["rate_infant"]); ?>
-                                                                    <input type="hidden" name="rate_infant<?php echo $row_rates['id']; ?>" id="rate_infant<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates['rate_infant']; ?>" />
-                                                                </td>
+                                                                    <?php echo $type_rates; ?></td>
                                                                 <td>
-                                                                    <?php echo number_format($row_rates["rate_group"]); ?>
-                                                                    <input type="hidden" name="rate_group<?php echo $row_rates['id']; ?>" id="rate_group<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates['rate_group']; ?>" />    
-                                                                </td>
+                                                                    <?php echo number_format($row_rates["rate_adult"]); ?></td>
                                                                 <td>
-                                                                    <?php echo number_format($row_rates["pax"]); ?>
-                                                                    <input type="hidden" name="pax_rates<?php echo $row_rates['id']; ?>" id="pax_rates<?php echo $row_rates['id']; ?>" value="<?php echo $row_rates['pax']; ?>" />
-                                                                </td>
+                                                                    <?php echo number_format($row_rates["rate_children"]); ?></td>
                                                                 <td>
-                                                                    <a href="javascript:;" class="pr-1 item-edit" onclick="addRates(<?php echo $row_rates['id']; ?>, <?php echo $type; ?>)"> <i class="far fa-edit"></i> </a>
+                                                                    <?php echo number_format($row_rates["rate_infant"]); ?></td>
+                                                                <td>
+                                                                    <?php echo number_format($row_rates["rate_group"]); ?></td>
+                                                                <td>
+                                                                    <?php echo number_format($row_rates["pax"]); ?></td>
+                                                                <td>
+                                                                    <!-- <a href="javascript:;" class="pr-1 item-edit" onclick="addRates(<?php echo $row_rates['id']; ?>, <?php echo $type; ?>)"> <i class="far fa-edit"></i> </a> -->
+                                                                    <a href="./?mode=company/detail-rates&company=<?php echo $_POST['company']; ?>&periods=<?php echo $row_rates['ppID']; ?>&id=<?php echo $row_rates['id']; ?>" class="pr-1 item-edit" > <i class="far fa-edit"></i> </a>
                                                                     <?php if ($row_rates["trash_deleted"] == 1) { ?>
                                                                         <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
                                                                             <a href="javascript:;" class="item-undo" onclick="restoreList(<?php echo $row_rates['id']; ?>)"> <i class="fas fa-undo"></i> </a>

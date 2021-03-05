@@ -426,11 +426,11 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
                                 <tbody>
                                     <?php
                                     $companyURL = '';
-                                    $query_agent = "SELECT agent.*, company.id as comID, company.name as comName, company.name_invoice as comName_invoice, company.photo as comPhoto 
-                                                        FROM agent 
+                                    $query_agent = "SELECT combine_agent.*, company.id as comID, company.name as comName, company.name_invoice as comName_invoice, company.photo as comPhoto 
+                                                        FROM combine_agent 
                                                         LEFT JOIN company
-                                                        ON agent.agent = company.id
-                                                        WHERE agent.supplier = '$id'  ";
+                                                        ON combine_agent.agent = company.id
+                                                        WHERE combine_agent.supplier = '$id'  ";
                                     $result_agent = mysqli_query($mysqli_p, $query_agent);
                                     while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
                                         $status_class = $row_agent["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
@@ -950,103 +950,126 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
     }
 
     // Add Rates Agent
-    function addRatesAgent(periods) {
-        swal.fire({
-            title: 'Add Rates (Agent)',
-            width: 600,
-            html: '<div class="form-row">' +
-                '<input type="hidden" class="form-control" id="type_rates_agent" name="type_rates_agent" value="3" placeholder="" />' +
-                '<div class="col-xl-6 col-md-6 col-12">' +
-                '<div class="form-group">' +
-                '<label for="rates_adult"> <b> Adult </b> </label>' +
-                '<input type="text" class="form-control" id="rates_adult_agent" name="rates_adult" value="" placeholder="" oninput="priceformat(`rates_adult_agent`);" />' +
-                '</div>' +
-                '</div>' +
-                '<div class="col-xl-6 col-md-6 col-12">' +
-                '<div class="form-group">' +
-                '<label for="rates_children"> <b> Children </b> </label>' +
-                '<input type="text" class="form-control" id="rates_children_agent" name="rates_children" value="" placeholder="" oninput="priceformat(`rates_children_agent`);" />' +
-                '</div>' +
-                '</div> ' +
-                '<div class="col-xl-6 col-md-6 col-12">' +
-                '<div class="form-group">' +
-                '<label for="rates_infant"> <b> Infant </b> </label>' +
-                '<input type="text" class="form-control" id="rates_infant_agent" name="rates_infant" value="" placeholder="" oninput="priceformat(`rates_infant_agent`);" />' +
-                '</div>' +
-                '</div> ' +
-                '<div class="col-xl-6 col-md-6 col-12">' +
-                '<div class="form-group">' +
-                '<label for="rates_group"> <b> Group </b> </label>' +
-                '<input type="text" class="form-control" id="rates_group_agent" name="rates_group" value="" placeholder="" oninput="priceformat(`rates_group_agent`);" />' +
-                '</div>' +
-                '</div>' +
-                '<div class="col-xl-12 col-md-12 col-12">' +
-                '<div class="form-group">' +
-                '<label for="pax"> <b> Pax </b> </label>' +
-                '<input type="text" class="form-control" id="pax_agent" name="pax" value="" placeholder="" oninput="priceformat(`pax_agent`);" />' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-row">' +
-                <?php
-                $query_agent = "SELECT agent.*, company.id as comID, company.name as comName 
-                                FROM agent 
-                                LEFT JOIN company
-                                ON agent.agent = company.id
-                                WHERE agent.supplier = '$id' AND agent.offline = '2' ";
-                $result_agent = mysqli_query($mysqli_p, $query_agent);
-                while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
-                ?> '<div class="col-xl-2 col-md-4 col-6">' +
-                    '<div class="form-group">' +
-                    '<div class="custom-control custom-checkbox">' +
-                    '<input type="checkbox" class="custom-control-input" id="agent<?php echo $row_agent['id']; ?>" name="agent[]" value="1" required />' +
-                    '<label class="custom-control-label" for="agent<?php echo $row_agent['id']; ?>"> <?php echo $row_agent['comName']; ?> </label>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                <?php } ?> '</div>',
-            confirmButtonText: 'Confirm',
-            showCloseButton: true,
-            preConfirm: function() {
-                return new Promise((resolve, reject) => {
-                    resolve({
-                        // id: id,
-                        // type_rates: $('#type_rates' + id).val(),
-                        // rates_adult: $('#rates_adult' + id).val(),
-                        // rates_children: $('#rates_children' + id).val(),
-                        // rates_infant: $('#rates_infant' + id).val(),
-                        // rates_group: $('#rates_group' + id).val(),
-                        // pax: $('#pax' + id).val()
+    function addRatesAgent(periods, type) {
+        var supplier = document.getElementById('id')
+        jQuery.ajax({
+            url: "sections/company/ajax/html-rates-agent.php",
+            data: {
+                supplier: supplier.value,
+                type: type,
+                periods: periods
+            },
+            type: "POST",
+            success: function(response) {
+                swal.fire({
+                    title: 'Add Rates (Agent)',
+                    width: 600,
+                    html: response,
+                    confirmButtonText: 'Confirm',
+                    showCloseButton: true,
+                    preConfirm: function() {
+                        return new Promise((resolve, reject) => {
+                            resolve({
+                                periods: periods
+                            });
+                        });
+                    }
+                }).then((result) => {
+                    // console.log(result.value['agent_pax']);
+                    if (result.value['periods']) {
+                        var agent_arr = []
+                        var agent = document.getElementsByName('agent[]')
+                        for (var i = 0; i < agent.length; i++) {
+                            if (agent[i].checked) {
+                                agent_arr.push(agent[i].value);
+                            }
+                        }
+                        if (agent_arr == '') {
+                            Swal.fire('Error!', 'Error. Please try again', 'error');
+                            return false;
+                        }
+                        jQuery.ajax({
+                            url: "sections/company/ajax/add-agent-rates.php",
+                            data: {
+                                periods: result.value['periods'],
+                                type_rates_agent: $('#type_rates_agent').val(),
+                                agent_rates_adult: $('#agent_rates_adult').val(),
+                                agent_rates_children: $('#agent_rates_children').val(),
+                                agent_rates_infant: $('#agent_rates_infant').val(),
+                                agent_rates_group: $('#agent_rates_group').val(),
+                                agent_pax: $('#agent_pax').val(),
+                                agent: agent_arr
+                            },
+                            type: "POST",
+                            success: function(response) {
+                                Swal.fire({
+                                    title: "Successfuly!",
+                                    icon: "success"
+                                }).then(function() {
+                                    // productView(type)
+                                    // $("#div-agent").html(response);
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                });
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'Error. Please try again', 'error')
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    // Add rate (agent) & edit rate
+    function cuRates(periods, id, type, type_rates) {
+        jQuery.ajax({
+            url: "sections/company/ajax/html-rates.php",
+            data: {
+                periods: periods,
+                id: id,
+                type: type,
+                type_rates: type_rates
+            },
+            type: "POST",
+            success: function(response) {
+                swal.fire({
+                    title: 'Edit Rates',
+                    width: 600,
+                    html: response,
+                    confirmButtonText: 'Confirm',
+                    showCloseButton: true,
+                    preConfirm: function() {
+                        return new Promise((resolve, reject) => {
+                            resolve({
+                                id: id
+                            });
+                        });
+                    }
+                }).then((result) => {
+                    exit();
+                    // console.log(result.value['id']);
+                    jQuery.ajax({
+                        url: "sections/company/ajax/add-rates.php",
+                        data: {
+                            id: result.value['id']
+                        },
+                        type: "POST",
+                        success: function(response) {
+                            Swal.fire({
+                                title: "Successfuly!",
+                                icon: "success"
+                            }).then(function() {
+                                productView(type)
+                                // $("#div-agent").html(response);
+                            });
+                        },
+                        error: function() {
+                            Swal.fire('Error!', 'Error. Please try again', 'error')
+                        }
                     });
                 });
             }
-        }).then((result) => {
-            // console.log(result.value['id']);
-            // jQuery.ajax({
-            //     url: "sections/company/ajax/add-rates.php",
-            //     data: {
-            //         id: result.value['id'],
-            //         type_rates: result.value['type_rates'],
-            //         rates_adult: result.value['rates_adult'],
-            //         rates_children: result.value['rates_children'],
-            //         rates_infant: result.value['rates_infant'],
-            //         rates_group: result.value['rates_group'],
-            //         pax: result.value['pax']
-            //     },
-            //     type: "POST",
-            //     success: function(response) {
-            //         Swal.fire({
-            //             title: "Successfuly!",
-            //             icon: "success"
-            //         }).then(function() {
-            //             productView(type)
-            //             // $("#div-agent").html(response);
-            //         });
-            //     },
-            //     error: function() {
-            //         Swal.fire('Error!', 'Error. Please try again', 'error')
-            //     }
-            // });
         });
     }
 

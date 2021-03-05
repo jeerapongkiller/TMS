@@ -2,15 +2,34 @@
 require("../../../inc/connection.php");
 #----- General Information -----#
 $id = !empty($_POST["id"]) ? $_POST["id"] : '';
+$page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
+$offline = !empty($_POST["offline"]) ? $_POST["offline"] : '';
+$company = !empty($_POST["company"]) ? $_POST["company"] : '';
+$periods = !empty($_POST["periods"]) ? $_POST["periods"] : '';
 $type_rates = !empty($_POST["type_rates"]) ? $_POST["type_rates"] : '';
-$rates_adult = !empty($_POST["rates_adult"]) ?  preg_replace('(,)', '', $_POST["rates_adult"]) : '0';
-$rates_children = !empty($_POST["rates_children"]) ?  preg_replace('(,)', '', $_POST["rates_children"]) : '0';
-$rates_infant = !empty($_POST["rates_infant"]) ?  preg_replace('(,)', '', $_POST["rates_infant"]) : '0';
-$rates_group = !empty($_POST["rates_group"]) ?  preg_replace('(,)', '', $_POST["rates_group"]) : '0';
+$type_products = !empty($_POST["type_products"]) ? $_POST["type_products"] : '';
+$rate_adult = !empty($_POST["adult"]) ?  preg_replace('(,)', '', $_POST["adult"]) : '0';
+$rate_children = !empty($_POST["children"]) ?  preg_replace('(,)', '', $_POST["children"]) : '0';
+$rate_infant = !empty($_POST["infant"]) ?  preg_replace('(,)', '', $_POST["infant"]) : '0';
+$rate_transfer = !empty($_POST["transfer"]) ?  preg_replace('(,)', '', $_POST["transfer"]) : '0';
+$rate_group = !empty($_POST["group"]) ?  preg_replace('(,)', '', $_POST["group"]) : '0';
 $pax = !empty($_POST["pax"]) ?  preg_replace('(,)', '', $_POST["pax"]) : '0';
 $return = 'false'; // Return URL
+// echo 'id - '.$id.'</br>';
+// echo 'page_title - '.$page_title.'</br>';
+// echo 'company - '.$company.'</br>';
+// echo 'periods - '.$periods.'</br>';
+// echo 'type_rates - '.$type_rates.'</br>';
+// echo 'type_products - '.$type_products.'</br>';
+// echo 'adult - '.$rate_adult.'</br>';
+// echo 'children - '.$rate_children.'</br>';
+// echo 'infant - '.$rate_infant.'</br>';
+// echo 'transfer - '.$rate_transfer.'</br>';
+// echo 'group - '.$rate_group.'</br>';
+// echo 'pax - '.$pax.'</br>';
+// exit();
 #----- General Information -----#
-if (!empty($_POST['id']) && !empty($_POST['type_rates'])) {
+if (!empty($_POST['type_rates'])) {
     if (!empty($id)) {
         # ---- Update to database ---- #
         $bind_types = "";
@@ -18,37 +37,29 @@ if (!empty($_POST['id']) && !empty($_POST['type_rates'])) {
 
         $query = "UPDATE products_rates SET";
 
-        // $query .= " offline = ?,";
-        // $bind_types .= "i";
-        // array_push($params, $offline);
-
-        // $query .= " products_periods = ?,";
-        // $bind_types .= "i";
-        // array_push($params, $periods);
-
-        // $query .= " type_rates = ?,";
-        // $bind_types .= "i";
-        // array_push($params, $type_rates);
-
         $query .= " rate_adult = ?,";
         $bind_types .= "i";
-        array_push($params, $rates_adult);
+        array_push($params, $rate_adult);
 
         $query .= " rate_children = ?,";
         $bind_types .= "i";
-        array_push($params, $rates_children);
+        array_push($params, $rate_children);
 
         $query .= " rate_infant = ?,";
         $bind_types .= "i";
-        array_push($params, $rates_infant);
+        array_push($params, $rate_infant);
 
         $query .= " rate_group = ?,";
         $bind_types .= "i";
-        array_push($params, $rates_group);
+        array_push($params, $rate_group);
 
         $query .= " pax = ?,";
         $bind_types .= "i";
         array_push($params, $pax);
+
+        $query .= " rate_transfer = ?,";
+        $bind_types .= "i";
+        array_push($params, $rate_transfer);
 
         // $query .=  'date_create = now(),';
 
@@ -60,5 +71,8 @@ if (!empty($_POST['id']) && !empty($_POST['type_rates'])) {
         }
         mysqli_stmt_execute($procedural_statement);
         $result = mysqli_stmt_get_result($procedural_statement);
+
+        $return = 'true'; 
+        echo $return;
     }
 }
