@@ -126,6 +126,16 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <script src="assets/vendors/js/extensions/toastr.min.js"></script>
         <!-- END: Page Vendor JS-->
 
+        <!-- Script Ready -->
+        <script>
+            $(document).ready(function() {
+                var str_mode = "<?php echo $_GET["mode"] ?>";
+                if (str_mode.indexOf("company/detail-rates") >= 0) {
+                    checkAgent();
+                }
+            });
+        </script>
+
         <!-- Script Data Table -->
         <script>
             /** DataTables Basic **/

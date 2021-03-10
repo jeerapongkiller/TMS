@@ -64,63 +64,62 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
 
         <!-- Plan Card starts-->
         <div class="row">
-            <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card plan-card border-info">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-map font-size-20"></i> Tours </h4>
-                        <h4> 0 </h4>
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-info text-center btn-block" onclick="productView('1')"> Products </button>
+            <?php
+            $query_ptype = "SELECT * FROM products_type WHERE id > '0'";
+            $query_ptype .= " ORDER BY id ASC";
+            $result_ptype = mysqli_query($mysqli_p, $query_ptype);
+            while ($row_ptype = mysqli_fetch_array($result_ptype, MYSQLI_ASSOC)) {
+
+                switch ($row_ptype['id']) {
+                    case '1':
+                        $T_name = 'Tours';
+                        $T_icon = 'fas fa-map';
+                        $color = 'info';
+                        break;
+                    case '2':
+                        $T_name = 'Activity';
+                        $T_icon = 'fas fa-life-ring';
+                        $color = 'success';
+                        break;
+                    case '3':
+                        $T_name = 'Transfer';
+                        $T_icon = 'fas fa-car';
+                        $color = 'warning';
+                        break;
+                    case '4':
+                        $T_name = 'Hotel';
+                        $T_icon = 'fas fa-hotel';
+                        $color = 'secondary';
+                        break;
+                    case '5':
+                        $T_name = 'Ticket';
+                        $T_icon = 'fas fa-ticket-alt';
+                        $color = 'danger';
+                        break;
+                }
+
+                $query_products = "SELECT * FROM products WHERE id > '0'";
+                $query_products .= " AND products_type = ?";
+                $query_products .= " AND company = ?";
+                $procedural_statement = mysqli_prepare($mysqli_p, $query_products);
+                mysqli_stmt_bind_param($procedural_statement, 'ii', $row_ptype["id"], $id);
+                mysqli_stmt_execute($procedural_statement);
+                $result = mysqli_stmt_get_result($procedural_statement);
+                $numrow = mysqli_num_rows($result);
+            ?>
+                <div class="col-xl-2 col-lg-3 col-md-6">
+                    <div class="card plan-card border-<?php echo $color; ?>">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4> <i class="fas fa-map font-size-20"></i> <?php echo $row_ptype['name']; ?> </h4>
+                            <h4> <?php echo $numrow; ?> </h4>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-<?php echo $color; ?> text-center btn-block" onclick="productView('<?php echo $row_ptype['id']; ?>')"> Products </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card plan-card border-success">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-life-ring font-size-20"></i> Acticity </h4>
-                        <h4> 0 </h4>
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-success text-center btn-block" onclick="productView('2')"> Products </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card plan-card border-warning">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-car font-size-20"></i> Transfer </h4>
-                        <h4> 0 </h4>
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-warning text-center btn-block" onclick="productView('3')"> Products </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card plan-card border-secondary">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-hotel font-size-20"></i> Hotel </h4>
-                        <h4> 0 </h4>
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-secondary text-center btn-block" onclick="productView('4')"> Products </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6">
-                <div class="card plan-card border-danger">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4> <i class="fas fa-ticket-alt font-size-20"></i> Ticket </h4>
-                        <h4> 0 </h4>
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-danger text-center btn-block" onclick="productView('5')"> Products </button>
-                    </div>
-                </div>
-            </div>
+            <?php } ?>
         </div>
-        <!-- /Plan CardEnds -->
 
         <!-- Div Products starts-->
         <div id="div-products"> </div>

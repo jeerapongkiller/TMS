@@ -23,17 +23,22 @@ if (!empty($_GET["id"])) {
         echo "<meta http-equiv=\"refresh\" content=\"0; url = './?mode=company/list'\" >";
     }
 } else {
-    $page_title = "Add New Rates";
+    $agent_periods_from = get_value('products_periods', 'id', 'periods_from', $_GET["periods"], $mysqli_p);
+    $agent_periods_to = get_value('products_periods', 'id', 'periods_to', $_GET["periods"], $mysqli_p);
+    $agent_products = get_value('products_periods', 'id', 'products', $_GET["periods"], $mysqli_p);
+    $products_name = get_value('products', 'id', 'name', $agent_products, $mysqli_p);
+    $page_title = $products_name . ' (' . $agent_periods_from . ' - ' . $agent_periods_to . ')';
 }
 # check value
+$combine_agent_arr = array();
 $id = !empty($row["id"]) ? $row["id"] : '0';
 $offline = !empty($row["offline"]) ? $row["offline"] : '2';
 $company = !empty($_GET["company"]) ? $_GET["company"] : '';
 $periods = !empty($_GET["periods"]) ? $_GET["periods"] : '';
 $type_products = !empty($row["Ppt"]) ? $row["Ppt"] : '';
-$type_rates = !empty($row["type_rates"]) ? $row["type_rates"] : '';
-$periods_from = !empty($row["PPpf"]) ? $row["PPpf"] : '';
-$periods_to = !empty($row["PPpt"]) ? $row["PPpt"] : '';
+$type_rates = !empty($row["type_rates"]) ? $row["type_rates"] : '3';
+$periods_from = !empty($row["PPpf"]) ? $row["PPpf"] : $agent_periods_from;
+$periods_to = !empty($row["PPpt"]) ? $row["PPpt"] : $agent_periods_to;
 $rate_adult = !empty($row["rate_adult"]) ? number_format($row["rate_adult"]) : '0';
 $rate_children = !empty($row["rate_children"]) ? number_format($row["rate_children"]) : '0';
 $rate_infant = !empty($row["rate_infant"]) ? number_format($row["rate_infant"]) : '0';
@@ -49,7 +54,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <h2 class="content-header-title float-left mb-0">Periods</h2>
+                        <h2 class="content-header-title float-left mb-0"> Rates </h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="./?mode=company/detail&id=<?php echo $_GET["company"]; ?>"> <?php echo $page_title; ?> </a>
@@ -84,6 +89,18 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                     <input type="hidden" id="periods" name="periods" value="<?php echo $periods; ?>">
                                     <input type="hidden" id="type_products" name="type_products" value="<?php echo $type_products; ?>">
                                     <input type="hidden" id="type_rates" name="type_rates" value="<?php echo $type_rates; ?>">
+                                    <?php
+                                    // Check Agents
+                                    $query = "SELECT products_rates.*, rates_agent.id as rgID, rates_agent.products_periods as rgPP, rates_agent.products_rates as rgPR, rates_agent.combine_agent as rgCG
+                                        FROM products_rates 
+                                        LEFT JOIN rates_agent
+                                        ON products_rates.id = rates_agent.products_rates
+                                        WHERE products_rates.products_periods = '" . $_GET["periods"] . "' AND products_rates.type_rates = 3 ";
+                                    $result_rates = mysqli_query($mysqli_p, $query);
+                                    while ($row_rates = mysqli_fetch_array($result_rates, MYSQLI_ASSOC)) {
+                                        array_push($combine_agent_arr, $row_rates['rgCG']); ?>
+                                        <input type="hidden" id="default_agent<?php echo $row_rates['rgCG']; ?>" name="default_agent[]" value="<?php echo $row_rates['rgCG']; ?>">
+                                    <?php } ?>
                                     <!-- company edit -->
                                     <div class="form-row">
                                         <div class="col-xl-3 col-md-6 col-12">
@@ -106,7 +123,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="periods_from" name="periods_from" value="<?php echo $periods_from; ?>" placeholder="" <?php echo $id > 0 ? 'disabled' : 'readonly'; ?> />
+                                                    <input type="date" class="form-control" id="periods_from" name="periods_from" value="<?php echo $periods_from; ?>" placeholder="" disabled />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
@@ -117,7 +134,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="periods_to" name="periods_to" value="<?php echo $periods_to; ?>" placeholder="" <?php echo $id > 0 ? 'disabled' : 'readonly'; ?> />
+                                                    <input type="date" class="form-control" id="periods_to" name="periods_to" value="<?php echo $periods_to; ?>" placeholder="" disabled />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
@@ -162,11 +179,44 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                             </div>
                                         </div> <!-- div -->
                                     </div>
+                                    <?php if ($type_rates == '3') { ?>
+                                        <div class="form-row mt-1 mb-1">
+                                            <div class="col-12">
+                                                <h4 class="mb-1">
+                                                    <i data-feather="home" class="font-medium-4 mr-25"></i>
+                                                    <span class="align-middle"> Agent </span>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <?php
+                                            $check_agent = 0;
+                                            $query_agent = "SELECT combine_agent.*, company.id as comID, company.name as comName 
+                                                        FROM combine_agent 
+                                                        LEFT JOIN company
+                                                        ON combine_agent.agent = company.id
+                                                        WHERE combine_agent.supplier = '$company' AND combine_agent.offline = 2 ";
+                                            $result_agent = mysqli_query($mysqli_p, $query_agent);
+                                            while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
+                                                in_array($row_agent['id'], $combine_agent_arr) ? $check_agent++ : 0;
+                                            ?> <div class="col-xl-2 col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="agent<?php echo $row_agent['id']; ?>" name="agent[]" value="<?php echo $row_agent['id']; ?>" <?php echo in_array($row_agent['id'], $combine_agent_arr) ? !empty($id) ? 'checked' : 'checked disabled'  : ''; ?> />
+                                                            <label class="custom-control-label" for="agent<?php echo $row_agent['id']; ?>"> <?php echo $row_agent['comName']; ?> </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                        <input type="hidden" id="check_agent" name="check_agent" value="<?php echo $check_agent; ?>">
+                                    <?php } ?>
+
                                     <hr>
 
                                     <div class="form-row">
                                         <div class="col-xl-3 col-md-6 col-12 mt-1">
-                                            <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
+                                            <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light" id="btusubmit"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
                                         </div>
                                     </div>
                                 </form>
@@ -195,6 +245,18 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         }, false);
                                     })();
 
+                                    //Check Agent
+                                    function checkAgent() {
+                                        var id = document.getElementById('id').value
+                                        var check_agent = document.getElementById('check_agent').value
+                                        var btusubmit = document.getElementById('btusubmit')
+                                        if (check_agent > 0 && id == 0) {
+                                            btusubmit.disabled = true;
+                                            Swal.fire('warning!', 'There are no agent to choose from', 'warning');
+                                            return false;
+                                        }
+                                    }
+
                                     // Fun Price Format
                                     function priceformat(inputfield) {
                                         var i = 0,
@@ -215,6 +277,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         }
                                     }
 
+                                    // checkFormPeriods
                                     function checkFormPeriods() {
                                         var group = document.getElementById('group')
                                         var pax = document.getElementById('pax')
@@ -247,48 +310,63 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         var group = $('#group').val();
                                         var pax = $('#pax').val();
                                         var transfer = $('#transfer').val();
-
-                                        var fd = new FormData();
-                                        fd.append('id', id);
-                                        fd.append('page_title', page_title);
-                                        fd.append('offline', offline);
-                                        fd.append('company', company);
-                                        fd.append('periods', periods);
-                                        fd.append('type_products', type_products);
-                                        fd.append('type_rates', type_rates);
-                                        fd.append('adult', adult);
-                                        fd.append('children', children);
-                                        fd.append('infant', infant);
-                                        fd.append('group', group);
-                                        fd.append('pax', pax);
-                                        fd.append('transfer', transfer);
-                                        $.ajax({
-                                            type: "POST",
+                                        var agent_arr = []
+                                        var default_agent_arr = []
+                                        if (type_rates == '3') {
+                                            var agent = document.getElementsByName('agent[]')
+                                            var default_agent = document.getElementsByName('default_agent[]')
+                                            for (var i = 0; i < agent.length; i++) {
+                                                if (agent[i].checked) {
+                                                    agent_arr.push(agent[i].value);
+                                                }
+                                            }
+                                            for (var i = 0; i < default_agent.length; i++) {
+                                                default_agent_arr.push(default_agent[i].value);
+                                            }
+                                            if (agent_arr == '') {
+                                                Swal.fire('Error!', 'Error. Please try again', 'error');
+                                                return false;
+                                            }
+                                        }
+                                        jQuery.ajax({
                                             url: "sections/company/ajax/add-rates.php",
-                                            dataType: 'text', // what to expect back from the PHP script, if anything
-                                            cache: false,
-                                            contentType: false,
-                                            processData: false,
-                                            data: fd,
+                                            data: {
+                                                id: id,
+                                                page_title: page_title,
+                                                offline: offline,
+                                                company: company,
+                                                periods: periods,
+                                                type_products: type_products,
+                                                type_rates: type_rates,
+                                                adult: adult,
+                                                children: children,
+                                                infant: infant,
+                                                group: group,
+                                                pax: pax,
+                                                transfer: transfer,
+                                                agent: agent_arr,
+                                                default_agent: default_agent_arr
+                                            },
+                                            type: "POST",
                                             success: function(response) {
-                                                $("#div-company").html(response);
-                                                // if (response == 'false') {
-                                                //     Swal.fire({
-                                                //         icon: 'error',
-                                                //         title: 'Error. Please try again!',
-                                                //         showConfirmButton: false,
-                                                //         timer: 3000
-                                                //     });
-                                                // } else {
-                                                //     Swal.fire({
-                                                //         icon: 'success',
-                                                //         title: 'Complete!',
-                                                //         showConfirmButton: false,
-                                                //         timer: 3600
-                                                //     }).then((result) => {
-                                                //         location.href = "./?mode=company/detail&id=" + company;
-                                                //     })
-                                                // }
+                                                // $("#div-company").html(response);
+                                                if (response == 'false') {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error. Please try again!',
+                                                        showConfirmButton: false,
+                                                        timer: 3000
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Complete!',
+                                                        showConfirmButton: false,
+                                                        timer: 3600
+                                                    }).then((result) => {
+                                                        location.href = "./?mode=company/detail-rates&company=" + company + "&periods=" + periods + "&id=" + response;
+                                                    })
+                                                }
                                             },
                                             error: function() {
                                                 Swal.fire('Error!', 'Error. Please try again', 'error')

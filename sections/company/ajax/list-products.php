@@ -65,7 +65,7 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                 // Procedural mysqli
                 $bind_types = "";
                 $params = array();
-
+                $num_products = 0;
                 $query = "SELECT * FROM products WHERE id > '0'";
                 // if ($_SESSION["admin"]["permission"] != 1) {
                 //     $query .= " AND trash_deleted != '1'";
@@ -98,6 +98,7 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                 $result = mysqli_stmt_get_result($procedural_statement);
                 $numrow = mysqli_num_rows($result);
                 while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                    $num_products++;
                 ?>
                     <div class="card collapse-icon plan-card border-<?php echo $color; ?> products-<?php echo $color; ?>">
                         <!-- Name starts-->
@@ -117,7 +118,6 @@ if (!empty($_POST['type']) && !empty($_POST['company'])) {
                         $params = array();
                         $first = 0;
                         $numrow_realtime = 1;
-
                         $query_rates = "SELECT PR.*, PP.id as ppID, PP.products as ppProducts, PP.periods_from as ppPeriods_from, PP.periods_to as ppPeriods_to, PP.offline as ppOffline
                                         FROM products_rates PR
                                         LEFT JOIN products_periods PP

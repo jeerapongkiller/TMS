@@ -27,9 +27,33 @@ $return = 'false'; // Return URL
 // echo 'transfer - '.$rate_transfer.'</br>';
 // echo 'group - '.$rate_group.'</br>';
 // echo 'pax - '.$pax.'</br>';
-// exit();
+// foreach ($_POST['agent'] as $agent => $value) {
+//     echo $value;
+// }
+// foreach ($_POST['default_agent'] as $default_agent => $value) {
+//     echo $value;
+// }
+// foreach ($_POST['agent'] as $agent => $value) {
+//     if(empty(in_array($value, $_POST['default_agent']))){
+//         echo 'insert!!! - '.$value.'</br>';
+//     }
+// }
+// foreach ($_POST['default_agent'] as $default_agent => $value) {
+//     if(empty(in_array($value, $_POST['agent']))){
+//         echo 'delete!!! - '.$value.'</br>';
+//     }
+// }
+exit();
 #----- General Information -----#
 if (!empty($_POST['type_rates'])) {
+    if (empty($id)) {
+        # ---- Insert to database ---- #
+        $query = "INSERT INTO products_rates (products_periods, type_rates, rate_adult, rate_children, rate_infant, rate_group, pax, rate_transfer, offline, trash_deleted, date_create, date_edit)";
+        $query .= "VALUES ('0', '0', '0', '0', '0', '0', '0', '0', '2', '2', now(), now())";
+        $result = mysqli_query($mysqli_p, $query);
+        $id = mysqli_insert_id($mysqli_p);
+    }
+
     if (!empty($id)) {
         # ---- Update to database ---- #
         $bind_types = "";
@@ -61,7 +85,17 @@ if (!empty($_POST['type_rates'])) {
         $bind_types .= "i";
         array_push($params, $rate_transfer);
 
-        // $query .=  'date_create = now(),';
+        if ($type_rates == '3') {
+            $query .= " products_periods = ?,";
+            $bind_types .= "i";
+            array_push($params, $periods);
+
+            $query .= " 	type_rates = ?,";
+            $bind_types .= "i";
+            array_push($params, $type_rates);
+
+            $query .=  'date_create = now(),';
+        }
 
         $query .= " date_edit = now()";
         $query .= " WHERE id = '$id'";
@@ -72,7 +106,32 @@ if (!empty($_POST['type_rates'])) {
         mysqli_stmt_execute($procedural_statement);
         $result = mysqli_stmt_get_result($procedural_statement);
 
-        $return = 'true'; 
-        echo $return;
+        if (!empty($_POST['agent'])) {
+            foreach ($_POST['agent'] as $agent => $value) {
+                if (empty(in_array($value, $_POST['default_agent']))) {
+                    # ---- Insert to database ---- #
+                    $query = "INSERT INTO rates_agent (products_periods, products_rates, combine_agent, trash_deleted, date_create, date_edit)";
+                    $query .= "VALUES ('$periods', '$id', '$value', '2', now(), now())";
+                    $result = mysqli_query($mysqli_p, $query);
+                }
+            }
+            $query = "SELECT products_rates.*, rates_agent.id as rgID, rates_agent.products_periods as rgPP, rates_agent.products_rates as rgPR, rates_agent.combine_agent as rgCG
+                    FROM products_rates 
+                    LEFT JOIN rates_agent
+                    ON products_rates.id = rates_agent.products_rates
+                    WHERE products_rates.products_periods = ' $periods ' AND products_rates.type_rates = 3 ";
+            $result_rates = mysqli_query($mysqli_p, $query);
+            while ($row_rates = mysqli_fetch_array($result_rates, MYSQLI_ASSOC)) {
+                if (empty(in_array($row_rates['rgCG'], $_POST['agent']))) {
+                    # ---- Insert to database ---- #
+                    $query = "DELETE FROM rates_agent WHERE id = ?";
+                    $procedural_statement = mysqli_prepare($mysqli_p, $query);
+                    mysqli_stmt_bind_param($procedural_statement, 'i', $row_rates['rgID']);
+                    mysqli_stmt_execute($procedural_statement);
+                    $result = mysqli_stmt_get_result($procedural_statement);
+                }
+            }
+        }
+        echo $id;
     }
 }

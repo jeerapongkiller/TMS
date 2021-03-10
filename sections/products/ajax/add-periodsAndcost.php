@@ -6,6 +6,7 @@ $rate = !empty($_POST["rate"]) ? $_POST["rate"] : '';
 $offline = !empty($_POST["offline"]) ? $_POST["offline"] : '2';
 $products = !empty($_POST["products"]) ? $_POST["products"] : '';
 $company = !empty($_POST["company"]) ? $_POST["company"] : '';
+$type = !empty($_POST["type"]) ? $_POST["type"] : '';
 $periods_from = !empty($_POST["periods_from"]) ? $_POST["periods_from"] : $today;
 $periods_to = !empty($_POST["periods_to"]) ? $_POST["periods_to"] : $today;
 $adult_cost = !empty($_POST["adult_cost"]) ?  preg_replace('(,)', '', $_POST["adult_cost"]) : '0';
@@ -137,12 +138,10 @@ if (!empty($_POST['company']) && !empty($_POST['products']) && !empty($_POST['pe
             }
             mysqli_stmt_execute($procedural_statement);
             $result = mysqli_stmt_get_result($procedural_statement);
-
         }
     }
     mysqli_close($mysqli_p);
-    $return = "true";
-    echo $return;
+    echo $rate;
     exit;
 }
 echo $return;
