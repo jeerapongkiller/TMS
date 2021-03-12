@@ -17,7 +17,6 @@ if (!empty($_POST["products"]) && $_POST["products"] > 0 && !empty($_POST["perio
     mysqli_stmt_execute($procedural_statement);
     $result_cate = mysqli_stmt_get_result($procedural_statement);
     $numrow = mysqli_num_rows($result_cate);
-    // echo $query;
     echo $numrow > 0 ? "false" : "true";
 } else {
     echo "false";

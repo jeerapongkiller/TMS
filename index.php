@@ -133,6 +133,9 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 if (str_mode.indexOf("company/detail-rates") >= 0) {
                     checkAgent();
                 }
+                if (str_mode.indexOf("products/detail-rates") >= 0) {
+                    checkAgent();
+                }
             });
         </script>
 

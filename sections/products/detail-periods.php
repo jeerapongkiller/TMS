@@ -213,19 +213,19 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
             },
             type: "POST",
             success: function(response) {
-                $("#div-company").html(response);
-                // if (response == "true") {
-                //     document.getElementById("txt_periods").value = true;
-                // } else {
-                //     document.getElementById("txt_periods").value = "";
+                // $("#div-company").html(response);
+                if (response == "true") {
+                    document.getElementById("txt_periods").value = true;
+                } else {
+                    document.getElementById("txt_periods").value = "";
 
-                //     Swal.fire({
-                //         icon: 'error',
-                //         text: 'Please select time zone agian!',
-                //         showConfirmButton: false,
-                //         timer: 2000
-                //     });
-                // }
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Please select time zone agian!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
             },
             error: function() {}
         });
@@ -276,11 +276,16 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
     function checkFormPeriods() {
         var periods_from = $('#periods_from').val();
         var periods_to = $('#periods_to').val();
+        var txt_periods = $('#txt_periods').val();
         if (periods_from == '') {
             Swal.fire('Error!', 'Error. Please try again', 'error');
             return false
         }
         if (periods_to == '') {
+            Swal.fire('Error!', 'Error. Please try again', 'error');
+            return false
+        }
+        if (txt_periods == '') {
             Swal.fire('Error!', 'Error. Please try again', 'error');
             return false
         }
