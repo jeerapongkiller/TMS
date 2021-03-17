@@ -79,7 +79,7 @@ switch ($type) {
                         $bind_types .= "i";
                         array_push($params, $company);
                     }
-                    $query .= " ORDER BY name DESC";
+                    $query .= " ORDER BY name, date_create DESC";
                     $procedural_statement = mysqli_prepare($mysqli_p, $query);
 
                     // Check error query
@@ -105,6 +105,15 @@ switch ($type) {
                                     <div>
                                         <span class="card-title"> <?php echo $row['name']; ?> </span>
                                         <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span>
+                                        <a href="#edit" onclick="editProducts(<?php echo $row['id']; ?>);"><i data-feather='edit'></i></a>
+                                        <?php if ($row["trash_deleted"] == 1) { ?>
+                                            <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                <a href="#restore" class="item-undo" onclick="restoreList(<?php echo $row['id']; ?>)"> <i data-feather='rotate-ccw'></i> </a>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <a href="#trash" onclick="deleteProducts(<?php echo $row['id']; ?>);"><i data-feather='trash'></i></a>
+                                        <?php } ?>
+                                        <a href="#copy" onclick="copyProducts(<?php echo $row['id']; ?>);"><i data-feather='copy'></i></a>
                                     </div>
                                 </div>
                                 <div class="content-header-right text-md-right col-md-3 col-12">
@@ -276,5 +285,200 @@ switch ($type) {
                 });
             }
         })
+    }
+
+    // Copy Products
+    function copyProducts(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are your sure?',
+            text: "Do you want to copy this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/copy-products.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        // $("#div-agent").html(response);
+                        if (response == "success") {
+                            Swal.fire({
+                                title: "Complete!",
+                                text: "Copying data is complete!",
+                                icon: "success"
+                            }).then(function() {
+                                location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Copying data failed!",
+                                text: "Please try again",
+                                icon: "error"
+                            }).then(function() {
+                                location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire('Copying data failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Delete products
+    function deleteProducts(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need delete this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/deletelist.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Delete this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Delete this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Restore products
+    function restoreList(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need restore this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/restorelist.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Restore this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Restore this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Edit products
+    function editProducts(id) {
+
+        swal.fire({
+            title: 'Edit Products',
+            width: 400,
+            html: '<div class="form-row">' +
+                '<div class="col-xl-3 col-md-6 col-12">' +
+                '<div class="form-group">' +
+                '<div class="custom-control custom-checkbox">' +
+                '<input type="checkbox" class="custom-control-input" id="offline" name="offline" />' +
+                '<label class="custom-control-label" for="offline"> Offline </label>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-row">' +
+                '<div class="col-xl-12 col-md-12 col-12">' +
+                '<div class="form-group">' +
+                '<label for="rates_adult"> <b> Name Products </b> </label>' +
+                '<input type="text" class="form-control" id="rates_adult" name="rates_adult" value="" placeholder="" />' +
+                '</div>' +
+                '</div>' +
+                '</div>',
+            confirmButtonText: 'Confirm',
+            // showConfirmButton: false,
+            // showCancelButton: false,
+            showCloseButton: true,
+            preConfirm: function() {
+                return new Promise((resolve, reject) => {
+                    // get your inputs using their placeholder or maybe add IDs to them
+                    resolve({
+                        id: id,
+                        type_rates: $('#type_rates' + id).val(),
+                        rates_adult: $('#rates_adult' + id).val(),
+                        rates_children: $('#rates_children' + id).val(),
+                        rates_infant: $('#rates_infant' + id).val(),
+                        rates_group: $('#rates_group' + id).val(),
+                        pax: $('#pax' + id).val()
+                    });
+                    // maybe also reject() on some condition
+                });
+            }
+        }).then((result) => {
+            // console.log(result.value['id']);
+            jQuery.ajax({
+                url: "sections/company/ajax/add-rates.php",
+                data: {
+                    id: result.value['id'],
+                    type_rates: result.value['type_rates'],
+                    rates_adult: result.value['rates_adult'],
+                    rates_children: result.value['rates_children'],
+                    rates_infant: result.value['rates_infant'],
+                    rates_group: result.value['rates_group'],
+                    pax: result.value['pax']
+                },
+                type: "POST",
+                success: function(response) {
+                    Swal.fire({
+                        title: "Successfuly!",
+                        icon: "success"
+                    }).then(function() {
+                        productView(type)
+                        // $("#div-agent").html(response);
+                    });
+                },
+                error: function() {
+                    Swal.fire('Error!', 'Error. Please try again', 'error')
+                }
+            });
+        });
     }
 </script>
