@@ -76,6 +76,10 @@ if (!empty($_POST['type_rates'])) {
 
         $query = "UPDATE products_rates SET";
 
+        $query .= " offline = ?,";
+        $bind_types .= "i";
+        array_push($params, $offline);
+
         $query .= " rate_adult = ?,";
         $bind_types .= "i";
         array_push($params, $rate_adult);

@@ -35,6 +35,8 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/extensions/sweetalert2.min.css">
         <!-- BEGIN: Select CSS-->
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/forms/select/select2.min.css">
+        <!-- BEGIN: Spinner CSS-->
+        <link rel="stylesheet" type="text/css" href="assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css">
 
         <!-- BEGIN: Theme CSS-->
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
@@ -113,6 +115,10 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <script src="assets/vendors/js/extensions/polyfill.min.js"></script>
         <!-- END Sweetalert2 JS -->
 
+        <!-- BEGIN Spinner JS -->
+        <script src="assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
+        <!-- END Spinner JS -->
+
         <!-- BEGIN Select JS -->
         <script src="assets/vendors/js/forms/select/select2.full.min.js"></script>
         <!-- END Select JS -->
@@ -135,6 +141,15 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 }
                 if (str_mode.indexOf("products/detail-rates") >= 0) {
                     checkAgent();
+                }
+                if (str_mode.indexOf("products/detail-periods") >= 0) {
+                    checkPeriods();
+                }
+                if (str_mode.indexOf("products/detail-products") >= 0) {
+                    checkCut();
+                }
+                if (str_mode.indexOf("products/detail-allot") >= 0) {
+                    checkDate();
                 }
             });
         </script>
@@ -242,7 +257,7 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
             });
         </script>
 
-        <!-- Script Flatpickr -->
+        <!-- Script Flatpickr Date and Time -->
         <script>
             /** Flatpickr **/
             $(function() {
@@ -282,6 +297,23 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     document.getElementById('periods_to').value = $('#periods_from').val();
                 });
 
+                /** Allotment date products **/
+                $('#date_to').flatpickr({
+                    // enableTime: true,
+                    // dateFormat: "Y-m-d H:i",
+                    dateFormat: 'Y-m-d',
+                    minDate: $('#date_from').val()
+                });
+                $('#date_from').flatpickr({
+                    dateFormat: 'Y-m-d'
+                });
+                $('#date_from').on('change', function() {
+                    $('#date_to').flatpickr({
+                        minDate: this.value
+                    });
+                    document.getElementById('date_to').value = $('#date_from').val();
+                });
+
                 /** Booking Search **/
                 $('#date-range').flatpickr({
                     // enableTime: true,
@@ -289,6 +321,13 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     // dateFormat: 'Y-m-d',
                     // minDate: $('#date-from').val()
                     mode: 'range'
+                });
+
+                $('#cut_open').flatpickr({
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true
                 });
             });
         </script>
@@ -390,6 +429,54 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 });
 
             })(window, document, jQuery);
+        </script>
+
+        <!-- Script Spinner -->
+        <script>
+            $(function() {
+                'use strict';
+
+                $('#cut_off').TouchSpin({
+                    buttondown_class: 'btn btn-primary',
+                    buttonup_class: 'btn btn-primary',
+                    buttondown_txt: feather.icons['minus'].toSvg(),
+                    buttonup_txt: feather.icons['plus'].toSvg()
+                });
+
+                $('#pax').TouchSpin({
+                    buttondown_class: 'btn btn-primary',
+                    buttonup_class: 'btn btn-primary',
+                    buttondown_txt: feather.icons['minus'].toSvg(),
+                    buttonup_txt: feather.icons['plus'].toSvg()
+                });
+
+                // var touchspinValue = $('.touchspin-min-max'),
+                //     counterMin = 17,
+                //     counterMax = 21;
+                // if (touchspinValue.length > 0) {
+                //     touchspinValue
+                //         .TouchSpin({
+                //             min: counterMin,
+                //             max: counterMax,
+                //             buttondown_txt: feather.icons['minus'].toSvg(),
+                //             buttonup_txt: feather.icons['plus'].toSvg()
+                //         })
+                //         .on('touchspin.on.startdownspin', function() {
+                //             var $this = $(this);
+                //             $('.bootstrap-touchspin-up').removeClass('disabled-max-min');
+                //             if ($this.val() == counterMin) {
+                //                 $(this).siblings().find('.bootstrap-touchspin-down').addClass('disabled-max-min');
+                //             }
+                //         })
+                //         .on('touchspin.on.startupspin', function() {
+                //             var $this = $(this);
+                //             $('.bootstrap-touchspin-down').removeClass('disabled-max-min');
+                //             if ($this.val() == counterMax) {
+                //                 $(this).siblings().find('.bootstrap-touchspin-up').addClass('disabled-max-min');
+                //             }
+                //         });
+                // }
+            });
         </script>
 
         <script>

@@ -140,9 +140,8 @@ if (!empty($_POST['company']) && !empty($_POST['products']) && !empty($_POST['pe
             $result = mysqli_stmt_get_result($procedural_statement);
         }
     }
-    mysqli_close($mysqli_p);
     echo $rate;
     exit;
 }
 echo $return;
-exit;
+mysqli_close($mysqli_p);

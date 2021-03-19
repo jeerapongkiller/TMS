@@ -45,7 +45,8 @@ switch ($type) {
                 <div class="form-group breadcrumb-right">
                     <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
                         <div class="dt-buttons btn-group flex-wrap">
-                            <a href="javascript:;" class="btn add-new btn-primary" onclick="addProducts()"><span><i class="fas fa-plus"></i>&nbsp;&nbsp; <?php echo 'Add ' . $T_name; ?> </span></a>
+                            <!-- <a href="javascript:;" class="btn add-new btn-primary" onclick="addProducts()"><span><i class="fas fa-plus"></i>&nbsp;&nbsp; <?php echo 'Add ' . $T_name; ?> </span></a> -->
+                            <a href="./?mode=products/detail-products&type=<?php echo $type; ?>" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp; <?php echo 'Add ' . $T_name; ?> </span></a>
                         </div>
                     </div>
                 </div>
@@ -98,6 +99,10 @@ switch ($type) {
                         $status_class = $row["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
                         $status_txt = $row["offline"] == 1 ? 'Offline' : 'Online';
                     ?>
+
+                        <input type="hidden" id="pro_name<?php echo $row['id']; ?>" name="pro_name[]" value="<?php echo $row['name']; ?>">
+                        <input type="hidden" id="pro_offline<?php echo $row['id']; ?>" name="pro_offline[]" value="<?php echo $row['offline']; ?>">
+
                         <div class="card collapse-icon plan-card">
                             <!-- Name starts-->
                             <div class="card-header row">
@@ -105,7 +110,7 @@ switch ($type) {
                                     <div>
                                         <span class="card-title"> <?php echo $row['name']; ?> </span>
                                         <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span>
-                                        <a href="#edit" onclick="editProducts(<?php echo $row['id']; ?>);"><i data-feather='edit'></i></a>
+                                        <a href="./?mode=products/detail-products&type=<?php echo $type; ?>&id=<?php echo $row['id']; ?>"><i data-feather='edit'></i></a>
                                         <?php if ($row["trash_deleted"] == 1) { ?>
                                             <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
                                                 <a href="#restore" class="item-undo" onclick="restoreList(<?php echo $row['id']; ?>)"> <i data-feather='rotate-ccw'></i> </a>
@@ -128,7 +133,8 @@ switch ($type) {
                             $params = array();
                             $first = 0;
                             $numrow_realtime = 1;
-                            $query_rates = "SELECT PR.*, PP.id as ppID, PP.products as ppProducts, PP.periods_from as ppPeriods_from, PP.periods_to as ppPeriods_to, PP.offline as ppOffline
+                            $query_rates = "SELECT PR.*, PP.id as ppID, PP.products as ppProducts, PP.periods_from as ppPeriods_from, PP.periods_to as ppPeriods_to, 
+                                            PP.offline as ppOffline, PP.trash_deleted as ppTrash_deleted
                                         FROM products_rates PR
                                         LEFT JOIN products_periods PP
                                         ON PR.products_periods = PP.id
@@ -177,9 +183,18 @@ switch ($type) {
                                                 </div>
                                                 <div id="collapse<?php echo $row_rates['ppID']; ?>" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">
-                                                            <a href="./?mode=products/detail-rates&type=<?php echo $type; ?>&periods=<?php echo $row_rates['ppID']; ?>" class="btn btn-outline-primary"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a>
-                                                        </h5>
+                                                        <p class="card-title">
+                                                            <!-- <a href="./?mode=products/detail-rates&type=<?php echo $type; ?>&periods=<?php echo $row_rates['ppID']; ?>" class="btn btn-outline-primary"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a> -->
+                                                            <!-- <a href="#edit" data-toggle="tooltip" data-placement="top" title="Edit periods"><i data-feather='edit'></i></a> -->
+                                                            <?php if ($row_rates["ppTrash_deleted"] == 1) { ?>
+                                                                <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                                    <a href="#restore" data-toggle="tooltip" data-placement="top" title="Restore periods" onclick="restorePeriods(<?php echo $row_rates['ppID']; ?>);"><i data-feather='rotate-ccw'></i></a>
+                                                                <?php } ?>
+                                                            <?php } else { ?>
+                                                                <a href="#trash" data-toggle="tooltip" data-placement="top" title="Delete periods" onclick="deletePeriods(<?php echo $row_rates['ppID']; ?>);"><i data-feather='trash'></i></a>
+                                                            <?php } ?>
+                                                            <a href="./?mode=products/detail-rates&type=<?php echo $type; ?>&periods=<?php echo $row_rates['ppID']; ?>" data-toggle="tooltip" data-placement="top" title="Add Rates Agent"><i data-feather='plus'></i></a>
+                                                        </p>
                                                         <div class="table-responsive" id="div-products">
                                                             <table class="table">
                                                                 <thead class="thead-primary">
@@ -218,10 +233,10 @@ switch ($type) {
                                                                         <a href="./?mode=products/detail-rates&type=<?php echo $type; ?>&periods=<?php echo $row_rates['ppID']; ?>&id=<?php echo $row_rates['id']; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
                                                                         <?php if ($row_rates["trash_deleted"] == 1) { ?>
                                                                             <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
-                                                                                <a href="javascript:;" class="item-undo" onclick="restoreList(<?php echo $row_rates['id']; ?>)"> <i class="fas fa-undo"></i> </a>
+                                                                                <a href="javascript:;" class="item-undo" onclick="restoreRates(<?php echo $row_rates['id']; ?>)"> <i class="fas fa-undo"></i> </a>
                                                                             <?php } ?>
                                                                         <?php } else { ?>
-                                                                            <a href="javascript:;" class="item-trash" onclick="deleteList(<?php echo $row_rates['id']; ?>)"> <i class="far fa-trash-alt"></i> </a>
+                                                                            <a href="javascript:;" class="item-trash" onclick="deleteRates(<?php echo $row_rates['id']; ?>)"> <i class="far fa-trash-alt"></i> </a>
                                                                         <?php } ?>
                                                                     </td>
                                                                 </tr>
@@ -241,52 +256,6 @@ switch ($type) {
 </div>
 
 <script>
-    // Add Products
-    function addProducts() {
-        var company = document.getElementById('company')
-        var type = document.getElementById('type')
-        Swal.fire({
-            title: 'Add Products',
-            input: 'text',
-            customClass: {
-                confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-outline-danger ml-1',
-                input: 'form-control'
-            },
-            buttonsStyling: false,
-            selectAttributes: {
-                autocapitalize: 'off'
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Close',
-        }).then((result) => {
-            if (result.value) {
-                jQuery.ajax({
-                    url: "sections/products/ajax/add-products.php",
-                    data: {
-                        company: company.value,
-                        type: type.value,
-                        name: result.value
-                    },
-                    type: "POST",
-                    success: function(response) {
-                        Swal.fire({
-                            title: "Successfuly!",
-                            icon: "success"
-                        }).then(function() {
-                            // $("#div-agent").html(response);
-                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
-                        });
-                    },
-                    error: function() {
-                        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                    }
-                });
-            }
-        })
-    }
-
     // Copy Products
     function copyProducts(id) {
         Swal.fire({
@@ -372,6 +341,80 @@ switch ($type) {
         return true;
     }
 
+    // Delete Periods
+    function deletePeriods(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need delete this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/delete-periods.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Delete this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Delete this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Delete Rates
+    function deleteRates(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need delete this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/delete-rates.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Delete this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Delete this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
     // Restore products
     function restoreList(id) {
         Swal.fire({
@@ -409,76 +452,77 @@ switch ($type) {
         return true;
     }
 
-    // Edit products
-    function editProducts(id) {
-
-        swal.fire({
-            title: 'Edit Products',
-            width: 400,
-            html: '<div class="form-row">' +
-                '<div class="col-xl-3 col-md-6 col-12">' +
-                '<div class="form-group">' +
-                '<div class="custom-control custom-checkbox">' +
-                '<input type="checkbox" class="custom-control-input" id="offline" name="offline" />' +
-                '<label class="custom-control-label" for="offline"> Offline </label>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-row">' +
-                '<div class="col-xl-12 col-md-12 col-12">' +
-                '<div class="form-group">' +
-                '<label for="rates_adult"> <b> Name Products </b> </label>' +
-                '<input type="text" class="form-control" id="rates_adult" name="rates_adult" value="" placeholder="" />' +
-                '</div>' +
-                '</div>' +
-                '</div>',
-            confirmButtonText: 'Confirm',
-            // showConfirmButton: false,
-            // showCancelButton: false,
-            showCloseButton: true,
-            preConfirm: function() {
-                return new Promise((resolve, reject) => {
-                    // get your inputs using their placeholder or maybe add IDs to them
-                    resolve({
-                        id: id,
-                        type_rates: $('#type_rates' + id).val(),
-                        rates_adult: $('#rates_adult' + id).val(),
-                        rates_children: $('#rates_children' + id).val(),
-                        rates_infant: $('#rates_infant' + id).val(),
-                        rates_group: $('#rates_group' + id).val(),
-                        pax: $('#pax' + id).val()
-                    });
-                    // maybe also reject() on some condition
+    // Restore Periods
+    function restorePeriods(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need restore this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/restore-periods.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Restore this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Restore this information failed!', 'Please try again', 'error')
+                    }
                 });
             }
+        })
+        return true;
+    }
+
+    // Restore Rates
+    function restoreRates(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need restore this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
         }).then((result) => {
-            // console.log(result.value['id']);
-            jQuery.ajax({
-                url: "sections/company/ajax/add-rates.php",
-                data: {
-                    id: result.value['id'],
-                    type_rates: result.value['type_rates'],
-                    rates_adult: result.value['rates_adult'],
-                    rates_children: result.value['rates_children'],
-                    rates_infant: result.value['rates_infant'],
-                    rates_group: result.value['rates_group'],
-                    pax: result.value['pax']
-                },
-                type: "POST",
-                success: function(response) {
-                    Swal.fire({
-                        title: "Successfuly!",
-                        icon: "success"
-                    }).then(function() {
-                        productView(type)
-                        // $("#div-agent").html(response);
-                    });
-                },
-                error: function() {
-                    Swal.fire('Error!', 'Error. Please try again', 'error')
-                }
-            });
-        });
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/products/ajax/restore-rates.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Restore this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Restore this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
     }
 </script>

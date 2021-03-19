@@ -39,6 +39,7 @@ $default_name = "TMS"; # Set company name
 $confirm_code = "#ADMINTMS";
 $today = date("Y-m-d");
 $times = date("H:i:s");
+$time_hm = date("H:i");
 $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; # Set full URL
 # -------------------- #
 
