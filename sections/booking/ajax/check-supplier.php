@@ -1,0 +1,97 @@
+<?php
+require("../../../inc/connection.php");
+
+if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST['bp_date_travel'])) {
+    $combine_agent = $_POST['bp_supplier'];
+    $company = $_POST['company'];
+    $bp_date_travel = $_POST['bp_date_travel'];
+    $check_option = 0;
+    // Agent Rates
+    if ($_POST['company'] != $_POST['bp_supplier']) {
+        $query_products = "SELECT RAG.*, 
+                            CAG.id as cagId, CAG.supplier as cagSupplier, CAG.agent as cagAgent, CAG.offline as cagOffline,
+                            PR.id as prId, PR.products_periods as prPP, PR.offline as prOffline, 
+                            PP.id as ppId, PP.products as ppProducts, PP.periods_from as pp_from, PP.periods_to as pp_to, PP.offline as ppOffline,
+                            PRO.id as proId, PRO.name as proName, PRO.cut_open as proCutOpen, PRO.cut_off as proCutOff, PRO.offline as proOffline
+                            FROM rates_agent RAG
+                            LEFT JOIN combine_agent CAG
+                                ON RAG.combine_agent = CAG.id
+                            LEFT JOIN products_rates PR
+                                ON RAG.products_rates = PR.id
+                            LEFT JOIN products_periods PP
+                                ON PR.products_periods = PP.id
+                            LEFT JOIN products PRO
+                                ON PP.products = PRO.id
+                            WHERE CAG.id = '$combine_agent' AND PP.periods_from <= '$bp_date_travel' AND PP.periods_to >= '$bp_date_travel'
+                            AND CAG.offline = '2' AND PR.offline = '2' AND PP.offline = '2' AND PRO.offline = '2' ";
+        $result_products = mysqli_query($mysqli_p, $query_products);
+        // echo $query_products;
+?>
+        <label for="bp_products"> Products </label>
+        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkAllotment()">
+            <?php
+            while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
+                // Check Cut Off
+                if (!empty($row_products['proCutOpen']) && !empty($row_products['proCutOff'])) {
+                    $cut_off = date('H:i', strtotime($row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
+                    $cut_off = strtotime($cut_off) - strtotime($time_hm);
+                    if ($cut_off >= 0) {
+                        $check_option++;
+                        echo '<option value=" ' . $row_products['proId'] . ' ">' . $row_products['proName'] . '</option>';
+                    }
+                } else {
+                    $check_option++;
+                    echo '<option value=" ' . $row_products['proId'] . ' ">' . $row_products['proName'] . '</option>';
+                }
+            }
+            if ($check_option == 0) {
+                echo "<option value=''> No Data </option>";
+            }
+            ?>
+        </select>
+    <?php
+        // Company Rates
+    } else {
+        $query_products = "SELECT PR.*, 
+                            PP.id as ppId, PP.products as ppProducts, PP.periods_from as pp_from, PP.periods_to as pp_to, PP.offline as ppOffline,
+                            PRO.id as proId, PRO.name as proName, PRO.cut_open as proCutOpen, PRO.cut_off as proCutOff, PRO.offline as proOffline
+                            FROM products_rates PR
+                            LEFT JOIN products_periods PP
+                                ON PR.products_periods = PP.id
+                            LEFT JOIN products PRO
+                                ON PP.products = PRO.id
+                            WHERE PRO.company = '$company' AND PR.type_rates = '2'
+                            AND PP.periods_from <= '$bp_date_travel' AND PP.periods_to >= '$bp_date_travel'
+                            AND PR.offline = '2' AND PP.offline = '2' AND PRO.offline = '2' ";
+        $result_products = mysqli_query($mysqli_p, $query_products);
+    ?>
+        <label for="bp_products"> Products </label>
+        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkAllotment()">
+            <?php
+            while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
+                // Check Cut Off
+                if (!empty($row_products['proCutOpen']) && !empty($row_products['proCutOff'])) {
+                    $cut_off = date('H:i', strtotime($row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
+                    $cut_off = strtotime($cut_off) - strtotime($time_hm);
+                    if ($cut_off >= 0) {
+                        $check_option++;
+                        echo '<option value=" ' . $row_products['proId'] . ' ">' . $row_products['proName'] . '</option>';
+                    }
+                } else {
+                    $check_option++;
+                    echo '<option value=" ' . $row_products['proId'] . ' ">' . $row_products['proName'] . '</option>';
+                }
+            }
+            if ($check_option == 0) {
+                echo "<option value=''> No Data </option>";
+            } ?>
+        </select>
+    <?php
+    }
+} else {
+    ?>
+    <label for="bp_products"> Products </label>
+    <select class="custom-select" id="bp_products" name="bp_products">
+        <option value="">No Data</option>
+    </select>
+<?php } ?>

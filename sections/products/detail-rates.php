@@ -43,7 +43,7 @@ $rate_adult = !empty($row["rate_adult"]) ? number_format($row["rate_adult"]) : '
 $rate_children = !empty($row["rate_children"]) ? number_format($row["rate_children"]) : '0';
 $rate_infant = !empty($row["rate_infant"]) ? number_format($row["rate_infant"]) : '0';
 $rate_group = !empty($row["rate_group"]) ? number_format($row["rate_group"]) : '0';
-$pax = !empty($row["pax"]) ? $row["pax"] : '0';
+$rate_pax = !empty($row["pax"]) ? $row["pax"] : '0';
 $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transfer"]) : '0';
 ?>
 <div class="app-content content ">
@@ -168,8 +168,8 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         </div> <!-- div -->
                                         <div class="col-xl-3 col-md-6 col-12">
                                             <div class="form-group">
-                                                <label for="pax">Pax</label>
-                                                <input type="text" class="form-control" id="pax" name="pax" value="<?php echo $pax; ?>" placeholder="" oninput="priceformat('pax');" />
+                                                <label for="rate_pax">Pax</label>
+                                                <input type="text" class="form-control" id="rate_pax" name="rate_pax" value="<?php echo $rate_pax; ?>" placeholder="" oninput="priceformat('rate_pax');" />
                                             </div>
                                         </div> <!-- div -->
                                         <div class="col-xl-3 col-md-6 col-12">
@@ -301,7 +301,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                     // checkFormPeriods
                                     function checkFormPeriods() {
                                         var group = document.getElementById('group')
-                                        var pax = document.getElementById('pax')
+                                        var pax = document.getElementById('rate_pax')
                                         if (group.value != '') {
                                             if (pax.value == '') {
                                                 Swal.fire('Error!', 'Error. Please Enter a Pax', 'error');
@@ -319,7 +319,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         if (check_offline.checked) {
                                             var offline = $('#offline').val();
                                         } else {
-                                            var offline = '';
+                                            var offline = '2';
                                         }
                                         var company = $('#company').val();
                                         var periods = $('#periods').val();
@@ -329,7 +329,7 @@ $rate_transfer = !empty($row["rate_transfer"]) ? number_format($row["rate_transf
                                         var children = $('#children').val();
                                         var infant = $('#infant').val();
                                         var group = $('#group').val();
-                                        var pax = $('#pax').val();
+                                        var pax = $('#rate_pax').val();
                                         var transfer = $('#transfer').val();
                                         var agent_arr = []
                                         var default_agent_arr = []

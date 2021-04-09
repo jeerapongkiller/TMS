@@ -6,7 +6,7 @@
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <h2 class="content-header-title float-left mb-0">Booking</h2>
+                        <h2 class="content-header-title float-left mb-0"> Booking </h2>
                         <div class="breadcrumb-wrapper">
                             <ol class="breadcrumb">
                                 <!-- <li class="breadcrumb-item"><a href="index.html">Home</a>
@@ -22,10 +22,30 @@
             </div>
             <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                 <div class="form-group breadcrumb-right">
-
+                    <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
+                        <div class="dt-buttons btn-group flex-wrap">
+                            <a href="./?mode=booking/detail" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Booking</span></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <?php
+        # check value from search
+        $search_status_val = !empty($_POST["search_status"]) ? $_POST["search_status"] : '0';
+        $search_booking_val = !empty($_POST["search_booking"]) ? $_POST["search_booking"] : '';
+        $search_fname_val = !empty($_POST["search_fname"]) ? $_POST["search_fname"] : '';
+        $search_lname_val = !empty($_POST["search_lname"]) ? $_POST["search_lname"] : '';
+        $search_phone_val = !empty($_POST["search_phone"]) ? $_POST["search_phone"] : '';
+        $search_from_booking_val = !empty($_POST["search_from_booking"]) ? $_POST["search_from_booking"] : '';
+        $search_to_booking_val = !empty($_POST["search_to_booking"]) ? $_POST["search_to_booking"] : '';
+        $search_from_travel_val = !empty($_POST["search_from_travel"]) ? $_POST["search_from_travel"] : '';
+        $search_to_travel_val = !empty($_POST["search_to_travel"]) ? $_POST["search_to_travel"] : '';
+        $search_agent_val = !empty($_POST["search_agent"]) ? $_POST["search_agent"] : '0';
+        $search_status_email_val = !empty($_POST["search_status_email"]) ? $_POST["search_status_email"] : '0';
+        $search_status_confirm_val = !empty($_POST["search_status_confirm"]) ? $_POST["search_status_confirm"] : '0';
+        ?>
 
         <!-- Section search start -->
         <section id="basic-input">
@@ -36,125 +56,149 @@
                             <h4 class="card-title">Search</h4>
                         </div>
                         <div class="card-body">
-                            <form action="./?mode=booking/save" enctype="multipart/form-data" method="POST" id="frmsearch" name="frmsearch" class="needs-validation" novalidate>
+                            <form action="./?mode=<?php echo $_GET["mode"]; ?>" enctype="multipart/form-data" method="POST" id="frmsearch" name="frmsearch" class="needs-validation">
                                 <div class="form-row">
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="name">Name</label>
-                                            <input type="text" class="form-control" id="name" name="name" placeholder="" required />
-                                            <div class="invalid-feedback">Please enter your name.</div>
+                                            <label for="search_booking">Booking No.</label>
+                                            <input type="text" class="form-control" id="search_booking" name="search_booking" placeholder="" value="<?php echo $search_booking_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="text" class="form-control" id="email" name="email" placeholder="" required />
-                                            <div class="invalid-feedback">Please enter your email.</div>
+                                            <label for="search_fname">Frist Name</label>
+                                            <input type="text" class="form-control" id="search_fname" name="search_fname" placeholder="" value="<?php echo $search_fname_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="date-from">Date (From)</label>
-                                            <input type="text" class="form-control" id="date-from" name="date-from" value="" placeholder="" readonly />
-                                            <div class="invalid-feedback">Please enter your date from.</div>
+                                            <label for="search_lname">Last Name</label>
+                                            <input type="text" class="form-control" id="search_lname" name="search_lname" placeholder="" value="<?php echo $search_lname_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="date-to">Date (To)</label>
-                                            <input type="text" class="form-control" id="date-to" name="date-to" value="" placeholder="" readonly />
-                                            <div class="invalid-feedback">Please enter your date to.</div>
+                                            <label for="search_phone">Phone</label>
+                                            <input type="text" class="form-control" id="search_phone" name="search_phone" placeholder="" value="<?php echo $search_phone_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="date-range">Date (Range)</label>
-                                            <input type="text" class="form-control" id="date-range" name="date-range" value="" placeholder="" />
-                                            <div class="invalid-feedback">Please enter your date range.</div>
+                                            <label for="search_from_booking">Date Booking (From)</label>
+                                            <input type="date" class="form-control" id="search_from_booking" name="search_from_booking" placeholder="" value="<?php echo $search_from_booking_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="salary">Salary</label>
-                                            <input type="text" class="form-control" id="salary" name="salary" placeholder="" required />
-                                            <div class="invalid-feedback">Please enter your salary.</div>
+                                            <label for="search_to_booking">Date Booking (To)</label>
+                                            <input type="date" class="form-control" id="search_to_booking" name="search_to_booking" placeholder="" value="<?php echo $search_to_booking_val; ?>" />
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <label for="status">Status</label>
-                                            <select class="form-control" id="status" name="status" required>
-                                                <option>IT</option>
-                                                <option>Blade Runner</option>
-                                                <option>Thor Ragnarok</option>
+                                            <label for="search_from_travel">Date Travel (From)</label>
+                                            <input type="date" class="form-control" id="search_from_travel" name="search_from_travel" placeholder="" value="<?php echo $search_from_travel_val; ?>" />
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-3 col-12">
+                                        <div class="form-group">
+                                            <label for="search_to_travel">Date Travel (To)</label>
+                                            <input type="date" class="form-control" id="search_to_travel" name="search_to_travel" placeholder="" value="<?php echo $search_to_travel_val; ?>" />
+                                        </div>
+                                    </div> <!-- div -->
+                                    <div class="col-xl-3 col-md-3 col-12">
+                                        <div class="form-group">
+                                            <label for="search_agent">Agent</label>
+                                            <select class="form-control" id="search_agent" name="search_agent">
+                                                <option value="">-</option>
+                                                <?php
+                                                $query_agent = "SELECT combine_agent.*, company.id as comID, company.name as comName 
+                                                                FROM combine_agent 
+                                                                LEFT JOIN company
+                                                                    ON combine_agent.agent = company.id
+                                                                WHERE combine_agent.supplier = '" . $_SESSION["admin"]["company"] . "' AND combine_agent.offline = 2 ";
+                                                $query_agent .= " ORDER BY id ASC";
+                                                $result_agent = mysqli_query($mysqli_p, $query_agent);
+                                                while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
+                                                ?>
+                                                    <option value="<?php echo $row_agent["id"]; ?>" <?php if ($search_agent_val == $row_agent["id"]) {
+                                                                                                        echo "selected";
+                                                                                                    } ?>>
+                                                        <?php echo $row_agent["comName"]; ?></option>
+                                                <?php
+                                                }
+                                                ?>
                                             </select>
-                                            <div class="invalid-feedback">Please select your status.</div>
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <a href="javascript:;" class="btn btn-primary mr-1 waves-effect waves-float waves-light" onclick="submit()">Submit</a>
-                                            <a href="javascript:;" class="btn btn-outline-primary waves-effect" onclick="reset()">Reset</a>
+                                            <label for="search_status">Status</label>
+                                            <select class="form-control" id="search_status" name="search_status">
+                                                <!-- required -->
+                                                <option value="0" <?php if ($search_status_val == 0) {
+                                                                        echo "selected";
+                                                                    } ?>>All</option>
+                                                <option value="2" <?php if ($search_status_val == 2) {
+                                                                        echo "selected";
+                                                                    } ?>>Online</option>
+                                                <option value="1" <?php if ($search_status_val == 1) {
+                                                                        echo "selected";
+                                                                    } ?>>Offline</option>
+                                            </select>
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="check1" name="check" class="custom-control-input" value="checked" required />
-                                                <label class="custom-control-label" for="check1">Radio Checked</label>
-                                            </div>
-                                            <div class="custom-control custom-radio">
-                                                <input type="radio" id="check2" name="check" class="custom-control-input" value="unchecked" required />
-                                                <label class="custom-control-label" for="check2">Radio Unchecked</label>
-                                            </div>
-                                            <div class="invalid-feedback">Please select your check.</div>
+                                            <label for="search_status_email">Status (Email)</label>
+                                            <select class="form-control" id="search_status_email" name="search_status_email">
+                                                <!-- required -->
+                                                <option value="0" <?php if ($search_status_email_val == 0) {
+                                                                        echo "selected";
+                                                                    } ?>>All</option>
+                                                <option value="1" <?php if ($search_status_email_val == 1) {
+                                                                        echo "selected";
+                                                                    } ?>>Sent</option>
+                                                <option value="2" <?php if ($search_status_email_val == 2) {
+                                                                        echo "selected";
+                                                                    } ?>>Don't send</option>
+                                                <option value="3" <?php if ($search_status_email_val == 3) {
+                                                                        echo "selected";
+                                                                    } ?>>Resend</option>
+                                                <option value="4" <?php if ($search_status_email_val == 4) {
+                                                                        echo "selected";
+                                                                    } ?>>Cancel</option>
+                                            </select>
                                         </div>
                                     </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
+                                    <div class="col-xl-3 col-md-3 col-12">
                                         <div class="form-group">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="checkbox" name="checkbox" value="1" required />
-                                                <label class="custom-control-label" for="checkbox">Checked</label>
-                                                <div class="invalid-feedback">Please select your check box.</div>
-                                            </div>
-                                        </div>
-                                    </div> <!-- div -->
-                                    <div class="col-xl-3 col-md-6 col-12">
-                                        <div class="form-group">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="checkbox" name="checkbox" value="1" required />
-                                                <label class="custom-control-label" for="checkbox">Checked</label>
-                                                <div class="invalid-feedback">Please select your check box.</div>
-                                            </div>
+                                            <label for="search_status_confirm">Status (Confirm)</label>
+                                            <select class="form-control" id="search_status_confirm" name="search_status_confirm">
+                                                <!-- required -->
+                                                <option value="0" <?php if ($search_status_email_val == 0) {
+                                                                        echo "selected";
+                                                                    } ?>>All</option>
+                                                <option value="1" <?php if ($search_status_email_val == 1) {
+                                                                        echo "selected";
+                                                                    } ?>>Confirm</option>
+                                                <option value="2" <?php if ($search_status_email_val == 2) {
+                                                                        echo "selected";
+                                                                    } ?>>Don't confirm</option>
+                                                <option value="3" <?php if ($search_status_email_val == 3) {
+                                                                        echo "selected";
+                                                                    } ?>>Cancel</option>
+                                            </select>
                                         </div>
                                     </div> <!-- div -->
                                 </div>
                                 <div class="form-row">
-                                    <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light" >Submit</button>
-                                    <button type="reset" class="btn btn-outline-primary waves-effect" >Reset</button>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
+                                        <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.location.href='./?mode=booking/list'"><i class="fas fa-redo-alt"></i>&nbsp;&nbsp;Reset</button>
+                                    </div>
                                 </div>
                             </form>
-                            <script>
-                                // Example starter JavaScript for disabling form submissions if there are invalid fields
-                                (function() {
-                                    'use strict';
-                                    window.addEventListener('load', function() {
-                                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                                        var forms = document.getElementsByClassName('needs-validation');
-                                        // Loop over them and prevent submission
-                                        var validation = Array.prototype.filter.call(forms, function(form) {
-                                            form.addEventListener('submit', function(event) {
-                                                if (form.checkValidity() === false) {
-                                                    // form.classList.add('invalid');
-                                                    event.preventDefault();
-                                                    event.stopPropagation();
-                                                }
-                                                form.classList.add('was-validated');
-                                            }, false);
-                                        });
-                                    }, false);
-                                })();
-                            </script>
                         </div>
                     </div>
                 </div>
@@ -162,261 +206,132 @@
         </section>
         <!-- Section search end -->
 
-        <!-- Booking table start -->
+        <!-- booking table start -->
         <div class="content-body">
             <section id="basic-datatable">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <table class="table" id="datatables-basic">
+                            <table class="table" id="datatables-booking">
                                 <thead>
                                     <tr>
-                                        <th class="dt-checkboxes-cell dt-checkboxes-select-all sorting_disabled" rowspan="1" colspan="1" style="width: 18px;" data-col="1" aria-label>
-                                            <div class="custom-control custom-checkbox"> <input class="custom-control-input" type="checkbox" value="" id="checkboxSelectAll" /><label class="custom-control-label" for="checkboxSelectAll"></label></div>
-                                        </th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Date</th>
-                                        <th>Salary</th>
                                         <th>Status</th>
+                                        <th>Booking No.</th>
+                                        <th>Date Booking</th>
+                                        <th>Agent</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Date Travel</th>
+                                        <th>Balance Booking</th>
+                                        <th>Status (Email)</th>
+                                        <th>Status (Confirm)</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="dt-checkboxes-cell">
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox1" />
-                                                <label class="custom-control-label" for="checkbox1"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-success mr-1"> <span class="avatar-content"> T1 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 1 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 1 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_1@gmail.com</td>
-                                        <td>01/02/2020</td>
-                                        <td>฿1,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-primary"> Current </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox2" />
-                                                <label class="custom-control-label" for="checkbox2"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-danger mr-1"> <span class="avatar-content"> T2 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 2 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 2 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_2@gmail.com</td>
-                                        <td>02/02/2020</td>
-                                        <td>฿2,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-success"> Professional </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox3" />
-                                                <label class="custom-control-label" for="checkbox3"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-warning mr-1"> <span class="avatar-content"> T3 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 3 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 3 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_3@gmail.com</td>
-                                        <td>03/02/2020</td>
-                                        <td>฿3,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-danger"> Rejected </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox4" />
-                                                <label class="custom-control-label" for="checkbox4"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-info mr-1"> <span class="avatar-content"> T4 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 4 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 4 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_4@gmail.com</td>
-                                        <td>04/02/2020</td>
-                                        <td>฿4,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-warning"> Resigned </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox5" />
-                                                <label class="custom-control-label" for="checkbox5"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-dark mr-1"> <span class="avatar-content"> T5 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 5 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 5 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_5@gmail.com</td>
-                                        <td>05/02/2020</td>
-                                        <td>฿5,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-info"> Applied </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox6" />
-                                                <label class="custom-control-label" for="checkbox6"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-primary mr-1"> <span class="avatar-content"> T6 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 6 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 6 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_6@gmail.com</td>
-                                        <td>06/02/2020</td>
-                                        <td>฿6,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-info"> Applied </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox7" />
-                                                <label class="custom-control-label" for="checkbox7"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-secondary mr-1"> <span class="avatar-content"> T7 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 7 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 7 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_7@gmail.com</td>
-                                        <td>07/02/2020</td>
-                                        <td>฿7,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-info"> Applied </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox8" />
-                                                <label class="custom-control-label" for="checkbox8"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-success mr-1"> <span class="avatar-content"> T8 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 8 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 8 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_8@gmail.com</td>
-                                        <td>08/02/2020</td>
-                                        <td>฿8,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-info"> Applied </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="custom-control custom-checkbox">
-                                                <input class="custom-control-input dt-checkboxes" type="checkbox" value="" id="checkbox9" />
-                                                <label class="custom-control-label" for="checkbox9"></label>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-left align-items-center">
-                                                <div class="avatar bg-light-danger mr-1"> <span class="avatar-content"> T9 </span> </div>
-                                                <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> Test 9 </span>
-                                                    <small class="emp_post text-truncate text-muted">Remark Test 9 </small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>email_9@gmail.com</td>
-                                        <td>09/02/2020</td>
-                                        <td>฿9,000</td>
-                                        <td>
-                                            <span class="badge badge-pill badge-light-primary"> Applied </span>
-                                        </td>
-                                        <td>
-                                            <a href="javascript:;" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
-                                            <a href="javascript:;" class="item-trash"> <i class="far fa-trash-alt"></i> </a>
-                                        </td>
-                                    </tr>
+                                    <?php
+                                    // Procedural mysqli
+                                    $bind_types = "";
+                                    $params = array();
+
+                                    $query = "SELECT booking.*, booking_no.id as no_id, booking_no.bo_full as bo_full, booking_no.bo_no as bo_no,
+                                            combine_agent.id as cgid, combine_agent.supplier as cgspp, combine_agent.agent as cgagen, 
+                                            company.id as comid, company.name as comname
+                                            FROM booking
+                                            LEFT JOIN booking_no
+                                                ON booking.booking_no = booking_no.id
+                                            LEFT JOIN combine_agent
+                                                ON booking.agent = combine_agent.id
+                                            LEFT JOIN company
+                                                ON combine_agent.agent = company.id
+                                            WHERE booking.id > '0' AND booking.company = '" . $_SESSION["admin"]["company"] . "' ";
+                                    if (!empty($search_status_val)) {
+                                        # search status
+                                        $query .= " AND booking.offline = ?";
+                                        $bind_types .= "i";
+                                        array_push($params, $search_status_val);
+                                    }
+                                    if (!empty($search_agent_val)) {
+                                        # search status
+                                        $query .= " AND booking.agent = ?";
+                                        $bind_types .= "i";
+                                        array_push($params, $search_agent_val);
+                                    }
+                                    if (!empty($search_fname_val)) {
+                                        # search firstname
+                                        $param = "%{$search_fname_val}%";
+                                        $query .= " AND booking.customer_firstname LIKE ?";
+                                        $bind_types .= "s";
+                                        array_push($params, $param);
+                                    }
+                                    if (!empty($search_lname_val)) {
+                                        # search firstname
+                                        $param = "%{$search_lname_val}%";
+                                        $query .= " AND booking.customer_lastname LIKE ?";
+                                        $bind_types .= "s";
+                                        array_push($params, $param);
+                                    }
+                                    if (!empty($search_phone_val)) {
+                                        # search status
+                                        $query .= " AND booking.customer_mobile = ?";
+                                        $bind_types .= "i";
+                                        array_push($params, $search_phone_val);
+                                    }
+                                    if (!empty($search_phone_val)) {
+                                        # search status
+                                        $query .= " AND booking.customer_mobile = ?";
+                                        $bind_types .= "i";
+                                        array_push($params, $search_phone_val);
+                                    }
+                                    if (!empty($search_from_booking_val) && !empty($search_to_booking_val)) {
+                                        # search status
+                                        $query .= " AND booking.booking_date BETWEEN ? AND ?";
+                                        $bind_types .= "ss";
+                                        array_push($params, $search_from_booking_val, $search_to_booking_val);
+                                    }
+
+
+                                    $procedural_statement = mysqli_prepare($mysqli_p, $query);
+
+                                    // Check error query
+                                    if ($procedural_statement == false) {
+                                        die("<pre>" . mysqli_error($mysqli_p) . PHP_EOL . $query . "</pre>");
+                                    }
+
+                                    if ($bind_types != "") {
+                                        mysqli_stmt_bind_param($procedural_statement, $bind_types, ...$params);
+                                    }
+
+                                    mysqli_stmt_execute($procedural_statement);
+                                    $result = mysqli_stmt_get_result($procedural_statement);
+                                    $numrow = mysqli_num_rows($result);
+                                    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                                        $status_class = $row["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
+                                        $status_txt = $row["offline"] == 1 ? 'Offline' : 'Online';
+                                    ?>
+                                        <tr>
+                                            <th> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </th>
+                                            <th> <?php echo $row["bo_full"]; ?> </th>
+                                            <th> <?php echo date("d F Y", strtotime($row["booking_date"])); ?> </th>
+                                            <th> <?php echo !empty($row["comname"]) ? $row["comname"] : '-'; ?> </th>
+                                            <th> <?php echo !empty($row["customer_firstname"]) ? $row["customer_firstname"] . ' ' . $row["customer_lastname"] : '-'; ?> </th>
+                                            <th> <?php echo $row["customer_mobile"]; ?> </th>
+                                            <th> <?php echo '-'; ?> </th>
+                                            <th> <?php echo '%'; ?> </th>
+                                            <th> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </th>
+                                            <th> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </th>
+                                            <th>
+                                                <a href="./?mode=booking/detail&id=<?php echo $row["id"]; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
+                                                <?php if ($row["trash_deleted"] == 1) { ?>
+                                                    <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                        <a href="javascript:;" class="item-undo" onclick="restoreList(<?php echo $row['id']; ?>)"> <i class="fas fa-undo"></i> </a>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    <a href="javascript:;" class="item-trash" onclick="deleteList(<?php echo $row['id']; ?>)"> <i class="far fa-trash-alt"></i> </a>
+                                                <?php } ?>
+                                            </th>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -424,7 +339,6 @@
                 </div>
             </section>
             <!-- Booking table end -->
-
         </div>
     </div>
 </div>

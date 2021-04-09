@@ -80,7 +80,6 @@ function img_upload($photo, $photo_name, $tmp_photo, $uploaddir, $photo_time, $p
 	}
 
 	return $photo;
-    
 }
 
 function list_number($select, $start, $loop)

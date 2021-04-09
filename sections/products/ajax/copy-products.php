@@ -44,6 +44,14 @@ if (!empty($_POST['id'])) {
                     $bind_types .= "s";
                     array_push($params, $pro_name_copy);
 
+                    $query_copy .= " cut_open = ?,";
+                    $bind_types .= "s";
+                    array_push($params, $row["cut_open"]);
+
+                    $query_copy .= " cut_off = ?,";
+                    $bind_types .= "i";
+                    array_push($params, $row["cut_off"]);
+
                     $query_copy .= " offline = ?,";
                     $bind_types .= "i";
                     array_push($params, $pro_offile);

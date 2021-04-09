@@ -151,6 +151,10 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 if (str_mode.indexOf("products/detail-allot") >= 0) {
                     checkDate();
                 }
+                if (str_mode.indexOf("booking/detail") >= 0) {
+                    checkCustomertype();
+                    checkCompanyAff();
+                }
             });
         </script>
 
@@ -231,9 +235,11 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                 });
             });
 
-            /** DataTables Permission **/
+            /** DataTables **/
             $(function() {
                 'use strict';
+
+                /** DataTables Permission **/
                 $('#datatables-permission').DataTable({
                     "searching": false,
                     order: [
@@ -244,6 +250,50 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
                         targets: [2],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+
+                /** DataTables Booking **/
+                $('#datatables-booking').DataTable({
+                    "searching": false,
+                    order: [
+                        [1, 'asc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [2],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+
+                /** DataTables History **/
+                $('#datatables-history').DataTable({
+                    "searching": false,
+                    order: [
+                        [1, 'asc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [3, 5],
                         orderable: false
                     }],
                     language: {
@@ -282,8 +332,6 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
 
                 /** Periods date products **/
                 $('#periods_to').flatpickr({
-                    // enableTime: true,
-                    // dateFormat: "Y-m-d H:i",
                     dateFormat: 'Y-m-d',
                     minDate: $('#periods_from').val()
                 });
@@ -297,10 +345,38 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     document.getElementById('periods_to').value = $('#periods_from').val();
                 });
 
+                /** Booking date booking **/
+                $('#search_to_booking').flatpickr({
+                    dateFormat: 'Y-m-d',
+                    minDate: $('#search_from_booking').val()
+                });
+                $('#search_from_booking').flatpickr({
+                    dateFormat: 'Y-m-d'
+                });
+                $('#search_from_booking').on('change', function() {
+                    $('#search_to_booking').flatpickr({
+                        minDate: this.value
+                    });
+                    document.getElementById('search_to_booking').value = $('#search_from_booking').val();
+                });
+
+                /** Travel date booking **/
+                $('#search_to_travel').flatpickr({
+                    dateFormat: 'Y-m-d',
+                    minDate: $('#search_from_travel').val()
+                });
+                $('#search_from_travel').flatpickr({
+                    dateFormat: 'Y-m-d'
+                });
+                $('#search_from_travel').on('change', function() {
+                    $('#search_to_travel').flatpickr({
+                        minDate: this.value
+                    });
+                    document.getElementById('search_to_travel').value = $('#search_from_travel').val();
+                });
+
                 /** Allotment date products **/
                 $('#date_to').flatpickr({
-                    // enableTime: true,
-                    // dateFormat: "Y-m-d H:i",
                     dateFormat: 'Y-m-d',
                     minDate: $('#date_from').val()
                 });
@@ -312,6 +388,11 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                         minDate: this.value
                     });
                     document.getElementById('date_to').value = $('#date_from').val();
+                });
+
+                /** Booking date products **/
+                $('#bp_date_travel').flatpickr({
+                    dateFormat: 'Y-m-d'
                 });
 
                 /** Booking Search **/

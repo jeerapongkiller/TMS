@@ -3,7 +3,7 @@ require("../../../inc/connection.php");
 #----- General Information -----#
 $id = !empty($_POST["id"]) ? $_POST["id"] : '';
 $page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
-$offline = !empty($_POST["offline"]) ? $_POST["offline"] : '';
+$offline = !empty($_POST["offline"]) ? $_POST["offline"] : '2';
 $company = !empty($_POST["company"]) ? $_POST["company"] : '';
 $periods = !empty($_POST["periods"]) ? $_POST["periods"] : '';
 $type_rates = !empty($_POST["type_rates"]) ? $_POST["type_rates"] : '';

@@ -80,7 +80,7 @@ switch ($type) {
                         $bind_types .= "i";
                         array_push($params, $company);
                     }
-                    $query .= " ORDER BY name, date_create DESC";
+                    $query .= " ORDER BY date_create DESC";
                     $procedural_statement = mysqli_prepare($mysqli_p, $query);
 
                     // Check error query
@@ -105,7 +105,7 @@ switch ($type) {
 
                         <div class="card collapse-icon plan-card">
                             <!-- Name starts-->
-                            <div class="card-header row">
+                            <div class="card-header row mb-1">
                                 <div class="content-header-left col-md-9 col-12">
                                     <div>
                                         <span class="card-title"> <?php echo $row['name']; ?> </span>

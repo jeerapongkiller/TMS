@@ -161,8 +161,8 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
                                         </div> <!-- div -->
                                         <div class="col-xl-3 col-md-6 col-12">
                                             <div class="form-group">
-                                                <label for="pax">Pax</label>
-                                                <input type="text" class="form-control" id="pax" name="pax" value="" placeholder="" oninput="priceformat('pax');" />
+                                                <label for="per_pax">Pax</label>
+                                                <input type="text" class="form-control" id="per_pax" name="per_pax" value="" placeholder="" oninput="priceformat('per_pax');" />
                                             </div>
                                         </div> <!-- div -->
                                         <div class="col-xl-3 col-md-6 col-12">
@@ -315,7 +315,7 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
         var infant_sale = $('#infant_sale').val();
         var group_cost = $('#group_cost').val();
         var group_sale = $('#group_sale').val();
-        var pax = $('#pax').val();
+        var per_pax = $('#per_pax').val();
         var transfer_cost = $('#transfer_cost').val();
         var transfer_sale = $('#transfer_sale').val();
 
@@ -336,7 +336,7 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
         fd.append('infant_sale', infant_sale);
         fd.append('group_cost', group_cost);
         fd.append('group_sale', group_sale);
-        fd.append('pax', pax);
+        fd.append('per_pax', per_pax);
         fd.append('transfer_cost', transfer_cost);
         fd.append('transfer_sale', transfer_sale);
         $.ajax({

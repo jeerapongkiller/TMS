@@ -379,23 +379,14 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
         </div>
         <!-- Form company end -->
 
-        <!-- Agent table start -->
+        <!-- Detail table start -->
         <?php if (!empty($id) && $offline != '1') { ?>
+            <!-- Agent table start -->
             <div class="content-header row">
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
                             <h2 class="content-header-title float-left mb-0"> Agent </h2>
-                            <!-- <div class="breadcrumb-wrapper">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="#">Datatable</a>
-                                    </li>
-                                    <li class="breadcrumb-item active">Home
-                                    </li>
-                                </ol>
-                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -403,7 +394,7 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
                     <div class="form-group breadcrumb-right">
                         <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
                             <div class="dt-buttons btn-group flex-wrap">
-                                <a href="javascript:;" class="btn add-new btn-primary" onclick="addAgent(<?php echo $id; ?>)"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Agent</span></a>
+                                <a href="javascript:;" class="btn add-new btn-primary" onclick="addAgent('<?php echo $id; ?>');"><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Agent</a>
                             </div>
                         </div>
                     </div>
@@ -468,15 +459,102 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             </div>
             <!-- Table head options end -->
             <?php
-            $query_company = "SELECT * FROM company WHERE id != '$id'  ";
-            $query_company .= $companyURL;
-            $query_company .= " AND offline = '2' ";
-            $result_company = mysqli_query($mysqli_p, $query_company);
-            while ($row_company = mysqli_fetch_array($result_company, MYSQLI_ASSOC)) {
-                $data[$row_company['id']] = $row_company['name'];
-            } ?>
+            $query_comno = "SELECT * FROM company WHERE id != '$id'  ";
+            $query_comno .= $companyURL;
+            $query_comno .= " AND offline = '2' ";
+            $result_comno = mysqli_query($mysqli_p, $query_comno);
+            $numcom = mysqli_num_rows($result_comno);
+            // echo !empty($data) ? 'inputOptions:' . json_encode($data) . ';' : Null;
+            ?>
+            <!-- Agent table end -->
+
+            <!-- Affiliated company table start -->
+            <input type="hidden" id="no_company" name="no_company" value="<?php echo $numcom; ?>">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <h2 class="content-header-title float-left mb-0"> Affiliated Company </h2>
+                            <!-- <div class="breadcrumb-wrapper">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="#">Datatable</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Home
+                                    </li>
+                                </ol>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="form-group breadcrumb-right">
+                        <div class="dt-action-buttons text-xl-right text-lg-left text-md-right text-left d-flex align-items-center justify-content-lg-end align-items-center flex-sm-nowrap flex-wrap mr-1">
+                            <div class="dt-buttons btn-group flex-wrap">
+                                <a href="./?mode=company/detail-aff&company=<?php echo $id; ?>" class="btn add-new btn-primary"><span><i class="fas fa-plus"></i>&nbsp;&nbsp;Add Affiliated Company</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table head options start -->
+            <div class="row" id="table-head">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="table-responsive" id="div-aff">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Name (Affiliated Company)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $query_aff = "SELECT * FROM company_aff WHERE company = '$id'  ";
+                                    $result_aff = mysqli_query($mysqli_p, $query_aff);
+                                    while ($row_aff = mysqli_fetch_array($result_aff, MYSQLI_ASSOC)) {
+                                        $status_class = $row_aff["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
+                                        $status_txt = $row_aff["offline"] == 1 ? 'Offline' : 'Online';
+                                        $pathphoto = !empty($row_aff["photo"]) ? 'inc/photo/company_aff/' . $row_aff["photo"] : 'inc/photo/no-image.jpg';
+                                    ?>
+                                        <tr>
+                                            <td> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </td>
+                                            <td>
+                                                <div class="d-flex justify-content-left align-items-center">
+                                                    <div class="avatar pull-up my-0 mr-1">
+                                                        <img src="<?php echo $pathphoto; ?>" alt="Avatar" height="30" width="30" />
+                                                    </div>
+                                                    <div class="d-flex flex-column"><span class="emp_name text-truncate font-weight-bold"> <?php echo $row_aff["name_aff"]; ?> </span>
+                                                        <small class="emp_post text-truncate text-muted"> <b> receipt name : </b> <?php echo $row_aff["receipt_name"]; ?> </small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="./?mode=company/detail-aff&id=<?php echo $row_aff["id"]; ?>&company=<?php echo $id; ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
+                                                <?php if ($row_aff["trash_deleted"] == 1) { ?>
+                                                    <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                        <a href="javascript:;" class="item-undo" onclick="restoreAff(<?php echo $row_aff['id']; ?>)"> <i class="fas fa-undo"></i> </a>
+                                                    <?php } ?>
+                                                <?php } else { ?>
+                                                    <a href="javascript:;" class="item-trash" onclick="deleteAff(<?php echo $row_aff['id']; ?>)"> <i class="far fa-trash-alt"></i> </a>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table head options end -->
+            <!-- Affiliated company table end -->
         <?php } ?>
-        <!-- Agent table end -->
+        <!-- Detail table end -->
+
     </div>
 </div>
 
@@ -505,47 +583,64 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
     <?php if (!empty($id) && $offline != '1') { ?>
 
         function addAgent(id) {
-            Swal.fire({
-                title: 'Add Agent',
-                input: 'select',
-                inputOptions: <?php echo json_encode($data); ?>,
-                customClass: {
-                    confirmButton: 'btn btn-primary',
-                    cancelButton: 'btn btn-outline-danger ml-1',
-                    input: 'form-control'
-                },
-                buttonsStyling: false,
-                selectAttributes: {
-                    autocapitalize: 'off'
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Submit',
-                cancelButtonText: 'Close',
-            }).then((result) => {
-                if (result.value) {
-                    jQuery.ajax({
-                        url: "sections/company/ajax/add_agent.php",
-                        data: {
-                            supplier: id,
-                            agent: result.value
-                        },
-                        type: "POST",
-                        success: function(response) {
-                            Swal.fire({
-                                title: "Successfuly!",
-                                icon: "success"
-                            }).then(function() {
-                                // $("#div-agent").html(response);
-                                location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+            var no_company = document.getElementById('no_company')
+            if (no_company.value > '1') {
+                swal.fire({
+                    title: 'Add Agent',
+                    width: 400,
+                    html: '<div class="form-row">' +
+                        '<div class="col-xl-12 col-md-12 col-12">' +
+                        '<select class="custom-select" id="add_agent" name="add_agent">' +
+                        <?php
+                        $query_company = "SELECT * FROM company WHERE id != '$id'  ";
+                        $query_company .= $companyURL;
+                        $query_company .= " AND offline = '2' ";
+                        $result_company = mysqli_query($mysqli_p, $query_company);
+                        while ($row_company = mysqli_fetch_array($result_company, MYSQLI_ASSOC)) {
+                        ?> '<option value="<?php echo $row_company['id'] ?>"><?php echo $row_company['name'] ?></option>' +
+                        <?php } ?> '</select>' +
+                        '</div>',
+                    confirmButtonText: 'Confirm',
+                    showCloseButton: true,
+                    preConfirm: function() {
+                        return new Promise((resolve, reject) => {
+                            // get your inputs using their placeholder or maybe add IDs to them
+                            resolve({
+                                supplier: id,
+                                agent: $('#add_agent').val()
                             });
-                        },
-                        error: function() {
-                            Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', 'กรุณาลองใหม่อีกครั้ง', 'error')
-                        }
-                    });
-                }
-            })
+                            // maybe also reject() on some condition
+                        });
+                    }
+                }).then((result) => {
+                    // console.log(result.isConfirmed);
+                    if (result.isConfirmed == true) {
+                        jQuery.ajax({
+                            url: "sections/company/ajax/add_agent.php",
+                            data: {
+                                supplier: result.value['supplier'],
+                                agent: result.value['agent']
+                            },
+                            type: "POST",
+                            success: function(response) {
+                                Swal.fire({
+                                    title: "Successfuly!",
+                                    icon: "success"
+                                }).then(function() {
+                                    location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                                });
+                            },
+                            error: function() {
+                                Swal.fire('Error!', 'Error. Please try again', 'error')
+                            }
+                        });
+                    }
+                });
+            } else {
+                Swal.fire('warning!', 'No company information', 'warning')
+            }
         }
+
     <?php } ?>
 
     // Delete Agent
@@ -600,6 +695,80 @@ $pathphoto = !empty($photo) ? 'inc/photo/company/' . $photo : 'inc/photo/no-imag
             if (result.value) {
                 jQuery.ajax({
                     url: "sections/company/ajax/restorelist-agent.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Restore this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Restore this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Delete Affiliated 
+    function deleteAff(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need delete this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/company/ajax/deletelist-aff.php",
+                    data: {
+                        id: id
+                    },
+                    type: "POST",
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Completed!",
+                            text: "Delete this information Completed",
+                            icon: "success"
+                        }).then(function() {
+                            location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>";
+                        });
+                    },
+                    error: function() {
+                        Swal.fire('Delete this information failed!', 'Please try again', 'error')
+                    }
+                });
+            }
+        })
+        return true;
+    }
+
+    // Restore Affiliated 
+    function restoreAff(id) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "Do you need restore this information?",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if (result.value) {
+                jQuery.ajax({
+                    url: "sections/company/ajax/restorelist-aff.php",
                     data: {
                         id: id
                     },
