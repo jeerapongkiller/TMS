@@ -185,7 +185,7 @@ switch ($type) {
                                                     <div class="card-body">
                                                         <p class="card-title">
                                                             <!-- <a href="./?mode=products/detail-rates&type=<?php echo $type; ?>&periods=<?php echo $row_rates['ppID']; ?>" class="btn btn-outline-primary"><span><i class="fas fa-plus"></i>&nbsp; Add Rates Agent </span></a> -->
-                                                            <!-- <a href="#edit" data-toggle="tooltip" data-placement="top" title="Edit periods"><i data-feather='edit'></i></a> -->
+                                                            <a href="./?mode=products/detail-periods&<?php echo 'type=' . $type . '&products=' . $row['id'] . '&id=' . $row_rates['ppID']; ?>" data-toggle="tooltip" data-placement="top" title="Edit periods"><i data-feather='edit'></i></a>
                                                             <?php if ($row_rates["ppTrash_deleted"] == 1) { ?>
                                                                 <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
                                                                     <a href="#restore" data-toggle="tooltip" data-placement="top" title="Restore periods" onclick="restorePeriods(<?php echo $row_rates['ppID']; ?>);"><i data-feather='rotate-ccw'></i></a>

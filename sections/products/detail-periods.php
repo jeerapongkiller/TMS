@@ -24,8 +24,8 @@ $offline = !empty($row["offline"]) ? $row["offline"] : '2';
 $company = $_SESSION["admin"]["company"];
 $products = !empty($_GET["products"]) ? $_GET["products"] : '';
 $type = !empty($_GET["type"]) ? $_GET["type"] : '';
-$periods_from = !empty($row["periods_from"]) ? $row["periods_from"] : '';
-$periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
+$periods_from = !empty($row["periods_from"]) ? $row["periods_from"] : $today;
+$periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : $today;
 ?>
 <div class="app-content content ">
     <div class="content-overlay"></div>
@@ -93,7 +93,7 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="periods_from" name="periods_from" value="<?php echo $today; ?>" placeholder="" onchange="checkPeriods()" />
+                                                    <input type="date" class="form-control" id="periods_from" name="periods_from" value="<?php echo $periods_from; ?>" placeholder="" onchange="checkPeriods()" />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
@@ -104,80 +104,84 @@ $periods_to = !empty($row["periods_to"]) ? $row["periods_to"] : '';
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="periods_to" name="periods_to" value="<?php echo $today; ?>" placeholder="" onchange="checkPeriods()" />
+                                                    <input type="date" class="form-control" id="periods_to" name="periods_to" value="<?php echo $periods_to; ?>" placeholder="" onchange="checkPeriods()" />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
                                     </div>
 
-                                    <div class="form-row">
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="adult_cost">Adult (Cost)</label>
-                                                <input type="text" class="form-control" id="adult_cost" name="adult_cost" value="" placeholder="" oninput="priceformat('adult_cost');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="adult_sale">Adult (Sale)</label>
-                                                <input type="text" class="form-control" id="adult_sale" name="adult_sale" value="" placeholder="" oninput="priceformat('adult_sale');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="children_cost">Children (Cost)</label>
-                                                <input type="text" class="form-control" id="children_cost" name="children_cost" value="" placeholder="" oninput="priceformat('children_cost');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="children_sale">Children (Sale)</label>
-                                                <input type="text" class="form-control" id="children_sale" name="children_sale" value="" placeholder="" oninput="priceformat('children_sale');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="infant_cost">Infant (Cost)</label>
-                                                <input type="text" class="form-control" id="infant_cost" name="infant_cost" value="" placeholder="" oninput="priceformat('infant_cost');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="infant_sale">Infant (Sale)</label>
-                                                <input type="text" class="form-control" id="infant_sale" name="infant_sale" value="" placeholder="" oninput="priceformat('infant_sale');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="group_cost">Group (Cost)</label>
-                                                <input type="text" class="form-control" id="group_cost" name="group_cost" value="" placeholder="" oninput="priceformat('group_cost');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="group_sale">Group (Sale)</label>
-                                                <input type="text" class="form-control" id="group_sale" name="group_sale" value="" placeholder="" oninput="priceformat('group_sale');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="per_pax">Pax</label>
-                                                <input type="text" class="form-control" id="per_pax" name="per_pax" value="" placeholder="" oninput="priceformat('per_pax');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="transfer_cost">Transfer (Cost)</label>
-                                                <input type="text" class="form-control" id="transfer_cost" name="transfer_cost" value="" placeholder="" oninput="priceformat('transfer_cost');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                        <div class="col-xl-3 col-md-6 col-12">
-                                            <div class="form-group">
-                                                <label for="transfer_sale">Transfer (Sale)</label>
-                                                <input type="text" class="form-control" id="transfer_sale" name="transfer_sale" value="" placeholder="" oninput="priceformat('transfer_sale');" />
-                                            </div>
-                                        </div> <!-- div -->
-                                    </div>
+                                    <?php if (empty($_GET["id"])) { ?>
+
+                                        <div class="form-row">
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="adult_cost">Adult (Cost)</label>
+                                                    <input type="text" class="form-control" id="adult_cost" name="adult_cost" value="" placeholder="" oninput="priceformat('adult_cost');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="adult_sale">Adult (Sale)</label>
+                                                    <input type="text" class="form-control" id="adult_sale" name="adult_sale" value="" placeholder="" oninput="priceformat('adult_sale');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="children_cost">Children (Cost)</label>
+                                                    <input type="text" class="form-control" id="children_cost" name="children_cost" value="" placeholder="" oninput="priceformat('children_cost');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="children_sale">Children (Sale)</label>
+                                                    <input type="text" class="form-control" id="children_sale" name="children_sale" value="" placeholder="" oninput="priceformat('children_sale');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="infant_cost">Infant (Cost)</label>
+                                                    <input type="text" class="form-control" id="infant_cost" name="infant_cost" value="" placeholder="" oninput="priceformat('infant_cost');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="infant_sale">Infant (Sale)</label>
+                                                    <input type="text" class="form-control" id="infant_sale" name="infant_sale" value="" placeholder="" oninput="priceformat('infant_sale');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="group_cost">Group (Cost)</label>
+                                                    <input type="text" class="form-control" id="group_cost" name="group_cost" value="" placeholder="" oninput="priceformat('group_cost');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="group_sale">Group (Sale)</label>
+                                                    <input type="text" class="form-control" id="group_sale" name="group_sale" value="" placeholder="" oninput="priceformat('group_sale');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="per_pax">Pax</label>
+                                                    <input type="text" class="form-control" id="per_pax" name="per_pax" value="" placeholder="" oninput="priceformat('per_pax');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="transfer_cost">Transfer (Cost)</label>
+                                                    <input type="text" class="form-control" id="transfer_cost" name="transfer_cost" value="" placeholder="" oninput="priceformat('transfer_cost');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                            <div class="col-xl-3 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label for="transfer_sale">Transfer (Sale)</label>
+                                                    <input type="text" class="form-control" id="transfer_sale" name="transfer_sale" value="" placeholder="" oninput="priceformat('transfer_sale');" />
+                                                </div>
+                                            </div> <!-- div -->
+                                        </div>
+
+                                    <?php } ?>
 
                                     <hr>
 

@@ -436,7 +436,7 @@ $bo_company_aff = !empty($row["company_aff"]) ? $row["company_aff"] : '';
                                 <div class="card collapse-icon plan-card">
                                     <div class="card-header pb-1">
                                         <h4 class="card-title"> <?php echo $row_type['name']; ?>
-                                            <a href="./?mode=booking/detail-products&type=<?php echo $row_type['id']; ?>&booking=<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Add Products"><i data-feather='plus'></i></a>
+                                            <a href="./?mode=booking/products-detail&type=<?php echo $row_type['id']; ?>&booking=<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Add Products"><i data-feather='plus'></i></a>
                                         </h4>
                                     </div>
                                     <div class="card-body p-0 pl-2 pr-2 pb-1">

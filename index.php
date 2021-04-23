@@ -155,6 +155,9 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     checkCustomertype();
                     checkCompanyAff();
                 }
+                if (str_mode.indexOf("booking/products-detail") >= 0) {
+                    checkSupplier();
+                }
             });
         </script>
 
