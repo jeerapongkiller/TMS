@@ -17,6 +17,7 @@ if (!empty($_GET["id"])) {
 }
 # check value
 $id = !empty($row["id"]) ? $row["id"] : '0';
+$booking = !empty($_GET["booking"]) ? $_GET["booking"] : '';
 $company = $_SESSION["admin"]["company"];
 $type = !empty($_GET["type"]) ? $_GET["type"] : '';
 $booking = !empty($_GET["booking"]) ? $_GET["booking"] : '';
@@ -70,6 +71,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                 <form action="javascript:;" method="POST" id="frmpermission" name="frmpermission" class="needs-validation" enctype="multipart/form-data" novalidate>
                                     <!-- Hidden input -->
                                     <input type="hidden" id="id" name="id" value="<?php echo $id; ?>">
+                                    <input type="hidden" id="booking" name="booking" value="<?php echo $booking; ?>">
                                     <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
                                     <input type="hidden" id="company" name="company" value="<?php echo $company; ?>">
                                     <input type="hidden" id="type" name="type" value="<?php echo $type; ?>">
@@ -460,6 +462,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
     // Add products
     function submitFormProducts() {
         var id = document.getElementById('id');
+        var booking = document.getElementById('booking');
         var page_title = document.getElementById('page_title');
         var company = document.getElementById('company');
         var type = document.getElementById('type');
@@ -487,6 +490,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
             url: "sections/booking/ajax/add-products.php",
             data: {
                 id: id.value,
+                booking: booking.value,
                 page_title: page_title.value,
                 company: company.value,
                 type: type.value,
@@ -510,6 +514,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                 bp_latest: bp_latest.value
             },
             type: "POST",
+            // dataType: 'json',
             success: function(response) {
                 // console.log(response['0'].name_aff);
                 $("#div-booking").html(response)

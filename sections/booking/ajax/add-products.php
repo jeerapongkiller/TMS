@@ -1,9 +1,11 @@
 <?php
 require("../../../inc/connection.php");
 
-if (!empty($_POST['company']) && !empty($_POST['type']) && !empty($_POST['bp_supplier']) && !empty($_POST['bp_products']) && !empty($_POST['bp_date_travel'])) {
+if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['type']) && !empty($_POST['bp_supplier']) && !empty($_POST['bp_products']) && !empty($_POST['bp_date_travel'])) {
     #----- General Information -----#
+    $data_products = array();
     $id = !empty($_POST["id"]) ? $_POST["id"] : '0';
+    $booking = !empty($_POST["booking"]) ? $_POST["booking"] : '0';
     $page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
     $company = !empty($_POST["company"]) ? $_POST["company"] : '0';
     $type = !empty($_POST["type"]) ? $_POST["type"] : '0';
@@ -25,7 +27,8 @@ if (!empty($_POST['company']) && !empty($_POST['type']) && !empty($_POST['bp_sup
     $rate_transfer = !empty($_POST["rate_transfer"]) ? $_POST["rate_transfer"] : '0';
     $bp_default = !empty($_POST["bp_default"]) ? preg_replace('(,)', '', $_POST["bp_default"]) : '0';
     $bp_latest = !empty($_POST["bp_latest"]) ? preg_replace('(,)', '', $_POST["bp_latest"]) : '0';
-    $return = 'false'; // Return URL
+    $return = 'false';
+    $return_cutoff = 'false';
     #----- Check Products & Cut-off -----#
     $query_rates = "SELECT PR.*, 
                         PP.id as ppId, PP.products as ppProducts, PP.periods_from as pp_from, PP.periods_to as pp_to, PP.offline as ppOffline,
@@ -36,14 +39,167 @@ if (!empty($_POST['company']) && !empty($_POST['type']) && !empty($_POST['bp_sup
                         LEFT JOIN products PRO
                             ON PP.products = PRO.id
                         WHERE PR.id = '$bp_products'
+                        AND PP.periods_from <= '$bp_date_travel' AND PP.periods_to >= '$bp_date_travel'
                         AND PR.offline = '2' AND PP.offline = '2' AND PRO.offline = '2' ";
     $result_rates = mysqli_query($mysqli_p, $query_rates);
-    $row_rates = mysqli_fetch_array($result_rates, MYSQLI_ASSOC);
-    #----- Check Cut-off -----#
-    if (!empty($row_rates['proCutOpen']) && !empty($row_rates['proCutOff'])) {
-        $now = $today . ' ' . $time_hm;
-        $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_rates['proCutOpen'] . '-' . $row_rates['proCutOff'] . ' hour'));
-        $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false';
-        if($cut_off == 'false') { echo $return; exit(); }
+    $num_rates = mysqli_num_rows($result_rates);
+    if ($num_rates > 0) {
+        $row_rates = mysqli_fetch_array($result_rates, MYSQLI_ASSOC);
+        #----- Check Cut-off -----#
+        if (!empty($row_rates['proCutOpen']) && !empty($row_rates['proCutOff'])) {
+            $now = $today . ' ' . $time_hm;
+            $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_rates['proCutOpen'] . '-' . $row_rates['proCutOff'] . ' hour'));
+            $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false';
+            if ($cut_off == 'false') {
+                $data_products[] = array(
+                    'add_return' => $return,
+                    'add_return_cutoff' => $return_cutoff
+                );
+                // echo json_encode($data_products);
+                exit();
+            }
+        } else {
+            $return_cutoff = 'true';
+
+            if (empty($id)) {
+                # ---- Insert to database ---- #
+                $query = "INSERT INTO booking_products(company, booking, products_type, products, products_periods, products_rates, rates_agent, travel_date, adults, children, infant, transfer, no_cars, no_hours, 
+                                    pickup, pickup_time, dropoff, dropoff_time, rate_adults, rate_children, rate_infant, rate_group, rate_transfer, pax, price_default, price_latest, offline, trash_deleted, date_create, date_edit) 
+                            VALUES ('0', '0', '0', '0', '0', '0', '0', '', '0', '0', '0', '0', '0', '0',
+                                    '0', '', '0', '', '0', '0', '0', '0', '0', '0', '0', '0', '2', '2', now(), now()) ";
+                $result = mysqli_query($mysqli_p, $query);
+                $id = mysqli_insert_id($mysqli_p);
+            }
+            if (!empty($id)) {
+                # ---- Update to database ---- #
+                $bind_types = "";
+                $params = array();
+        
+                $query = "UPDATE booking_products SET";
+        
+                $query .= " offline = ?,";
+                $bind_types .= "i";
+                array_push($params, $offline);
+        
+                $query .= " company = ?,";
+                $bind_types .= "i";
+                array_push($params, $company);
+        
+                $query .= " booking = ?,";
+                $bind_types .= "i";
+                array_push($params, $booking);
+
+                $query .= " products_type = ?,";
+                $bind_types .= "i";
+                array_push($params, $type);
+
+                $query .= " products = ?,";
+                $bind_types .= "i";
+                array_push($params, $products);
+
+                $query .= " products_periods = ?,";
+                $bind_types .= "i";
+                array_push($params, $products_periods);
+
+                $query .= " products_rates = ?,";
+                $bind_types .= "i";
+                array_push($params, $products_rates);
+
+                $query .= " rates_agent = ?,";
+                $bind_types .= "i";
+                array_push($params, $rates_agent);
+
+                $query .= " travel_date = ?,";
+                $bind_types .= "i";
+                array_push($params, $travel_date);
+
+                $query .= " adults = ?,";
+                $bind_types .= "i";
+                array_push($params, $adults);
+
+                $query .= " children = ?,";
+                $bind_types .= "i";
+                array_push($params, $children);
+
+                $query .= " infant = ?,";
+                $bind_types .= "i";
+                array_push($params, $infant);
+
+                $query .= " transfer = ?,";
+                $bind_types .= "i";
+                array_push($params, $transfer);
+
+                $query .= " no_cars = ?,";
+                $bind_types .= "i";
+                array_push($params, $no_cars);
+
+                $query .= " no_hours = ?,";
+                $bind_types .= "i";
+                array_push($params, $no_hours);
+
+                $query .= " pickup = ?,";
+                $bind_types .= "i";
+                array_push($params, $pickup);
+
+                $query .= " pickup_time = ?,";
+                $bind_types .= "i";
+                array_push($params, $pickup_time);
+
+                $query .= " dropoff = ?,";
+                $bind_types .= "i";
+                array_push($params, $dropoff);
+
+                $query .= " dropoff_time = ?,";
+                $bind_types .= "i";
+                array_push($params, $dropoff_time);
+
+                $query .= " rate_adults = ?,";
+                $bind_types .= "i";
+                array_push($params, $rate_adults);
+
+                $query .= " rate_children = ?,";
+                $bind_types .= "i";
+                array_push($params, $rate_children);
+
+                $query .= " rate_infant = ?,";
+                $bind_types .= "i";
+                array_push($params, $rate_infant);
+
+                $query .= " rate_group = ?,";
+                $bind_types .= "i";
+                array_push($params, $rate_group);
+
+                $query .= " rate_transfer = ?,";
+                $bind_types .= "i";
+                array_push($params, $rate_transfer);
+
+                $query .= " pax = ?,";
+                $bind_types .= "i";
+                array_push($params, $pax);
+
+                $query .= " price_default = ?,";
+                $bind_types .= "i";
+                array_push($params, $price_default);
+
+                $query .= " price_latest = ?,";
+                $bind_types .= "i";
+                array_push($params, $price_latest);
+        
+                $query .= ($page_title == "Add New Products") ? ' date_create = now(),' : '';
+        
+                $query .= " date_edit = now()";
+                $query .= " WHERE id = '$id'";
+                $procedural_statement = mysqli_prepare($mysqli_p, $query);
+                if ($bind_types != "") {
+                    mysqli_stmt_bind_param($procedural_statement, $bind_types, ...$params);
+                }
+                mysqli_stmt_execute($procedural_statement);
+                $result = mysqli_stmt_get_result($procedural_statement);
+                mysqli_close($mysqli_p);
+        
+            }
+        }
+    } else {
+
     }
 }
