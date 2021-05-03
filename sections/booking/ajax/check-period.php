@@ -20,10 +20,12 @@ if (!empty($_POST['bp_products']) && !empty($_POST['bp_date_travel']) && !empty(
     $result_period = mysqli_query($mysqli_p, $query_period);
     $row_period = mysqli_fetch_array($result_period, MYSQLI_ASSOC);
 
-    $products_period = date("d F Y", strtotime($row_period['pp_from'])) . ' - ' . date("d F Y", strtotime($row_period['pp_to']));
+    $date_period = date("d F Y", strtotime($row_period['pp_from'])) . ' - ' . date("d F Y", strtotime($row_period['pp_to']));
     $data_products[] = array(
         'products_name' => $row_period['proName'],
-        'products_period' => $products_period,
+        'date_period' => $date_period,
+        'products' => $row_period['proId'],
+        'products_period' => $row_period['ppId'],
         'products_adult' => $row_period['rate_adult'],
         'products_children' => $row_period['rate_children'],
         'products_infant' => $row_period['rate_infant'],
@@ -34,7 +36,9 @@ if (!empty($_POST['bp_products']) && !empty($_POST['bp_date_travel']) && !empty(
 } else {
     $data_products[] = array(
         'products_name' => 'No data',
-        'products_period' => 'No relevant period',
+        'date_period' => 'No relevant period',
+        'products' => 0,
+        'products_period' => 0,
         'products_adult' => 0,
         'products_children' => 0,
         'products_infant' => 0,

@@ -28,7 +28,7 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
         // echo $query_products;
 ?>
         <label for="bp_products"> Products </label>
-        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkPeriod()">
+        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkPeriod()" required>
             <?php
             while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
                 // Check Cut Off
@@ -36,18 +36,17 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
                     $now = $today.' '.$time_hm;
                     $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
                     $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false' ;
-
                     // $date_cut = date('Y-m-d H:i', strtotime($today . ' ' . $row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
                     // $date_cut = strtotime($date_cut);
                     // $date_travel = strtotime($bp_date_travel.' '.$time_hm);
                     // $cut_off = $today == $bp_date_travel ? $date_cut - $date_travel : $date_travel - $date_cut ;
                     if ($cut_off == 'true') {
                         $check_option++;
-                        echo '<option value=" ' . $row_products['prId'] . ' ">' . $row_products['proName'] . '</option>';
+                        echo '<option value=" ' . $row_products['prId'] . ' " data-ragent=" ' . $row_products['id'] . ' " >' . $row_products['proName'] . '</option>';
                     }
                 } else {
                     $check_option++;
-                    echo '<option value=" ' . $row_products['prId'] . ' ">' . $row_products['proName'] . '</option>';
+                    echo '<option value=" ' . $row_products['prId'] . ' " data-ragent=" ' . $row_products['id'] . ' " >' . $row_products['proName'] . '</option>';
                 }
             }
             if ($check_option == 0) {
@@ -72,7 +71,7 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
         $result_products = mysqli_query($mysqli_p, $query_products);
     ?>
         <label for="bp_products"> Products </label>
-        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkPeriod()">
+        <select class="custom-select" id="bp_products" name="bp_products" onchange="checkPeriod()" required>
             <?php
             while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
                 // Check Cut Off
@@ -98,7 +97,7 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
 } else {
     ?>
     <label for="bp_products"> Products </label>
-    <select class="custom-select" id="bp_products" name="bp_products">
+    <select class="custom-select" id="bp_products" name="bp_products" required>
         <option value="">No Data</option>
     </select>
 <?php } ?>

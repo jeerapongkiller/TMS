@@ -76,20 +76,6 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                     <input type="hidden" id="company" name="company" value="<?php echo $company; ?>">
                                     <input type="hidden" id="type" name="type" value="<?php echo $type; ?>">
                                     <input type="hidden" id="bp_dropoff_check" name="bp_dropoff_check" value="<?php echo $bp_dropoff; ?>">
-                                    <?php
-                                    // $now_date = '2021-04-23';
-                                    // $now_time = '10:40';
-                                    // $now = $now_date.' '.$now_time;
-                                    // $cut_hour = '11:30';
-                                    // $cut_no = '48';
-                                    // $travel_date = '2021-04-25';
-                                    // $cut_t = date('Y-m-d H:i', strtotime($travel_date . ' ' . $cut_hour . '-' . $cut_no . ' hour'));
-                                    // echo (strtotime($now) <= strtotime($cut_t)) ? 'true' : 'flase' ;
-                                    // echo '</br>';
-                                    // echo 'Book start - ' . $cut_t;
-                                    // echo '</br>';
-                                    // echo 'Now - ' . $now;
-                                    ?>
 
                                     <!-- booking products edit -->
                                     <div class="form-row mt-1">
@@ -125,7 +111,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                             $query_agent .= " ORDER BY comName ASC";
                                             $result_agent = mysqli_query($mysqli_p, $query_agent);
                                             ?>
-                                            <select class="custom-select" id="bp_supplier" name="bp_supplier" onchange="checkSupplier()">
+                                            <select class="custom-select" id="bp_supplier" name="bp_supplier" onchange="checkSupplier()" required>
                                                 <option value="">Please select supplier</option>
                                                 <option value="<?php echo $company; ?>"><?php echo get_value('company', 'id', 'name', $company, $mysqli_p) ?></option>
                                                 <?php while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
@@ -138,14 +124,14 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                                 }
                                                 ?>
                                             </select>
-                                            <div class="invalid-feedback" id="agent_feedback">Please select a Agent..</div>
+                                            <div class="invalid-feedback" id="asupplier_feedback">Please select a Supplier..</div>
                                         </div> <!-- </div> -->
                                         <div class="col-xl-3 col-md-6 col-12" id="div-products">
                                             <label for="bp_products"> Products </label>
                                             <select class="custom-select" id="bp_products" name="bp_products">
                                                 <option value=""></option>
                                             </select>
-                                            <div class="invalid-feedback" id="agent_feedback">Please select a Agent..</div>
+                                            <div class="invalid-feedback" id="products_feedback">Please select a Products..</div>
                                         </div> <!-- </div> -->
                                         <div class="col-xl-3 col-md-6 col-12">
                                             <div class="form-group">
@@ -154,7 +140,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="bp_date_travel" name="bp_date_travel" value="<?php echo $today; ?>" placeholder="" onchange="checkSupplier()" />
+                                                    <input type="date" class="form-control" id="bp_date_travel" name="bp_date_travel" value="<?php echo $today; ?>" placeholder="" onchange="checkSupplier()" required />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
@@ -164,24 +150,24 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                         </div> <!-- </div> -->
                                         <div class="col-xl-2 col-md-3 col-6">
                                             <label for="bp_adults"> Adults </label>
-                                            <select class="custom-select" id="bp_adults" name="bp_adults" onchange="checkPrice();">
+                                            <select class="custom-select" id="bp_adults" name="bp_adults" onchange="checkAllotment();" required>
                                                 <?php list_number($bp_adults, '1', '500'); ?>
                                             </select>
-                                            <div class="invalid-feedback" id="agent_feedback">Please select a Agent..</div>
+                                            <div class="invalid-feedback" id="adults_feedback">Please select a Adults..</div>
                                         </div> <!-- </div> -->
                                         <div class="col-xl-2 col-md-3 col-6">
                                             <label for="bp_children"> Children </label>
-                                            <select class="custom-select" id="bp_children" name="bp_children" onchange="checkPrice();">
+                                            <select class="custom-select" id="bp_children" name="bp_children" onchange="checkAllotment();">
                                                 <?php list_number($bp_children, '0', '501'); ?>
                                             </select>
-                                            <div class="invalid-feedback" id="agent_feedback">Please select a Agent..</div>
+                                            <div class="invalid-feedback" id="children_feedback">Please select a Children..</div>
                                         </div> <!-- </div> -->
                                         <div class="col-xl-2 col-md-3 col-6">
                                             <label for="bp_infant"> Infant </label>
-                                            <select class="custom-select" id="bp_infant" name="bp_infant" onchange="checkPrice();">
+                                            <select class="custom-select" id="bp_infant" name="bp_infant" onchange="checkAllotment();">
                                                 <?php list_number($bp_infant, '0', '501'); ?>
                                             </select>
-                                            <div class="invalid-feedback" id="agent_feedback">Please select a Agent..</div>
+                                            <div class="invalid-feedback" id="infant_feedback">Please select a Infant..</div>
                                         </div> <!-- </div> -->
                                     </div>
 
@@ -244,12 +230,16 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                     </div>
                                     <div class="form-row">
                                         <!-- Type Hidden Rates -->
+                                        <input type="text" name="rate_agent" id="rate_agent" value="">
+                                        <input type="text" name="products" id="products" value="">
+                                        <input type="text" name="products_period" id="products_period" value="">
                                         <input type="text" name="rate_adult" id="rate_adult" value="">
                                         <input type="text" name="rate_children" id="rate_children" value="">
                                         <input type="text" name="rate_infant" id="rate_infant" value="">
                                         <input type="text" name="rate_group" id="rate_group" value="">
                                         <input type="text" name="products_pax" id="products_pax" value="">
                                         <input type="text" name="rate_transfer" id="rate_transfer" value="">
+                                        <input type="text" name="check_allom" id="check_allom" value="true">
                                         <div class="col-xl-3 col-md-6 col-12">
                                             <label for="bp_default"> Starting Price </label>
                                             <div class="input-group">
@@ -265,7 +255,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i data-feather='dollar-sign'></i></span>
                                                 </div>
-                                                <input type="text" class="form-control" id="bp_latest" name="bp_latest" value="" placeholder="" oninput="priceformat('bp_latest');" />
+                                                <input type="text" class="form-control" id="bp_latest" name="bp_latest" value="" placeholder="" oninput="priceformat('bp_latest');" required />
                                             </div>
                                         </div> <!-- </div> -->
                                     </div>
@@ -276,7 +266,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
 
                                     <div class="form-row">
                                         <div class="col-xl-3 col-md-6 col-12 mt-1">
-                                            <button type="button" class="btn btn-primary mr-1 waves-effect waves-float waves-light" onclick="submitFormProducts();"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
+                                            <button type="submit" class="btn btn-primary mr-1 waves-effect waves-float waves-light"><i class="fas fa-search"></i>&nbsp;&nbsp;Submit</button>
                                         </div>
                                     </div>
                                 </form>
@@ -290,6 +280,54 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
     </div>
 </div>
 <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    var check_allom = document.getElementById('check_allom')
+                    // var bo_agent = document.getElementById('bo_agent')
+                    // var bo_firstname = document.getElementById('bo_customer_firstname')
+                    // var bo_customer_email = document.getElementById('bo_customer_email')
+
+                    // if (id.value > 0) {
+                    //     var customertype = document.getElementById('bo_customertype').value;
+                    // } else {
+                    //     var customertype = $('[name="bo_customertype"]:checked').val();
+                    // }
+
+                    // if (customertype == 1) {
+                    //     if (bo_agent.value == '') {
+                    //         bo_agent.setAttribute("required", "");
+                    //         bo_firstname.removeAttribute("required");
+                    //     }
+                    // } else {
+                    //     if (bo_firstname.value == '') {
+                    //         bo_firstname.setAttribute("required", "");
+                    //         bo_agent.removeAttribute("required");
+                    //     }
+                    // }
+
+                    if (check_allom.value == 'false') {
+                        return false;
+                    }
+
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else {
+                        // submitFormProducts();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
     // Fun Price Format
     function priceformat(inputfield) {
         var i = 0,
@@ -304,7 +342,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var d = new Number(parseInt(num));
         var n = d.toLocaleString();
         if (n == 0) {
-            document.getElementById(inputfield).value = '';
+            document.getElementById(inputfield).value = 0;
         } else {
             document.getElementById(inputfield).value = n;
         }
@@ -350,31 +388,12 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         });
     }
 
-    // Check Allotment
-    function checkAllotment() {
-        var bp_date_travel = document.getElementById('bp_date_travel')
-        var bp_products = document.getElementById('bp_products')
-        var company = document.getElementById('company')
-        var type = document.getElementById('type')
-        jQuery.ajax({
-            url: "sections/booking/ajax/check-allotment.php",
-            data: {
-                bp_products: bp_products.value,
-                bp_date_travel: bp_date_travel.value,
-                company: company.value,
-                type: type.value
-            },
-            type: "POST",
-            success: function(response) {
-                $("#div-booking").html(response)
-            },
-            error: function() {}
-        });
-    }
-
     function checkPeriod() {
+        var bp_products = document.getElementById('bp_products');
+        var selected = bp_products.options[bp_products.selectedIndex];
+        var ragent = selected.getAttribute('data-ragent');
+        ragent = (ragent != null) ? ragent : 0;
         var bp_date_travel = document.getElementById('bp_date_travel')
-        var bp_products = document.getElementById('bp_products')
         var company = document.getElementById('company')
         var type = document.getElementById('type')
         var span_period = document.getElementById('span_period')
@@ -384,6 +403,9 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var rate_group = document.getElementById('rate_group')
         var products_pax = document.getElementById('products_pax')
         var rate_transfer = document.getElementById('rate_transfer')
+        var products_period = document.getElementById('products_period')
+        var products = document.getElementById('products')
+        var rate_agent = document.getElementById('rate_agent')
         jQuery.ajax({
             url: "sections/booking/ajax/check-period.php",
             data: {
@@ -396,13 +418,58 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
             dataType: 'json',
             success: function(response) {
                 // console.log(response['0'].name_aff);
-                span_period.innerHTML = response['0'].products_period
+                span_period.innerHTML = response['0'].date_period
+                rate_agent.value = ragent
+                products.value = response['0'].products
+                products_period.value = response['0'].products_period
                 rate_adult.value = response['0'].products_adult
                 rate_children.value = response['0'].products_children
                 rate_infant.value = response['0'].products_infant
                 rate_group.value = response['0'].products_group
                 products_pax.value = response['0'].products_pax
                 rate_transfer.value = response['0'].products_transfer
+                checkAllotment();
+                // checkPrice();
+            },
+            error: function() {}
+        });
+    }
+
+    // Check Allotment
+    function checkAllotment() {
+        var check_allom = document.getElementById('check_allom');
+        var bp_date_travel = document.getElementById('bp_date_travel');
+        var products = document.getElementById('products');
+        var company = document.getElementById('company');
+        var type = document.getElementById('type');
+        var bp_adults = document.getElementById('bp_adults');
+        var bp_children = document.getElementById('bp_children');
+        var bp_infant = document.getElementById('bp_infant');
+        var pax_mix = parseFloat(bp_adults.value) + parseFloat(bp_children.value) + parseFloat(bp_infant.value);
+        jQuery.ajax({
+            url: "sections/booking/ajax/check-allotment.php",
+            data: {
+                products: products.value,
+                bp_date_travel: bp_date_travel.value,
+                company: company.value,
+                type: type.value,
+                pax_mix: pax_mix
+            },
+            type: "POST",
+            success: function(response) {
+                // $("#div-booking").html(response)
+                if (response == 'false') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Allotment Error. Please try again!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    bp_adults.selectedIndex = 0;
+                    bp_children.selectedIndex = 0;
+                    bp_infant.selectedIndex = 0;
+                }
+                check_allom.value = response;
                 checkPrice();
             },
             error: function() {}
@@ -468,6 +535,9 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var type = document.getElementById('type');
         var offline = document.getElementById('offline');
         var check_offline = offline.checked ? '1' : '2';
+        var rate_agent = document.getElementById('rate_agent');
+        var products = document.getElementById('products');
+        var products_period = document.getElementById('products_period');
         var bp_supplier = document.getElementById('bp_supplier');
         var bp_products = document.getElementById('bp_products');
         var bp_date_travel = document.getElementById('bp_date_travel');
@@ -475,7 +545,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var bp_children = document.getElementById('bp_children');
         var bp_infant = document.getElementById('bp_infant');
         var add_trans = document.getElementById('add_trans');
-        var check_trans = add_trans.checked ? 'true' : 'false';
+        var check_trans = add_trans.checked ? '1' : '2';
         var bp_pickup = document.getElementById('bp_pickup');
         var bp_dropoff = document.getElementById('bp_dropoff');
         var rate_adult = document.getElementById('rate_adult');
@@ -495,13 +565,16 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                 company: company.value,
                 type: type.value,
                 offline: check_offline.value,
+                rate_agent: rate_agent.value,
+                products: products.value,
+                products_period: products_period.value,
                 bp_supplier: bp_supplier.value,
                 bp_products: bp_products.value,
                 bp_date_travel: bp_date_travel.value,
                 bp_adults: bp_adults.value,
                 bp_children: bp_children.value,
                 bp_infant: bp_infant.value,
-                add_trans: check_trans.value,
+                add_trans: check_trans,
                 bp_pickup: bp_pickup.value,
                 bp_dropoff: bp_dropoff.value,
                 rate_adult: rate_adult.value,
