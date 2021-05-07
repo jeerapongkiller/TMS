@@ -8,7 +8,7 @@ if (!empty($_GET["id"])) {
     $numrow = mysqli_num_rows($result);
     if ($numrow > 0) {
         $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-        $page_title = stripslashes($row["name"]);
+        $page_title = stripslashes(get_value('products', 'id', 'name', $row["products"], $mysqli_p));
     } else {
         echo "<meta http-equiv=\"refresh\" content=\"0; url = './?mode=booking/list'\" >";
     }
@@ -20,11 +20,27 @@ $id = !empty($row["id"]) ? $row["id"] : '0';
 $booking = !empty($_GET["booking"]) ? $_GET["booking"] : '';
 $company = $_SESSION["admin"]["company"];
 $type = !empty($_GET["type"]) ? $_GET["type"] : '';
-$booking = !empty($_GET["booking"]) ? $_GET["booking"] : '';
 $booking_no = !empty($_GET["booking"]) ? get_value('booking', 'id', 'booking_no', $booking, $mysqli_p) : '';
 $bo_full = !empty($booking_no) ? get_value('booking_no', 'id', 'bo_full', $booking_no, $mysqli_p) : '';
 $offline = !empty($row["offline"]) ? $row["offline"] : '2';
-$bp_supplier = !empty($row["supplier"]) ? $row["supplier"] : '0';
+$bp_supplier = !empty($row["combine_agent"]) ? $row["combine_agent"] : 'company';
+$default_products = !empty($row["products"]) ? $row["products"] : '0';
+$bp_products_periods = !empty($row["products_periods"]) ? $row["products_periods"] : '0';
+$date_periods = !empty($row["products_periods"]) ? date("d F Y", strtotime(get_value('products_periods', 'id', 'periods_from', $row["products_periods"], $mysqli_p))) . ' - ' . date("d F Y", strtotime(get_value('products_periods', 'id', 'periods_to', $row["products_periods"], $mysqli_p))) : '';
+$bp_products_rates = !empty($row["products_rates"]) ? $row["products_rates"] : '0';
+$bp_rates_agent = !empty($row["rates_agent"]) ? $row["rates_agent"] : '0';
+$bp_date_travel = !empty($row["travel_date"]) ? $row["travel_date"] : $today;
+$bp_adults = !empty($row["adults"]) ? $row["adults"] : '0';
+$bp_children = !empty($row["children"]) ? $row["children"] : '0';
+$bp_infant = !empty($row["infant"]) ? $row["infant"] : '0';
+$bp_rate_adults = !empty($row["rate_adults"]) ? $row["rate_adults"] : '0';
+$bp_rate_children = !empty($row["rate_children"]) ? $row["rate_children"] : '0';
+$bp_rate_infant = !empty($row["rate_infant"]) ? $row["rate_infant"] : '0';
+$bp_rate_group = !empty($row["rate_group"]) ? $row["rate_group"] : '0';
+$bp_rate_transfer = !empty($row["rate_transfer"]) ? $row["rate_transfer"] : '0';
+$bp_pax = !empty($row["pax"]) ? $row["pax"] : '0';
+$bp_price_default = !empty($row["price_default"]) ? $row["price_default"] : '0';
+$bp_price_latest = !empty($row["price_latest"]) ? $row["price_latest"] : '0';
 $bp_pickup = !empty($row["pickup"]) ? $row["pickup"] : '0';
 $bp_dropoff = !empty($row["dropoff"]) ? $row["dropoff"] : '0';
 $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
@@ -75,6 +91,10 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                     <input type="hidden" id="page_title" name="page_title" value="<?php echo $page_title; ?>">
                                     <input type="hidden" id="company" name="company" value="<?php echo $company; ?>">
                                     <input type="hidden" id="type" name="type" value="<?php echo $type; ?>">
+                                    <input type="hidden" id="default_products" name="default_products" value="<?php echo $default_products; ?>">
+                                    <input type="hidden" id="bp_products_rates" name="bp_products_rates" value="<?php echo $bp_products_rates; ?>">
+                                    <input type="hidden" id="bp_rates_agent" name="bp_rates_agent" value="<?php echo $bp_rates_agent; ?>">
+                                    <input type="hidden" id="bp_products_periods" name="bp_products_periods" value="<?php echo $bp_products_periods; ?>">
                                     <input type="hidden" id="bp_dropoff_check" name="bp_dropoff_check" value="<?php echo $bp_dropoff; ?>">
 
                                     <!-- booking products edit -->
@@ -103,27 +123,37 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                         <div class="col-xl-3 col-md-6 col-12">
                                             <label for="bp_supplier"> Supplier </label>
                                             <?php
-                                            $query_agent = "SELECT combine_agent.*, company.id as comID, company.name as comName 
+                                            if (empty($id)) {
+                                                $query_agent = "SELECT combine_agent.*, company.id as comID, company.name as comName 
                                                             FROM combine_agent 
                                                             LEFT JOIN company
                                                             ON combine_agent.supplier = company.id
                                                             WHERE combine_agent.agent = '$company' AND combine_agent.offline = 2 ";
-                                            $query_agent .= " ORDER BY comName ASC";
-                                            $result_agent = mysqli_query($mysqli_p, $query_agent);
+                                                $query_agent .= " ORDER BY comName ASC";
+                                                $result_agent = mysqli_query($mysqli_p, $query_agent);
                                             ?>
-                                            <select class="custom-select" id="bp_supplier" name="bp_supplier" onchange="checkSupplier()" required>
-                                                <option value="">Please select supplier</option>
-                                                <option value="<?php echo $company; ?>"><?php echo get_value('company', 'id', 'name', $company, $mysqli_p) ?></option>
-                                                <?php while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
-                                                ?>
-                                                    <option value="<?php echo $row_agent["id"]; ?>" <?php if ($bp_supplier == $row_agent["id"]) {
-                                                                                                        echo "selected";
-                                                                                                    } ?>>
-                                                        <?php echo $row_agent["comName"] . '-' . $row_agent["id"]; ?></option>
-                                                <?php
-                                                }
-                                                ?>
-                                            </select>
+                                                <select class="custom-select" id="bp_supplier" name="bp_supplier" onchange="checkSupplier()" required>
+                                                    <option value="">Please select supplier</option>
+                                                    <option value="company" <?php if ($bp_supplier == 0) {
+                                                                                echo "selected";
+                                                                            } ?>><?php echo get_value('company', 'id', 'name', $company, $mysqli_p); ?></option>
+                                                    <?php while ($row_agent = mysqli_fetch_array($result_agent, MYSQLI_ASSOC)) {
+                                                    ?>
+                                                        <option value="<?php echo $row_agent["id"]; ?>" <?php if ($bp_supplier == $row_agent["id"]) {
+                                                                                                            echo "selected";
+                                                                                                        } ?>>
+                                                            <?php echo $row_agent["comName"]; ?></option>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </select>
+                                            <?php
+                                            } else {
+                                                $com_id = $bp_supplier == 0 ? $company : get_value('combine_agent', 'id', 'supplier', $bp_supplier, $mysqli_p);
+                                            ?>
+                                                <input type="text" class="form-control" id="text_supplier" name="text_supplier" value="<?php echo get_value('company', 'id', 'name', $com_id, $mysqli_p); ?>" readonly />
+                                                <input type="hidden" class="form-control" id="bp_supplier" name="bp_supplier" value="<?php echo $bp_supplier; ?>" />
+                                            <?php } ?>
                                             <div class="invalid-feedback" id="asupplier_feedback">Please select a Supplier..</div>
                                         </div> <!-- </div> -->
                                         <div class="col-xl-3 col-md-6 col-12" id="div-products">
@@ -140,7 +170,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i data-feather='calendar'></i></span>
                                                     </div>
-                                                    <input type="date" class="form-control" id="bp_date_travel" name="bp_date_travel" value="<?php echo $today; ?>" placeholder="" onchange="checkSupplier()" required />
+                                                    <input type="date" class="form-control" id="bp_date_travel" name="bp_date_travel" value="<?php echo $bp_date_travel; ?>" placeholder="" onchange="checkSupplier()" required <?php echo !empty($id) ? 'disabled' : ''; ?> />
                                                 </div>
                                             </div>
                                         </div> <!-- div -->
@@ -290,29 +320,14 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
             var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener('submit', function(event) {
                     var check_allom = document.getElementById('check_allom')
-                    // var bo_agent = document.getElementById('bo_agent')
-                    // var bo_firstname = document.getElementById('bo_customer_firstname')
-                    // var bo_customer_email = document.getElementById('bo_customer_email')
-
-                    // if (id.value > 0) {
-                    //     var customertype = document.getElementById('bo_customertype').value;
-                    // } else {
-                    //     var customertype = $('[name="bo_customertype"]:checked').val();
-                    // }
-
-                    // if (customertype == 1) {
-                    //     if (bo_agent.value == '') {
-                    //         bo_agent.setAttribute("required", "");
-                    //         bo_firstname.removeAttribute("required");
-                    //     }
-                    // } else {
-                    //     if (bo_firstname.value == '') {
-                    //         bo_firstname.setAttribute("required", "");
-                    //         bo_agent.removeAttribute("required");
-                    //     }
-                    // }
 
                     if (check_allom.value == 'false') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Allotment Error. Please try again!',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
                         return false;
                     }
 
@@ -320,7 +335,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                         event.preventDefault();
                         event.stopPropagation();
                     } else {
-                        // submitFormProducts();
+                        submitFormProducts();
                     }
                     form.classList.add('was-validated');
                 }, false);
@@ -369,13 +384,21 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
 
     // Check Supplier Or Agent, Date Traval, Cut Off, Offline
     function checkSupplier() {
+        var id = document.getElementById('id')
+        var default_products = document.getElementById('default_products')
+        var bp_rates_agent = document.getElementById('bp_rates_agent')
         var bp_supplier = document.getElementById('bp_supplier')
+        var bp_products_rates = document.getElementById('bp_products_rates')
         var bp_date_travel = document.getElementById('bp_date_travel')
         var company = document.getElementById('company')
         jQuery.ajax({
             url: "sections/booking/ajax/check-supplier.php",
             data: {
+                id: id.value,
+                default_products: default_products.value,
                 bp_supplier: bp_supplier.value,
+                bp_rates_agent: bp_rates_agent.value,
+                bp_products_rates: bp_products_rates.value,
                 bp_date_travel: bp_date_travel.value,
                 company: company.value
             },
@@ -388,11 +411,17 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         });
     }
 
+    // Check Period
     function checkPeriod() {
-        var bp_products = document.getElementById('bp_products');
-        var selected = bp_products.options[bp_products.selectedIndex];
-        var ragent = selected.getAttribute('data-ragent');
-        ragent = (ragent != null) ? ragent : 0;
+        var id = document.getElementById('id')
+        var bp_products = document.getElementById('bp_products')
+        if (id.value > 0) {
+            var ragent = document.getElementById('bp_products_rates').value
+        } else {
+            var selected = bp_products.options[bp_products.selectedIndex];
+            var ragent = selected.getAttribute('data-ragent')
+            ragent = (ragent != null) ? ragent : 0
+        }
         var bp_date_travel = document.getElementById('bp_date_travel')
         var company = document.getElementById('company')
         var type = document.getElementById('type')
@@ -406,37 +435,51 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var products_period = document.getElementById('products_period')
         var products = document.getElementById('products')
         var rate_agent = document.getElementById('rate_agent')
-        jQuery.ajax({
-            url: "sections/booking/ajax/check-period.php",
-            data: {
-                bp_products: bp_products.value,
-                bp_date_travel: bp_date_travel.value,
-                company: company.value,
-                type: type.value
-            },
-            type: "POST",
-            dataType: 'json',
-            success: function(response) {
-                // console.log(response['0'].name_aff);
-                span_period.innerHTML = response['0'].date_period
-                rate_agent.value = ragent
-                products.value = response['0'].products
-                products_period.value = response['0'].products_period
-                rate_adult.value = response['0'].products_adult
-                rate_children.value = response['0'].products_children
-                rate_infant.value = response['0'].products_infant
-                rate_group.value = response['0'].products_group
-                products_pax.value = response['0'].products_pax
-                rate_transfer.value = response['0'].products_transfer
-                checkAllotment();
-                // checkPrice();
-            },
-            error: function() {}
-        });
+        if (id.value > 0) {
+            span_period.innerHTML = '<?php echo $date_periods; ?>'
+            rate_agent.value = '<?php echo $bp_rates_agent; ?>'
+            products.value = '<?php echo $default_products; ?>'
+            products_period.value = '<?php echo $bp_products_periods; ?>'
+            rate_adult.value = '<?php echo $bp_rate_adults; ?>'
+            rate_children.value = '<?php echo $bp_rate_children; ?>'
+            rate_infant.value = '<?php echo $bp_rate_infant; ?>'
+            rate_group.value = '<?php echo $bp_rate_group; ?>'
+            products_pax.value = '<?php echo $bp_pax; ?>'
+            rate_transfer.value = '<?php echo $bp_rate_transfer; ?>'
+            checkAllotment();
+        } else {
+            jQuery.ajax({
+                url: "sections/booking/ajax/check-period.php",
+                data: {
+                    bp_products: bp_products.value,
+                    bp_date_travel: bp_date_travel.value,
+                    company: company.value,
+                    type: type.value
+                },
+                type: "POST",
+                dataType: 'json',
+                success: function(response) {
+                    // console.log(response['0'].name_aff);
+                    span_period.innerHTML = response['0'].date_period
+                    rate_agent.value = ragent
+                    products.value = response['0'].products
+                    products_period.value = response['0'].products_period
+                    rate_adult.value = response['0'].products_adult
+                    rate_children.value = response['0'].products_children
+                    rate_infant.value = response['0'].products_infant
+                    rate_group.value = response['0'].products_group
+                    products_pax.value = response['0'].products_pax
+                    rate_transfer.value = response['0'].products_transfer
+                    checkAllotment();
+                },
+                error: function() {}
+            });
+        }
     }
 
     // Check Allotment
     function checkAllotment() {
+        var id = document.getElementById('id');
         var check_allom = document.getElementById('check_allom');
         var bp_date_travel = document.getElementById('bp_date_travel');
         var products = document.getElementById('products');
@@ -449,6 +492,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         jQuery.ajax({
             url: "sections/booking/ajax/check-allotment.php",
             data: {
+                id: id.value,
                 products: products.value,
                 bp_date_travel: bp_date_travel.value,
                 company: company.value,
@@ -465,9 +509,9 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    bp_adults.selectedIndex = 0;
-                    bp_children.selectedIndex = 0;
-                    bp_infant.selectedIndex = 0;
+                    // bp_adults.selectedIndex = 0;
+                    // bp_children.selectedIndex = 0;
+                    // bp_infant.selectedIndex = 0;
                 }
                 check_allom.value = response;
                 checkPrice();
@@ -564,7 +608,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                 page_title: page_title.value,
                 company: company.value,
                 type: type.value,
-                offline: check_offline.value,
+                offline: check_offline,
                 rate_agent: rate_agent.value,
                 products: products.value,
                 products_period: products_period.value,
@@ -587,10 +631,26 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                 bp_latest: bp_latest.value
             },
             type: "POST",
-            // dataType: 'json',
+            dataType: 'json',
             success: function(response) {
                 // console.log(response['0'].name_aff);
-                $("#div-booking").html(response)
+                // $("#div-booking").html(response)
+                if (response['0'].add_return == 'false' || response['0'].add_return_cutoff == 'false') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'This information Error. Please try again!',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Completed!',
+                        text: "This information Completed"
+                    }).then(function() {
+                        location.href = "<?php echo $_SERVER['REQUEST_URI']; ?>" + response['0'].add_return_url;
+                    });
+                }
             },
             error: function() {}
         });

@@ -1,13 +1,14 @@
 <?php
 require("../../../inc/connection.php");
 
-if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST['bp_date_travel'])) {
+if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST['bp_date_travel']) && empty($_POST['id'])) {
     $combine_agent = $_POST['bp_supplier'];
+    $bp_rates_agent = $_POST['bp_rates_agent'];
     $company = $_POST['company'];
     $bp_date_travel = $_POST['bp_date_travel'];
     $check_option = 0;
     // Agent Rates
-    if ($_POST['company'] != $_POST['bp_supplier']) {
+    if ($_POST['bp_supplier'] != 'company') {
         $query_products = "SELECT RAG.*, 
                             CAG.id as cagId, CAG.supplier as cagSupplier, CAG.agent as cagAgent, CAG.offline as cagOffline,
                             PR.id as prId, PR.products_periods as prPP, PR.offline as prOffline, 
@@ -33,9 +34,9 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
             while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
                 // Check Cut Off
                 if (!empty($row_products['proCutOpen']) && !empty($row_products['proCutOff'])) {
-                    $now = $today.' '.$time_hm;
+                    $now = $today . ' ' . $time_hm;
                     $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
-                    $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false' ;
+                    $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false';
                     // $date_cut = date('Y-m-d H:i', strtotime($today . ' ' . $row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
                     // $date_cut = strtotime($date_cut);
                     // $date_travel = strtotime($bp_date_travel.' '.$time_hm);
@@ -76,16 +77,16 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
             while ($row_products = mysqli_fetch_array($result_products, MYSQLI_ASSOC)) {
                 // Check Cut Off
                 if (!empty($row_products['proCutOpen']) && !empty($row_products['proCutOff'])) {
-                    $now = $today.' '.$time_hm;
+                    $now = $today . ' ' . $time_hm;
                     $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_products['proCutOpen'] . '-' . $row_products['proCutOff'] . ' hour'));
-                    $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false' ;
+                    $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false';
                     if ($cut_off == 'true') {
                         $check_option++;
-                        echo '<option value=" ' . $row_products['id'] . ' ">' . $row_products['proName'] . '</option>';
+                        echo '<option value=" ' . $row_products['id'] . ' " >' . $row_products['proName'] . '</option>';
                     }
                 } else {
                     $check_option++;
-                    echo '<option value=" ' . $row_products['id'] . ' ">' . $row_products['proName'] . '</option>';
+                    echo '<option value=" ' . $row_products['id'] . ' " >' . $row_products['proName'] . '</option>';
                 }
             }
             if ($check_option == 0) {
@@ -95,9 +96,17 @@ if (!empty($_POST['bp_supplier']) && !empty($_POST['company']) && !empty($_POST[
     <?php
     }
 } else {
-    ?>
-    <label for="bp_products"> Products </label>
-    <select class="custom-select" id="bp_products" name="bp_products" required>
-        <option value="">No Data</option>
-    </select>
-<?php } ?>
+    if (!empty($_POST['id'])) {
+        $bp_products_rates = !empty($_POST['bp_products_rates']) ? $_POST['bp_products_rates'] : '0' ;
+        $default_products = !empty($_POST['default_products']) ? $_POST['default_products'] : '0' ;
+         ?>
+        <label for="bp_products"> Products </label>
+        <input type="text" class="form-control" id="text_products" name="text_products" value="<?php echo get_value('products', 'id', 'name', $default_products, $mysqli_p); ?>" readonly>
+        <input type="hidden" class="form-control" id="bp_products" name="bp_products" value="<?php echo $bp_products_rates; ?>">
+    <?php } else { ?>
+        <label for="bp_products"> Products </label>
+        <select class="custom-select" id="bp_products" name="bp_products" required>
+            <option value="">No Data</option>
+        </select>
+<?php }
+} ?>

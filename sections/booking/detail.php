@@ -428,112 +428,134 @@ $bo_company_aff = !empty($row["company_aff"]) ? $row["company_aff"] : '';
                             <div class="tab-pane" id="products" aria-labelledby="products-tab" role="tabpanel">
                                 <!-- Card Product start -->
                                 <?php
-                                    $query_type = "SELECT * FROM products_type WHERE id > '0'";
-                                    $query_type .= " ORDER BY id ASC";
-                                    $result_type = mysqli_query($mysqli_p, $query_type);
-                                    while ($row_type = mysqli_fetch_array($result_type, MYSQLI_ASSOC)) {
+                                $first = 0;
+                                $numrow_realtime = 1;
+                                $query_bp = "SELECT BP.*,
+                                                PT.id as ptID, PT.name as ptName,
+                                                PD.id as pdID, PD.name as pdName
+                                                FROM booking_products BP
+                                                LEFT JOIN products_type PT
+                                                    ON BP.products_type = PT.id
+                                                LEFT JOIN products PD
+                                                    ON BP.products = PD.id
+                                                WHERE BP.booking = '$id'
+                                                ";
+                                $query_bp .= " ORDER BY BP.travel_date ASC";
+                                $result_bp = mysqli_query($mysqli_p, $query_bp);
+                                while ($row_bp = mysqli_fetch_array($result_bp, MYSQLI_ASSOC)) {
+                                    $status_class = $row_bp["offline"] == 1 ? 'badge-light-danger' : 'badge-light-success';
+                                    $status_txt = $row_bp["offline"] == 1 ? 'Offline' : 'Online';
+                                    #---- Head ----#
+                                    if ($first != $row_bp["ptID"]) {
+                                        #---- Foot ----#
+                                        echo $numrow_realtime != 1 ? '</tbody></table></div></div></div></div></div></div></div>' : '';
+                                        $first = $row_bp["ptID"];
+
                                 ?>
-                                <div class="card collapse-icon plan-card">
-                                    <div class="card-header pb-1">
-                                        <h4 class="card-title"> <?php echo $row_type['name']; ?>
-                                            <a href="./?mode=booking/products-detail&type=<?php echo $row_type['id']; ?>&booking=<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Add Products"><i data-feather='plus'></i></a>
-                                        </h4>
-                                    </div>
-                                    <div class="card-body p-0 pl-2 pr-2 pb-1">
-                                        <!-- Card Name start -->
-                                        <div class="collapse-margin" id="accordionExample">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne" data-toggle="collapse" role="button" data-target="#coll-tour" aria-expanded="false" aria-controls="collapse">
-                                                    <span class="lead collapse-title">
-                                                        Products 1
-                                                    </span>
-                                                </div>
-                                                <div id="coll-tour" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                    <div class="card-body">
-                                                        <p class="card-title"> </p>
-                                                        <div class="table-responsive" id="div-products">
-                                                            <table class="table">
-                                                                <thead class="thead-primary">
-                                                                    <tr>
-                                                                        <th>Status</th>
-                                                                        <th>Name</th>
-                                                                        <th>Date Travel</th>
-                                                                        <th>Adult</th>
-                                                                        <th>Children</th>
-                                                                        <th>Infant</th>
-                                                                        <th>FOC</th>
-                                                                        <th>Pick Up</th>
-                                                                        <th>Drop Off</th>
-                                                                        <th>Price</th>
-                                                                        <th>Status (Email)</th>
-                                                                        <th>Status (Confirm)</th>
-                                                                        <th>Action</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>test</td>
-                                                                        <td>Dream Covid Pro</td>
-                                                                        <td>01 March 2021</td>
-                                                                        <td>2</td>
-                                                                        <td>1</td>
-                                                                        <td>1</td>
-                                                                        <td>0</td>
-                                                                        <td>Phuket</td>
-                                                                        <td>Phang Nga</td>
-                                                                        <td>12,000</td>
-                                                                        <td>
-                                                                            <div class="custom-control custom-checkbox">
-                                                                                <input type="checkbox" class="custom-control-input" id="check_confirm" name="check_confirm" value="1" />
-                                                                                <label class="custom-control-label" for="check_confirm"> </label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="custom-control custom-checkbox">
-                                                                                <input type="checkbox" class="custom-control-input" id="check_email" name="check_email" value="1" />
-                                                                                <label class="custom-control-label" for="check_email"> </label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>0</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
+                                        <div class="card collapse-icon plan-card">
+                                            <div class="card-header pb-1">
+                                                <h4 class="card-title"> <?php echo $row_bp['ptName']; ?>
+                                                    <a href="./?mode=booking/products-detail&type=<?php echo $row_bp['ptID']; ?>&booking=<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Add Products"><i data-feather='plus'></i></a>
+                                                </h4>
+                                            </div>
+                                            <div class="card-body p-0 pl-2 pr-2 pb-1">
+                                                <!-- Card Name start -->
+                                                <div class="collapse-margin" id="accordionExample">
+                                                    <div class="card">
+                                                        <div class="card-header" id="headingOne" data-toggle="collapse" role="button" data-target="#coll-tour" aria-expanded="false" aria-controls="collapse">
+                                                            <span class="lead collapse-title">
+                                                                <?php echo $row_bp["pdName"]; ?>
+                                                            </span>
+                                                        </div>
+                                                        <div id="coll-tour" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                                            <div class="card-body">
+                                                                <p class="card-title"> </p>
+                                                                <div class="table-responsive" id="div-products">
+                                                                    <table class="table">
+                                                                        <thead class="thead-primary">
+                                                                            <tr>
+                                                                                <th>Status</th>
+                                                                                <th>Name</th>
+                                                                                <th>Date Travel</th>
+                                                                                <th>Adult</th>
+                                                                                <th>Children</th>
+                                                                                <th>Infant</th>
+                                                                                <th>Pick Up</th>
+                                                                                <th>Drop Off</th>
+                                                                                <th>Price</th>
+                                                                                <th>Status (Email)</th>
+                                                                                <th>Status (Confirm)</th>
+                                                                                <th>Action</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <?php } ?>
+                                                                        <tr>
+                                                                            <td> <span class="badge badge-pill <?php echo $status_class; ?>"> <?php echo $status_txt; ?> </span> </td>
+                                                                            <td> <?php echo $row_bp["pdName"]; ?> </td>
+                                                                            <td> <?php echo date("d F Y", strtotime($row_bp["travel_date"])); ?> </td>
+                                                                            <td> <?php echo $row_bp["adults"]; ?> </td>
+                                                                            <td> <?php echo $row_bp["children"]; ?> </td>
+                                                                            <td> <?php echo $row_bp["infant"]; ?> </td>
+                                                                            <td> <?php echo !empty($row_bp["pickup"]) ? get_value('place', 'id', 'name', $row_bp["pickup"], $mysqli_p) : '-'; ?> </td>
+                                                                            <td> <?php echo !empty($row_bp["dropoff"]) ? get_value('place', 'id', 'name', $row_bp["dropoff"], $mysqli_p) : '-'; ?> </td>
+                                                                            <td> <?php echo number_format($row_bp["price_latest"]); ?> </td>
+                                                                            <td>
+                                                                                <div class="custom-control custom-checkbox">
+                                                                                    <input type="checkbox" class="custom-control-input" id="check_confirm" name="check_confirm" value="1" />
+                                                                                    <label class="custom-control-label" for="check_confirm"> </label>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="custom-control custom-checkbox">
+                                                                                    <input type="checkbox" class="custom-control-input" id="check_email" name="check_email" value="1" />
+                                                                                    <label class="custom-control-label" for="check_email"> </label>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td>
+                                                                                <a href="<?php echo './?mode=booking/products-detail&type=' . $row_bp['ptID'] . '&booking=' . $id . '&id=' . $row_bp["id"] ?>" class="pr-1 item-edit"> <i class="far fa-edit"></i> </a>
+                                                                                <?php if ($row_bp["trash_deleted"] == 1) { ?>
+                                                                                    <?php if ($_SESSION["admin"]["permission"] == 1) { ?>
+                                                                                        <a href="javascript:;" class="item-undo" onclick="restoreRates(<?php echo $row_bp['id']; ?>)"> <i class="fas fa-undo"></i> </a>
+                                                                                    <?php } ?>
+                                                                                <?php } else { ?>
+                                                                                    <a href="javascript:;" class="item-trash" onclick="deleteRates(<?php echo $row_bp['id']; ?>)"> <i class="far fa-trash-alt"></i> </a>
+                                                                                <?php } ?>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <?php $numrow_realtime++;
+                                                                }
+                                                                #---- Foot ----#
+                                                                echo $numrow_realtime != 1 ? '</tbody></table></div></div></div></div></div></div></div>' : '';
+                                                                    ?>
+
+                                                                    <!-- Card Product End -->
+
+                                                                </div>
+                                                                <!-- Products Tab ends -->
+
+                                                                <!-- History Tab starts -->
+                                                                <div class="tab-pane" id="history" aria-labelledby="history-tab" role="tabpanel">
+                                                                    <table class="table" id="datatables-history">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Status</th>
+                                                                                <th>Products</th>
+                                                                                <th>Working By</th>
+                                                                                <th>IP Address</th>
+                                                                                <th>Date / Time</th>
+                                                                                <th>Detail</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                                <!-- History Tab ends -->
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Card Name End -->
-                                    </div>
-                                </div>
-                                <?php } ?>
-                                <!-- Card Product End -->
-
-                            </div>
-                            <!-- Products Tab ends -->
-
-                            <!-- History Tab starts -->
-                            <div class="tab-pane" id="history" aria-labelledby="history-tab" role="tabpanel">
-                                <table class="table" id="datatables-history">
-                                    <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Products</th>
-                                            <th>Working By</th>
-                                            <th>IP Address</th>
-                                            <th>Date / Time</th>
-                                            <th>Detail</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- History Tab ends -->
-                        </div>
-                    </div>
-                </div>
             </section>
             <!-- Booking ends -->
         </div>
