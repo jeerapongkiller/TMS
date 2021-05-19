@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2021 at 01:26 PM
+-- Generation Time: May 19, 2021 at 04:43 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.4.11
 
@@ -56,9 +56,26 @@ CREATE TABLE `booking` (
 --
 
 INSERT INTO `booking` (`id`, `company`, `booking_no`, `booking_date`, `agent`, `agent_voucher`, `company_aff`, `sale_name`, `customer_firstname`, `customer_lastname`, `customer_mobile`, `customer_email`, `full_receipt`, `receipt_name`, `receipt_address`, `receipt_taxid`, `receipt_detail`, `offline`, `trash_deleted`, `date_create`, `date_edit`) VALUES
-(1, 4, 1, '2021-03-25', 1, 'AP001', 5, 'Mr.Wick', 'John Tee', 'Wick', '084-5926625', '', 1, 'คุณ บี', '28 ถนน กระบี่ ตำบลตลาดเหนือ \nอำเภอเมืองภูเก็ต \nภูเก็ต 83000', '100854005', '', 2, 2, '2021-03-25 17:25:03', '2021-03-29 15:08:48'),
-(2, 4, 2, '2021-03-29', 0, '', 0, '', 'Scott', 'Pop-up', '084-5869959', 'scott@gmail.com', 2, 'Scott Pop-up', '  243/15 ซ.วิบูลรังสรรค์ ต เมือง ภูเก็ต 83000', '12500162', '  ', 2, 2, '2021-03-29 15:11:04', '2021-03-29 15:11:04'),
-(3, 4, 3, '2021-03-29', 2, '20061', 4, 'Scott', 'man', 'some', '084-6592236', '', 1, 'คุณ แม็ก', ' 145/5 ถ. ปฏิพัทธิ์ ตำบล วิชิต \nอำเภอเมืองภูเก็ต \nภูเก็ต 83000 ', '12050062', '  ', 2, 2, '2021-03-29 15:52:41', '2021-03-29 16:34:43');
+(1, 4, 1, '2021-05-14', 2, '1850001', 4, 'K.Nut', 'John', 'Wick', '086-5926635', '', 1, 'คุณ แม็ก', '145/5 ถ. ปฏิพัทธิ์ ตำบล วิชิต \nอำเภอเมืองภูเก็ต \nภูเก็ต 83000', '12050062', '', 2, 2, '2021-05-14 15:02:37', '2021-05-14 15:02:37'),
+(2, 4, 2, '2021-05-14', 0, '', 0, '', 'scott', 'corn', '089-5632219', 'scott@gmail.com', 2, 'K.Max', '  ', '1258005122166', '  ', 2, 2, '2021-05-14 15:09:12', '2021-05-14 15:09:12'),
+(3, 4, 3, '2021-05-14', 1, '1850009', 3, 'Moshi', 'Yamama', 'Yura', '099-6932265', '', 2, 'คุณ หยาด', '12, 79 ถ. เจ้าฟ้าตะวันออก \nตำบล ฉลอง อำเภอเมืองภูเก็ต\n ภูเก็ต 83000', '5002366209', '', 2, 2, '2021-05-14 16:13:39', '2021-05-14 16:13:46');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking_history`
+--
+
+CREATE TABLE `booking_history` (
+  `id` int(11) NOT NULL,
+  `booking` int(11) NOT NULL,
+  `history_type` int(11) NOT NULL,
+  `booking_products` int(11) NOT NULL,
+  `description_field` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `users` int(11) NOT NULL,
+  `ip_address` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date_create` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -84,9 +101,35 @@ CREATE TABLE `booking_no` (
 --
 
 INSERT INTO `booking_no` (`id`, `company`, `bo_title`, `bo_date`, `bo_year`, `bo_year_thai`, `bo_month`, `bo_no`, `bo_full`, `date_create`) VALUES
-(1, 4, 'BO', '2021-03-25', 2021, 64, 3, 1, 'BO640300001', '2021-03-25 17:25:03'),
-(2, 4, 'BO', '2021-03-29', 2021, 64, 3, 2, 'BO640300002', '2021-03-29 15:11:04'),
-(3, 4, 'BO', '2021-03-29', 2021, 64, 3, 3, 'BO640300003', '2021-03-29 15:52:41');
+(1, 4, 'BO', '2021-05-14', 2021, 64, 5, 1, 'BO0004640500001', '2021-05-14 15:02:37'),
+(2, 4, 'BO', '2021-05-14', 2021, 64, 5, 2, 'BO0004640500002', '2021-05-14 15:09:12'),
+(3, 4, 'BO', '2021-05-14', 2021, 64, 5, 3, 'BO0004640500003', '2021-05-14 16:13:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `booking_payment`
+--
+
+CREATE TABLE `booking_payment` (
+  `id` int(11) NOT NULL,
+  `booking` int(11) NOT NULL,
+  `booking_products` int(11) NOT NULL,
+  `products_all` int(11) NOT NULL DEFAULT 2,
+  `payment_type` int(11) NOT NULL,
+  `bank` int(11) NOT NULL,
+  `bank_no` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `bank_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_date` date NOT NULL,
+  `receip_no` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_price` double(15,2) NOT NULL,
+  `receiver_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `offline` int(11) NOT NULL DEFAULT 2,
+  `trash_deleted` int(11) NOT NULL DEFAULT 2,
+  `date_create` datetime NOT NULL,
+  `date_edit` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -98,6 +141,7 @@ CREATE TABLE `booking_products` (
   `id` int(11) NOT NULL,
   `company` int(11) NOT NULL,
   `booking` int(11) NOT NULL,
+  `combine_agent` int(11) NOT NULL,
   `products_type` int(11) NOT NULL,
   `products` int(11) NOT NULL,
   `products_periods` int(11) NOT NULL,
@@ -228,6 +272,53 @@ INSERT INTO `company_aff` (`id`, `company`, `name_aff`, `receipt_name`, `receipt
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `history_type`
+--
+
+CREATE TABLE `history_type` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_thai` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date_create` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `history_type`
+--
+
+INSERT INTO `history_type` (`id`, `name`, `name_thai`, `date_create`) VALUES
+(1, 'Create', 'เพิ่มข้อมูล', '2021-05-10 11:41:10'),
+(2, 'Update', 'แก้ไขข้อมูล', '2021-05-10 11:41:14'),
+(3, 'Delete', 'ลบข้อมูล', '2021-05-10 11:43:03'),
+(4, 'Restore', 'คืนข้อมูล', '2021-05-10 11:43:06'),
+(5, 'Confirmed', 'ยืนยันแล้ว', '2021-05-10 11:43:09'),
+(6, 'Not Confirmed', 'ยังไม่ยืนยัน', '2021-05-10 11:43:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment_type`
+--
+
+CREATE TABLE `payment_type` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `offline` int(11) NOT NULL DEFAULT 2,
+  `date_create` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `payment_type`
+--
+
+INSERT INTO `payment_type` (`id`, `name`, `description`, `offline`, `date_create`) VALUES
+(1, 'Cash', '', 2, '2021-05-12 17:29:27'),
+(2, 'Bank', '', 2, '2021-05-12 17:29:27');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `permission`
 --
 
@@ -305,14 +396,14 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `company`, `products_type`, `name`, `cut_open`, `cut_off`, `offline`, `trash_deleted`, `date_create`, `date_edit`) VALUES
 (1, 4, 1, 'Phi Phi Island (1 Day)', '00:00:00', 0, 2, 2, '2021-02-24 12:09:42', '2021-02-24 12:09:42'),
 (2, 4, 1, 'Phi Phi Island (Half Day)', '00:00:00', 0, 2, 2, '2021-02-24 12:12:00', '2021-02-24 12:12:00'),
-(3, 4, 1, 'James Bond Island', '21:25:00', 4, 2, 2, '2021-03-10 16:11:32', '2021-04-08 11:47:20'),
+(3, 4, 1, 'James Bond Island (Allotment + Cut Off)', '21:25:00', 4, 2, 2, '2021-03-10 16:11:32', '2021-05-05 10:30:05'),
 (4, 4, 1, 'James Bond Island (1 Day)', '00:00:00', 0, 1, 1, '2021-03-18 09:38:55', '2021-03-18 10:40:21'),
 (5, 4, 1, 'Tachai Island (Cut Off)', '13:25:00', 3, 2, 2, '2021-03-22 09:45:58', '2021-04-08 11:46:13'),
-(6, 1, 1, 'Air Max Tours (Cut off)', '15:31:00', 4, 2, 2, '2021-03-31 10:21:55', '2021-03-31 10:36:58'),
+(6, 1, 1, 'Air Max Tours (Cut off)', '19:00:00', 1, 2, 2, '2021-03-31 10:21:55', '2021-05-05 10:48:12'),
 (7, 1, 1, 'Air Max Tours (Group)', '00:00:00', 0, 2, 2, '2021-03-31 10:39:48', '2021-03-31 10:39:48'),
 (8, 1, 1, 'Jordan (Allotment)', '20:00:00', 2, 2, 2, '2021-03-31 10:49:41', '2021-03-31 10:49:52'),
 (9, 3, 1, 'iPhone 12 (Cut Off)', '11:00:00', 2, 2, 2, '2021-03-31 12:05:21', '2021-03-31 12:05:21'),
-(10, 3, 1, 'iPhone SE (Allotment)', '14:53:00', 2, 2, 2, '2021-03-31 12:06:38', '2021-03-31 12:06:53'),
+(10, 3, 1, 'iPhone SE (Allotment)', '00:00:00', 0, 2, 2, '2021-03-31 12:06:38', '2021-05-05 10:50:51'),
 (11, 3, 1, 'AirPods (Group)', '00:00:00', 0, 2, 2, '2021-03-31 12:08:29', '2021-03-31 12:08:29'),
 (12, 1, 1, 'No Show', '00:00:00', 0, 2, 2, '2021-03-31 17:22:27', '2021-03-31 17:22:27'),
 (13, 3, 1, 'No Show', '00:00:00', 0, 2, 2, '2021-03-31 17:23:36', '2021-03-31 17:23:36'),
@@ -344,12 +435,15 @@ CREATE TABLE `products_allotment` (
 --
 
 INSERT INTO `products_allotment` (`id`, `products`, `pax`, `date_from`, `date_to`, `offline`, `trash_deleted`, `date_create`, `date_edit`) VALUES
-(1, 3, 10, '2021-03-01', '2021-03-15', 2, 2, '2021-03-19 17:49:02', '2021-03-19 17:49:02'),
-(2, 3, 20, '2021-03-16', '2021-03-31', 2, 2, '2021-03-19 18:00:50', '2021-03-19 18:00:50'),
-(3, 5, 10, '2021-03-01', '2021-03-31', 2, 2, '2021-03-22 09:50:54', '2021-03-22 09:50:54'),
-(4, 8, 12, '2021-04-01', '2021-04-15', 2, 2, '2021-03-31 10:50:16', '2021-03-31 10:50:16'),
-(5, 8, 10, '2021-04-16', '2021-04-30', 2, 2, '2021-03-31 10:50:46', '2021-03-31 10:50:46'),
-(6, 10, 12, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 12:07:10', '2021-03-31 12:07:10');
+(1, 3, 10, '2021-05-01', '2021-05-15', 2, 2, '2021-03-19 17:49:02', '2021-05-05 10:27:05'),
+(2, 3, 20, '2021-05-16', '2021-05-31', 2, 2, '2021-03-19 18:00:50', '2021-05-05 10:27:18'),
+(3, 5, 10, '2021-05-01', '2021-05-31', 2, 2, '2021-03-22 09:50:54', '2021-05-05 10:26:36'),
+(4, 8, 12, '2021-05-01', '2021-05-15', 2, 2, '2021-03-31 10:50:16', '2021-05-05 10:32:46'),
+(5, 8, 10, '2021-05-16', '2021-05-31', 2, 2, '2021-03-31 10:50:46', '2021-05-05 10:32:55'),
+(6, 10, 12, '2021-05-01', '2021-05-31', 2, 2, '2021-03-31 12:07:10', '2021-05-05 10:50:27'),
+(7, 1, 10, '2021-05-01', '2021-05-15', 2, 2, '2021-05-05 10:28:46', '2021-05-05 10:28:46'),
+(8, 1, 14, '2021-05-16', '2021-05-31', 2, 2, '2021-05-05 10:29:06', '2021-05-05 10:29:06'),
+(9, 7, 10, '2021-05-01', '2021-05-31', 2, 2, '2021-05-05 10:47:20', '2021-05-05 10:47:20');
 
 -- --------------------------------------------------------
 
@@ -373,28 +467,28 @@ CREATE TABLE `products_periods` (
 --
 
 INSERT INTO `products_periods` (`id`, `products`, `periods_from`, `periods_to`, `offline`, `trash_deleted`, `date_create`, `date_edit`) VALUES
-(1, 2, '2021-03-01', '2021-03-16', 2, 2, '2021-03-11 12:26:49', '2021-03-11 12:26:49'),
-(2, 2, '2021-03-17', '2021-03-31', 2, 2, '2021-03-11 12:28:21', '2021-03-11 12:28:21'),
-(3, 1, '2021-03-01', '2021-03-31', 2, 2, '2021-03-12 16:09:18', '2021-03-12 16:09:18'),
-(4, 3, '2021-03-01', '2021-03-31', 2, 2, '2021-03-12 16:11:51', '2021-03-12 16:11:51'),
-(5, 4, '2021-03-01', '2021-03-31', 2, 2, '2021-03-18 09:38:55', '2021-03-18 09:38:55'),
-(7, 5, '2021-03-01', '2021-03-31', 2, 2, '2021-03-22 09:45:58', '2021-03-22 09:45:58'),
-(8, 6, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 10:36:06', '2021-03-31 10:36:06'),
+(1, 2, '2021-05-16', '2021-05-31', 2, 2, '2021-03-11 12:26:49', '2021-05-05 10:25:08'),
+(2, 2, '2021-05-01', '2021-05-15', 2, 2, '2021-03-11 12:28:21', '2021-05-05 10:24:49'),
+(3, 1, '2021-05-16', '2021-05-31', 2, 2, '2021-03-12 16:09:18', '2021-05-05 10:25:29'),
+(4, 3, '2021-05-01', '2021-05-31', 2, 2, '2021-03-12 16:11:51', '2021-05-05 10:24:36'),
+(5, 4, '2021-05-01', '2021-05-31', 2, 2, '2021-03-18 09:38:55', '2021-05-05 10:23:08'),
+(7, 5, '2021-05-01', '2021-05-31', 2, 2, '2021-03-22 09:45:58', '2021-05-05 10:22:55'),
+(8, 6, '2021-05-16', '2021-05-31', 2, 2, '2021-03-31 10:36:06', '2021-05-05 10:47:47'),
 (9, 6, '2021-05-01', '2021-05-15', 2, 2, '2021-03-31 10:39:03', '2021-03-31 10:39:03'),
-(10, 7, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 10:47:55', '2021-03-31 10:47:55'),
-(11, 8, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 11:37:39', '2021-03-31 11:37:39'),
-(12, 9, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 12:05:53', '2021-03-31 12:05:53'),
-(13, 10, '2021-03-01', '2021-03-31', 2, 2, '2021-03-31 12:07:41', '2021-03-31 12:07:41'),
-(14, 11, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 12:09:11', '2021-03-31 12:09:11'),
+(10, 7, '2021-06-01', '2021-06-30', 2, 2, '2021-03-31 10:47:55', '2021-05-05 10:46:38'),
+(11, 8, '2021-05-01', '2021-05-31', 2, 2, '2021-03-31 11:37:39', '2021-05-05 10:32:34'),
+(12, 9, '2021-05-16', '2021-05-31', 2, 2, '2021-03-31 12:05:53', '2021-05-05 10:51:33'),
+(13, 10, '2021-05-01', '2021-05-31', 2, 2, '2021-03-31 12:07:41', '2021-05-05 10:50:18'),
+(14, 11, '2021-05-01', '2021-05-31', 2, 2, '2021-03-31 12:09:11', '2021-05-05 10:49:33'),
 (15, 12, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 17:22:45', '2021-03-31 17:22:45'),
 (16, 13, '2021-04-01', '2021-04-30', 2, 2, '2021-03-31 17:23:52', '2021-03-31 17:23:52'),
-(17, 14, '2021-04-01', '2021-04-30', 2, 2, '2021-04-05 16:23:36', '2021-04-05 16:23:36'),
+(17, 14, '2021-05-01', '2021-05-31', 2, 2, '2021-04-05 16:23:36', '2021-05-05 10:32:10'),
 (18, 15, '2021-04-01', '2021-04-30', 2, 2, '2021-04-05 16:26:13', '2021-04-05 16:26:13'),
 (19, 16, '2021-04-01', '2021-04-15', 2, 2, '2021-04-05 17:02:26', '2021-04-22 11:08:54'),
-(20, 7, '2021-05-01', '2021-05-31', 1, 2, '2021-04-05 17:03:56', '2021-04-05 17:03:56'),
+(20, 7, '2021-05-01', '2021-05-31', 2, 2, '2021-04-05 17:03:56', '2021-05-05 10:46:58'),
 (21, 17, '2021-04-01', '2021-04-30', 2, 2, '2021-04-05 17:29:41', '2021-04-05 17:29:41'),
 (22, 10, '2021-04-01', '2021-04-30', 1, 2, '2021-04-05 17:33:09', '2021-04-05 17:33:09'),
-(23, 9, '2021-05-01', '2021-05-12', 2, 2, '2021-04-06 17:41:40', '2021-04-06 17:41:40'),
+(23, 9, '2021-05-01', '2021-05-15', 2, 2, '2021-04-06 17:41:40', '2021-05-05 10:51:12'),
 (24, 1, '2021-05-01', '2021-05-15', 2, 2, '2021-04-06 18:17:48', '2021-04-06 18:17:48'),
 (25, 16, '2021-02-01', '2021-02-28', 2, 2, '2021-04-22 10:50:30', '2021-04-22 10:59:16'),
 (26, 16, '2021-05-01', '2021-05-15', 2, 2, '2021-04-22 11:00:03', '2021-04-22 11:00:03');
@@ -626,9 +720,21 @@ ALTER TABLE `booking`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `booking_history`
+--
+ALTER TABLE `booking_history`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `booking_no`
 --
 ALTER TABLE `booking_no`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `booking_payment`
+--
+ALTER TABLE `booking_payment`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -653,6 +759,18 @@ ALTER TABLE `company`
 -- Indexes for table `company_aff`
 --
 ALTER TABLE `company_aff`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `history_type`
+--
+ALTER TABLE `history_type`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payment_type`
+--
+ALTER TABLE `payment_type`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -726,10 +844,22 @@ ALTER TABLE `booking`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `booking_history`
+--
+ALTER TABLE `booking_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `booking_no`
 --
 ALTER TABLE `booking_no`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `booking_payment`
+--
+ALTER TABLE `booking_payment`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `booking_products`
@@ -756,6 +886,18 @@ ALTER TABLE `company_aff`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `history_type`
+--
+ALTER TABLE `history_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `payment_type`
+--
+ALTER TABLE `payment_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `permission`
 --
 ALTER TABLE `permission`
@@ -777,7 +919,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `products_allotment`
 --
 ALTER TABLE `products_allotment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `products_periods`
