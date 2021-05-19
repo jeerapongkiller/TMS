@@ -96,6 +96,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
                                     <input type="hidden" id="bp_rates_agent" name="bp_rates_agent" value="<?php echo $bp_rates_agent; ?>">
                                     <input type="hidden" id="bp_products_periods" name="bp_products_periods" value="<?php echo $bp_products_periods; ?>">
                                     <input type="hidden" id="bp_dropoff_check" name="bp_dropoff_check" value="<?php echo $bp_dropoff; ?>">
+                                    <input type="hidden" id="bp_latest_check" name="bp_latest_check" value="<?php echo $bp_price_latest; ?>">
 
                                     <!-- booking products edit -->
                                     <div class="form-row mt-1">
@@ -527,6 +528,7 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
         var bp_latest = document.getElementById('bp_latest');
         var add_trans = document.getElementById('add_trans');
         var check_trans = add_trans.checked ? 'true' : 'false';
+        var bp_latest_check = parseFloat(document.getElementById('bp_latest_check').value);
         var bp_adults = parseFloat(document.getElementById('bp_adults').value);
         var bp_children = parseFloat(document.getElementById('bp_children').value);
         var bp_infant = parseFloat(document.getElementById('bp_infant').value);
@@ -565,9 +567,14 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
             }
         }
         bp_default.value = price_sum;
-        bp_latest.value = price_sum;
+        if(bp_latest_check == 0) {
+            bp_latest.value = price_sum;
+        } else {
+            bp_latest.value = bp_latest_check;
+        }
         priceformat('bp_default');
         priceformat('bp_latest');
+        
     }
 
     // Add products
@@ -633,8 +640,8 @@ $add_trans = !empty($row["transfer"]) ? $row["transfer"] : '2';
             type: "POST",
             dataType: 'json',
             success: function(response) {
-                // console.log(response['0'].name_aff);
-                // $("#div-booking").html(response)
+                // console.log(response['0'].add_return_url);
+                // $("#div-booking").html(response['0'].add_return_url)
                 if (response['0'].add_return == 'false' || response['0'].add_return_cutoff == 'false') {
                     Swal.fire({
                         icon: 'error',

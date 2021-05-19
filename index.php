@@ -37,6 +37,8 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/forms/select/select2.min.css">
         <!-- BEGIN: Spinner CSS-->
         <link rel="stylesheet" type="text/css" href="assets/vendors/css/forms/spinner/jquery.bootstrap-touchspin.css">
+        <!-- BEGIN: Dropify CSS-->
+        <link rel="stylesheet" type="text/css" href="assets/dist/dropify/dist//css/dropify.min.css">
 
         <!-- BEGIN: Theme CSS-->
         <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.css">
@@ -118,6 +120,10 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
         <!-- BEGIN Spinner JS -->
         <script src="assets/vendors/js/forms/spinner/jquery.bootstrap-touchspin.js"></script>
         <!-- END Spinner JS -->
+
+        <!-- BEGIN Dropify JS -->
+        <script src="assets/dist/dropify/dist/js/dropify.min.js"></script>
+        <!-- END Dropify JS -->
 
         <!-- BEGIN Select JS -->
         <script src="assets/vendors/js/forms/select/select2.full.min.js"></script>
@@ -287,17 +293,61 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     }
                 });
 
-                /** DataTables History **/
-                $('#datatables-history').DataTable({
+                /** DataTables Booking Tour **/
+                $('#datatables-booking-Tour').DataTable({
                     "searching": false,
                     order: [
-                        [1, 'asc']
+                        [2, 'desc']
                     ], //desc , asc
                     dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                     displayLength: 7,
                     lengthMenu: [7, 10, 25, 50, 75, 100],
                     columnDefs: [{
-                        targets: [3, 5],
+                        targets: [0, 9, 10, 11],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+
+                /** DataTables History **/
+                $('#datatables-history').DataTable({
+                    "searching": false,
+                    order: [
+                        [4, 'desc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [5],
+                        orderable: false
+                    }],
+                    language: {
+                        paginate: {
+                            // remove previous & next text from pagination
+                            previous: '&nbsp;',
+                            next: '&nbsp;'
+                        }
+                    }
+                });
+
+                /** DataTables Payment **/
+                $('#datatables-payment').DataTable({
+                    "searching": false,
+                    order: [
+                        [4, 'desc']
+                    ], //desc , asc
+                    dom: '<<"head-label"><"dt-action-buttons text-right"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                    displayLength: 7,
+                    lengthMenu: [7, 10, 25, 50, 75, 100],
+                    columnDefs: [{
+                        targets: [5],
                         orderable: false
                     }],
                     language: {
@@ -456,6 +506,40 @@ if (!empty($_GET["mode"]) && !empty($_SESSION["admin"]["id"])) {
                     }
                 });
             }
+        </script>
+
+        <!-- Script Dropify -->
+        <script>
+            $(document).ready(function() {
+                // jQuery file upload
+                $('.dropify').dropify();
+
+                // Used events
+                var drEvent = $('#input-file-events').dropify();
+
+                drEvent.on('dropify.beforeClear', function(event, element) {
+                    return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+                });
+
+                drEvent.on('dropify.afterClear', function(event, element) {
+                    alert('File deleted');
+                });
+
+                drEvent.on('dropify.errors', function(event, element) {
+                    console.log('Has Errors');
+                });
+
+                var drDestroy = $('#input-file-to-destroy').dropify();
+                drDestroy = drDestroy.data('dropify')
+                $('#toggleDropify').on('click', function(e) {
+                    e.preventDefault();
+                    if (drDestroy.isDropified()) {
+                        drDestroy.destroy();
+                    } else {
+                        drDestroy.init();
+                    }
+                })
+            });
         </script>
 
         <!-- Script Check Image -->

@@ -176,7 +176,7 @@ if (!empty($_POST["type_val"]) && !empty($_POST["bo_full"])) {
 
         mysqli_close($mysqli_p);
 
-        $return = ($page_title == "Add New Company") ?  "&id=" . $id : 'true';
+        $return = ($page_title == "Add New Booking") ?  "&id=" . $id : 'true';
         echo $return;
     }
 } else {

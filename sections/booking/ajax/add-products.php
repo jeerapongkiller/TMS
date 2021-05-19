@@ -8,14 +8,14 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
     $booking = !empty($_POST["booking"]) ? $_POST["booking"] : '0';
     $page_title = !empty($_POST["page_title"]) ? $_POST["page_title"] : '';
     $company = !empty($_POST["company"]) ? $_POST["company"] : '0';
-    $type = !empty($_POST["type"]) ? $_POST["type"] : '0';
+    $ptype = !empty($_POST["type"]) ? $_POST["type"] : '0';
     $offline = !empty($_POST["offline"]) ? $_POST["offline"] : '2';
     $products = !empty($_POST["products"]) ? $_POST["products"] : '0';
     $products_periods = !empty($_POST["products_period"]) ? $_POST["products_period"] : '0';
     $bp_supplier = !empty($_POST["bp_supplier"]) && $_POST["bp_supplier"] != 'company' ? $_POST["bp_supplier"] : '0';
     $rates_agent = !empty($_POST["rate_agent"]) ? $_POST["rate_agent"] : '0';
     $bp_products = !empty($_POST["bp_products"]) ? $_POST["bp_products"] : '0';
-    $bp_date_travel = !empty($_POST["bp_date_travel"]) ? $_POST["bp_date_travel"] : '';
+    $bp_travel_date = !empty($_POST["bp_date_travel"]) ? $_POST["bp_date_travel"] : '';
     $bp_adults = !empty($_POST["bp_adults"]) ? $_POST["bp_adults"] : '0';
     $bp_children = !empty($_POST["bp_children"]) ? $_POST["bp_children"] : '0';
     $bp_infant = !empty($_POST["bp_infant"]) ? $_POST["bp_infant"] : '0';
@@ -34,8 +34,27 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
     $return_cutoff = 'false';
     $return_edit = 'false';
     $return_url = '';
-    #----- Check Products & Cut-off -----#
+    function get_client_ip()
+    {
+        $ipaddress = '';
+        if (getenv('HTTP_CLIENT_IP'))
+            $ipaddress = getenv('HTTP_CLIENT_IP');
+        else if (getenv('HTTP_X_FORWARDED_FOR'))
+            $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
+        else if (getenv('HTTP_X_FORWARDED'))
+            $ipaddress = getenv('HTTP_X_FORWARDED');
+        else if (getenv('HTTP_FORWARDED_FOR'))
+            $ipaddress = getenv('HTTP_FORWARDED_FOR');
+        else if (getenv('HTTP_FORWARDED'))
+            $ipaddress = getenv('HTTP_FORWARDED');
+        else if (getenv('REMOTE_ADDR'))
+            $ipaddress = getenv('REMOTE_ADDR');
+        else
+            $ipaddress = 'UNKNOWN';
+        return $ipaddress;
+    }
     if (empty($id)) {
+        #----- Check Products & Cut-off -----#
         $query_rates = "SELECT PR.*, 
                         PP.id as ppId, PP.products as ppProducts, PP.periods_from as pp_from, PP.periods_to as pp_to, PP.offline as ppOffline,
                         PRO.id as proId, PRO.name as proName, PRO.cut_open as proCutOpen, PRO.cut_off as proCutOff, PRO.offline as proOffline
@@ -45,7 +64,7 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
                         LEFT JOIN products PRO
                             ON PP.products = PRO.id
                         WHERE PR.id = '$bp_products'
-                        AND PP.periods_from <= '$bp_date_travel' AND PP.periods_to >= '$bp_date_travel'
+                        AND PP.periods_from <= '$bp_travel_date' AND PP.periods_to >= '$bp_travel_date'
                         AND PR.offline = '2' AND PP.offline = '2' AND PRO.offline = '2' ";
         $result_rates = mysqli_query($mysqli_p, $query_rates);
         $num_rates = mysqli_num_rows($result_rates);
@@ -54,7 +73,7 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
             #----- Check Cut-off -----#
             if (!empty($row_rates['proCutOpen']) && !empty($row_rates['proCutOff'])) {
                 $now = $today . ' ' . $time_hm;
-                $date_cut = date('Y-m-d H:i', strtotime($bp_date_travel . ' ' . $row_rates['proCutOpen'] . '-' . $row_rates['proCutOff'] . ' hour'));
+                $date_cut = date('Y-m-d H:i', strtotime($bp_travel_date . ' ' . $row_rates['proCutOpen'] . '-' . $row_rates['proCutOff'] . ' hour'));
                 $cut_off = (strtotime($now) <= strtotime($date_cut)) ? 'true' : 'false';
             }
             if (!empty($cut_off) && $cut_off == 'false') {
@@ -77,6 +96,104 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
         $return_edit = 'true';
     }
     if (!empty($id)) {
+        $ip = get_client_ip();
+        $description_field = "";
+
+        $bp_adults_text = ($bp_adults > 0) ? $bp_adults : '-';
+        $bp_children_text = ($bp_children > 0) ? $bp_children : '-';
+        $bp_infant_text = ($bp_infant > 0) ? $bp_infant : '-';
+        $add_trans_text = ($add_trans != 2) ? 'Yes!' : 'No!';
+        $bp_pickup_text = !empty($bp_pickup) ? get_value("place", "id", "name", $bp_pickup, $mysqli_p) : 'N/A';
+        $bp_dropoff_text = ($bp_dropoff > 0) ? get_value("place", "id", "name", $bp_dropoff, $mysqli_p) : 'N/A';
+        $bp_latest_text = ($bp_latest > 0) ? $bp_latest : 0;
+
+        # ---- Crate to history booking ---- #
+        if ($return_edit == 'true') {
+
+            if ($ptype != 4) {
+                $description_field .= "Date Travel : " . date("d F Y", strtotime($bp_travel_date)) . "\n";
+            } else {
+                $description_field .= "Date Check-in : " . date("d F Y", strtotime($bp_checkin_date)) . "\n";
+                $description_field .= "Date Check-out : " . date("d F Y", strtotime($bp_checkout_date)) . "\n";
+            }
+
+            $description_field .= "Adults : " . $bp_adults_text . " \n";
+            $description_field .= "Children : " . $bp_children_text . " \n";
+            $description_field .= "Infant : " . $bp_infant_text . " \n";
+            // $description_field .= "FOC : " . $bp_foc_text . " คน\n";
+            if ($ptype != 3 && $ptype != 4) {
+                $description_field .= "Add Transfer : " . $add_trans_text . "\n";
+            }
+            $description_field .= "Pickup : " . $bp_pickup_text . "\n";
+            $description_field .= "Dropoff : " . $bp_dropoff_text . "\n";
+            // $description_field .= "โซน : " . $bp_zones_text . "\n";
+            // $description_field .= "ห้องพัก : " . $bp_roomno_text . "\n";
+            // if ($ptype == 3) {
+            //     $description_field .= "จำนวนคัน : " . $bp_no_cars_text . " คัน\n";
+            //     $description_field .= "จำนวนชั่วโมง : " . $bp_no_hours_text . " ชั่วโมง\n";
+            //     $description_field .= "เวลารับ : " . $bp_pickup_time_text . "\n";
+            //     $description_field .= "เวลาส่ง : " . $bp_dropoff_time_text . "\n";
+            // }
+            // if ($ptype == 4) {
+            //     $description_field .= "จำนวนห้อง : " . $bp_no_rooms_text . " ห้อง\n";
+            //     $description_field .= "จำนวนเตียงเสริม : " . $bp_extra_beds_text . " เตียง\n";
+            //     $description_field .= "จำนวนแชร์เตียง : " . $bp_share_bed_text . " เตียง\n";
+            // }
+            // if ($ptype != 3 && $ptype != 4) {
+            //     $description_field .= "ชาวต่างชาติ : " . $bp_foreigner_text . "\n";
+            //     $description_field .= "จำนวนชาวต่างชาติ : " . $bp_foreigner_no_text . " คน\n";
+            //     $description_field .= "ราคาเพิ่มเติมสำหรับชาวต่างชาติ : " . number_format($bp_foreigner_price_text) . " บาท\n";
+            // }
+            $description_field .= "Price Latest : " . number_format($bp_latest_text) . " THB\n";
+            // $description_field .= "หมายเหตุ : \n" . $bp_notes_text . "\n";
+        } else {
+            $query_booking_prod = "SELECT * FROM booking_products WHERE id > '0'";
+            $query_booking_prod .= " AND id = ?";
+            $query_booking_prod .= " LIMIT 1";
+            $procedural_statement = mysqli_prepare($mysqli_p, $query_booking_prod);
+            mysqli_stmt_bind_param($procedural_statement, 'i', $id);
+            mysqli_stmt_execute($procedural_statement);
+            $result_prod = mysqli_stmt_get_result($procedural_statement);
+            $row_booking_prod = mysqli_fetch_array($result_prod, MYSQLI_ASSOC);
+
+            if ($ptype != 4) {
+                $description_field .= ($bp_travel_date != $row_booking_prod["travel_date"]) ? "Date Travel : " . date("d F Y", strtotime($bp_travel_date)) . "\n" : "";
+            } else {
+                $description_field .= ($bp_checkin_date != $row_booking_prod["bp_checkin_date"]) ? "Date Check-in : " . date("d F Y", strtotime($bp_checkin_date)) . "\n" : "";
+                $description_field .= ($bp_checkout_date != $row_booking_prod["bp_checkout_date"]) ? "Date Check-out : " . date("d F Y", strtotime($bp_checkout_date)) . "\n" : "";
+            }
+
+            $description_field .= ($bp_adults_text != $row_booking_prod["adults"]) ? "Adults : " . $bp_adults_text . " \n" : "";
+            $description_field .= ($bp_children_text != $row_booking_prod["children"]) ? "Children : " . $bp_children_text . " \n" : "";
+            $description_field .= ($bp_infant_text != $row_booking_prod["infant"]) ? "Infant : " . $bp_infant_text . " \n" : "";
+            // $description_field .= ($bp_foc_text != $row_booking_prod["foc"]) ? "FOC : " . $bp_foc_text . " คน\n" : "";
+            if ($ptype != 3 && $ptype != 4) {
+                $description_field .= ($add_trans != $row_booking_prod["transfer"]) ? "Add Transfer : " . $add_trans_text . "\n" : "";
+            }
+            $description_field .= ($bp_pickup != $row_booking_prod["pickup"]) ? "Pickup : " . $bp_pickup_text . "\n" : "";
+            $description_field .= ($bp_dropoff != $row_booking_prod["dropoff"]) ? "Dropoff : " . $bp_dropoff_text . "\n" : "";
+            // $description_field .= ($bp_zones != $row_booking_prod["zones"]) ? "โซน : " . $bp_zones_text . "\n" : "";
+            // $description_field .= ($bp_roomno != $row_booking_prod["roomno"]) ? "ห้องพัก : " . $bp_roomno_text . "\n" : "";
+            // if ($ptype == 3) {
+            //     $description_field .= ($bp_no_cars_text != $row_booking_prod["no_cars"]) ? "จำนวนคัน : " . $bp_no_cars_text . " คัน\n" : "";
+            //     $description_field .= ($bp_no_hours_text != $row_booking_prod["no_hours"]) ? "จำนวนชั่วโมง : " . $bp_no_hours_text . " ชั่วโมง\n" : "";
+            //     $description_field .= ($bp_pickup_time != $row_booking_prod["pickup_time"]) ? "เวลารับ : " . $bp_pickup_time_text . "\n" : "";
+            //     $description_field .= ($bp_dropoff_time != $row_booking_prod["dropoff_time"]) ? "เวลาส่ง : " . $bp_dropoff_time_text . "\n" : "";
+            // }
+            // if ($ptype == 4) {
+            //     $description_field .= ($bp_no_rooms_text != $row_booking_prod["no_rooms"]) ? "จำนวนห้อง : " . $bp_no_rooms_text . " ห้อง\n" : "";
+            //     $description_field .= ($bp_extra_beds_text != $row_booking_prod["extra_beds"]) ? "จำนวนเตียงเสริม : " . $bp_extra_beds_text . " เตียง\n" : "";
+            //     $description_field .= ($bp_share_bed_text != $row_booking_prod["share_bed"]) ? "จำนวนแชร์เตียง : " . $bp_share_bed_text . " เตียง\n" : "";
+            // }
+            // if ($ptype != 3 && $ptype != 4) {
+            //     $description_field .= ($bp_foreigner != $row_booking_prod["foreigner"]) ? "ชาวต่างชาติ : " . $bp_foreigner_text . "\n" : "";
+            //     $description_field .= ($bp_foreigner_no != $row_booking_prod["foreigner_no"]) ? "จำนวนชาวต่างชาติ : " . $bp_foreigner_no_text . " คน\n" : "";
+            //     $description_field .= ($bp_foreigner_price != $row_booking_prod["foreigner_price"]) ? "ราคาเพิ่มเติมสำหรับชาวต่างชาติ : " . number_format($bp_foreigner_price_text) . " บาท\n" : "";
+            // }
+            $description_field .= ($bp_latest != $row_booking_prod["price_latest"]) ? "Price Latest : " . number_format($bp_latest_text) . " THB\n" : "";
+            // $description_field .= "หมายเหตุ : \n" . $bp_notes_text . "\n";
+        }
+
         # ---- Update to database ---- #
         $bind_types = "";
         $params = array();
@@ -101,7 +218,7 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
 
         $query .= " products_type = ?,";
         $bind_types .= "i";
-        array_push($params, $type);
+        array_push($params, $ptype);
 
         $query .= " products = ?,";
         $bind_types .= "i";
@@ -121,7 +238,7 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
 
         $query .= " travel_date = ?,";
         $bind_types .= "s";
-        array_push($params, $bp_date_travel);
+        array_push($params, $bp_travel_date);
 
         $query .= " adults = ?,";
         $bind_types .= "i";
@@ -205,6 +322,60 @@ if (!empty($_POST['booking']) && !empty($_POST['company']) && !empty($_POST['typ
         }
         mysqli_stmt_execute($procedural_statement);
         $result = mysqli_stmt_get_result($procedural_statement);
+
+        # --- booking_history
+        if (!empty($id) && !empty($booking) && $description_field != "") {
+            # ---- Insert to booking_history ---- #
+            $query_history = "INSERT INTO booking_history (booking, history_type, booking_products, description_field, users, ip_address, date_create)";
+            $query_history .= "VALUES (0, 0, 0, '', 0, '', now())";
+            $result = mysqli_query($mysqli_p, $query_history);
+            $history_id = mysqli_insert_id($mysqli_p);
+
+            $bind_types = "";
+            $params = array();
+
+            $query_history = "UPDATE booking_history SET";
+
+            $query_history .= " booking = ?,";
+            $bind_types .= "i";
+            array_push($params, $booking);
+
+            if ($return_edit == 'true') {
+                $query_history .= " history_type = ?,";
+                $bind_types .= "i";
+                array_push($params, '1');
+            } else {
+                $query_history .= " history_type = ?,";
+                $bind_types .= "i";
+                array_push($params, '2');
+            }
+
+            $query_history .= " booking_products = ?,";
+            $bind_types .= "i";
+            array_push($params, $id);
+
+            $query_history .= " description_field = ?,";
+            $bind_types .= "s";
+            array_push($params, $description_field);
+
+            $query_history .= " users = ?,";
+            $bind_types .= "i";
+            array_push($params, $_SESSION["admin"]["id"]);
+
+            $query_history .= " ip_address = ?,";
+            $bind_types .= "s";
+            array_push($params, $ip);
+
+            $query_history .= " date_create = now()";
+            $query_history .= " WHERE id = '$history_id'";
+            $procedural_statement = mysqli_prepare($mysqli_p, $query_history);
+            if ($bind_types != "") {
+                mysqli_stmt_bind_param($procedural_statement, $bind_types, ...$params);
+            }
+            mysqli_stmt_execute($procedural_statement);
+            $result = mysqli_stmt_get_result($procedural_statement);
+        }
+
         mysqli_close($mysqli_p);
 
         $return_cutoff = 'true';
